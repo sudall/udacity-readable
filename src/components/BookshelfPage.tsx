@@ -5,6 +5,7 @@ import Book from "src/components/Book";
 import {RouteComponentProps} from "react-router";
 import SearchPage from "src/components/SearchPage";
 import BookshelfData from "src/data/models/BookshelfData";
+import BookData from "src/data/models/BookData";
 
 class BookshelfPage extends React.Component<BookshelfPage.IProps> {
     static getRoutePath(): string {
@@ -20,7 +21,7 @@ class BookshelfPage extends React.Component<BookshelfPage.IProps> {
                         <Bookshelf key={bookshelf.title} bookshelf={bookshelf}>
                         {
                             bookshelf.books.map((book) => {
-                                return <Book key={book.title} book={book}/>;
+                                return <Book key={book.title} book={book} onUpdateBook={this.props.onUpdateBook}/>;
                             })
                         }
                         </Bookshelf>
@@ -35,6 +36,7 @@ class BookshelfPage extends React.Component<BookshelfPage.IProps> {
 module BookshelfPage {
     export interface IProps extends RouteComponentProps<IProps> {
         bookshelves: BookshelfData[];
+        onUpdateBook(book: BookData, newBookshelfTitle: string): void;
     }
 }
 

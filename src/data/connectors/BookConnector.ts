@@ -4,10 +4,19 @@ import {Observable} from "rxjs";
 
 
 class BookConnector {
-    static instance: BookConnector = new BookConnector();
-
-    getAllBooks(): Observable<BookData[]> {
+    static getAllBooks(): Observable<BookData[]> {
         return Observable.fromPromise(BooksAPI.getAll());
+    }
+
+    static updateBook(book: BookData, bookshelfTitle: string): Observable<void> {
+        // if the titles are different...
+        if (book.title !== bookshelfTitle) {
+            // make the update call
+            return Observable.fromPromise(BooksAPI.update(book, bookshelfTitle));
+        }
+
+        // otherwise, don't bother. just complete the observable
+        return Observable.empty();
     }
 }
 

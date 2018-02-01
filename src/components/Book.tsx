@@ -1,6 +1,7 @@
 import * as React from "react";
 import BookData from "src/data/models/BookData";
 import BookshelfChanger from "src/components/BookshelfChanger";
+import BookConnector from "src/data/connectors/BookConnector";
 
 class Book extends React.Component<Book.IProps> {
     private getSmallThumbnailUrl(book: BookData) {
@@ -27,7 +28,11 @@ class Book extends React.Component<Book.IProps> {
                 <div className="book-top">
                     <div className="book-cover"
                          style={{width: 128, height: 193, backgroundImage: `url("${this.getSmallThumbnailUrl(this.props.book)}")`}}/>
-                    <BookshelfChanger/>
+                    <BookshelfChanger book={this.props.book} onChangeBookshelf={
+                        (newBookshelfTitle) => {
+                            this.props.onUpdateBook(this.props.book, newBookshelfTitle);
+                        }
+                    }/>
                 </div>
                 <div className="book-title">{this.props.book.title}</div>
                 <div className="book-authors">{this.getAuthors(this.props.book)}</div>
@@ -38,7 +43,8 @@ class Book extends React.Component<Book.IProps> {
 
 module Book {
     export interface IProps {
-        book: BookData
+        book: BookData,
+        onUpdateBook(book: BookData, newBookshelfTitle: string): void;
     }
 }
 

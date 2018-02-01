@@ -11,7 +11,8 @@ import {History} from "history";
 class BooksApp extends React.Component {
     state = new BooksApp.State();
 
-    static readonly KnownBookshelfTitles: string[] = ["currentlyReading", "wantToRead", "read"];
+    static readonly BookshelfTitlesToDisplay: string[] = ["currentlyReading", "wantToRead", "read"];
+    static readonly NoneBookshelfTitle = "none";
 
     private buildBookshelves(books: BookData[]): BookshelfData[] {
         let bookshelfTitleToBookshelfMap = new Map<string, BookshelfData>();
@@ -30,7 +31,7 @@ class BooksApp extends React.Component {
         });
 
         // get the known bookshelves that we want to display
-        let bookshelves = BooksApp.KnownBookshelfTitles.map((title) => {
+        let bookshelves = BooksApp.BookshelfTitlesToDisplay.map((title) => {
             let bookshelf = bookshelfTitleToBookshelfMap.get(title);
 
             if (bookshelf == null) {
@@ -43,16 +44,29 @@ class BooksApp extends React.Component {
 
         // sort by the known order
         bookshelves.sort((item1, item2) => {
-            let item1Index = BooksApp.KnownBookshelfTitles.indexOf(item1.title);
-            let item2Index = BooksApp.KnownBookshelfTitles.indexOf(item2.title);
+            let item1Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item1.title);
+            let item2Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item2.title);
             return item1Index - item2Index;
         });
 
         return bookshelves;
     }
 
+    private updateBook(book: BookData, bookshelfTitle: string) {
+        BookConnector.updateBook(book, bookshelfTitle)
+            .subscribe(() => {
+                this.setState((previousState: BooksApp.State) => {
+                    book.shelf = bookshelfTitle;
+
+                    return {
+                        books: previousState.books
+                    };
+                })
+            });
+    }
+
     componentDidMount() {
-        BookConnector.instance.getAllBooks()
+        BookConnector.getAllBooks()
             .subscribe((books) => {
                 this.setState({
                     books: books,
@@ -69,7 +83,9 @@ class BooksApp extends React.Component {
             <div className="app">
                 <Route path={BookshelfPage.getRoutePath()} exact render={
                     (props) => {
-                        return <BookshelfPage bookshelves={this.buildBookshelves(this.state.books)} {...props} />
+                        return <BookshelfPage bookshelves={this.buildBookshelves(this.state.books)}
+                                              onUpdateBook={this.updateBook.bind(this)}
+                                              {...props} />
                     }
                 }/>
                 <Route path={SearchPage.getRoutePath()} render={
