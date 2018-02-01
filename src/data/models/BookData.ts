@@ -1,8 +1,12 @@
 class BookData {
     id: string;
     title?: string;
-    author?: string;
-    imageUrl?: string;
+    authors?: string[];
+    imageLinks?: {
+        smallThumbnail: string;
+        thumbnail: string;
+    };
+    shelf?: string;
 }
 
 export default BookData;

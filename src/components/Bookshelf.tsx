@@ -4,11 +4,7 @@ import Book from "src/components/Book";
 import CustomComponentValidators from "src/CustomComponentValidators";
 import {ReactNode} from "react";
 
-interface IBookshelfProps {
-    bookshelf: BookshelfData;
-}
-
-class Bookshelf extends React.Component<IBookshelfProps> {
+class Bookshelf extends React.Component<Bookshelf.IProps> {
     private mapChildrenToListItems() {
         return React.Children.map<ReactNode>(this.props.children, (child) => {
             return (
@@ -19,10 +15,18 @@ class Bookshelf extends React.Component<IBookshelfProps> {
         });
     }
 
+    public static calculateBookshelfDisplayTitle(shelfTitle: string) {
+        let result = shelfTitle.replace(/([A-Z])/g, " $1");
+
+        result = `${result.charAt(0).toUpperCase()}${result.slice(1)}`;
+
+        return result;
+    }
+
     render() {
         return (
             <div className="bookshelf">
-                <h2 className="bookshelf-title">{this.props.bookshelf.title}</h2>
+                <h2 className="bookshelf-title">{Bookshelf.calculateBookshelfDisplayTitle(this.props.bookshelf.title)}</h2>
                 <div className="bookshelf-books">
                     <ol className="books-grid">
                         {this.mapChildrenToListItems()}
@@ -30,6 +34,12 @@ class Bookshelf extends React.Component<IBookshelfProps> {
                 </div>
             </div>
         )
+    }
+}
+
+module Bookshelf {
+    export interface IProps {
+        bookshelf: BookshelfData;
     }
 }
 

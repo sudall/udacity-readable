@@ -2,7 +2,7 @@ import CustomComponentValidators from "src/CustomComponentValidators";
 import Bookshelf from "src/components/Bookshelf";
 import * as React from "react";
 
-class BookshelfList extends React.Component {
+class BookshelfList extends React.Component<BookshelfList.IProps> {
     render() {
         return (
             <div className="list-books">
@@ -15,10 +15,16 @@ class BookshelfList extends React.Component {
                     </div>
                 </div>
                 <div className="open-search">
-                    <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+                    <a onClick={this.props.onAddBook}>Add a book</a>
                 </div>
             </div>
         );
+    }
+}
+
+module BookshelfList {
+    export interface IProps {
+        onAddBook: () => void;
     }
 }
 
