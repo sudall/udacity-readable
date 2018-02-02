@@ -21,7 +21,7 @@ class BookshelfPage extends React.Component<BookshelfPage.IProps> {
                         <Bookshelf key={bookshelf.title} bookshelf={bookshelf}>
                         {
                             bookshelf.books.map((book) => {
-                                return <Book key={book.title} book={book} onUpdateBook={this.props.onUpdateBook}/>;
+                                return <Book key={book.id} book={book} onUpdateBook={this.props.onUpdateBook}/>;
                             })
                         }
                         </Bookshelf>
@@ -36,7 +36,7 @@ class BookshelfPage extends React.Component<BookshelfPage.IProps> {
 module BookshelfPage {
     export interface IProps extends RouteComponentProps<IProps> {
         bookshelves: BookshelfData[];
-        onUpdateBook(book: BookData, newBookshelfTitle: string): void;
+        onUpdateBook: (book: BookData, newBookshelfTitle: string) => void;
     }
 }
 

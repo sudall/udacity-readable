@@ -52,29 +52,45 @@ class BooksApp extends React.Component {
         return bookshelves;
     }
 
-    private updateBook(book: BookData, bookshelfTitle: string) {
+    private updateBook = (book: BookData, bookshelfTitle: string) => {
         BookConnector.updateBook(book, bookshelfTitle)
             .subscribe(() => {
                 this.setState((previousState: BooksApp.State) => {
-                    let bookMatch = previousState.books
-                        .find((previousStateBook) => {
-                            return previousStateBook.id === book.id;
-                        });
-
-                    if (bookMatch != null) {
-                        // update the book from the previous state
-                        bookMatch.shelf = bookshelfTitle;
-                    }
-
                     // update this book
                     book.shelf = bookshelfTitle;
+
+                    let bookMatch = previousState.books
+                    .find((previousStateBook) => {
+                        return previousStateBook.id === book.id;
+                    });
+
+                    // if the book is not already in a shelf...
+                    if (bookMatch == null) {
+                        // add it to the shelved books list
+                        previousState.books.push(book);
+                    } else {
+                        // if the new bookshelf is none...
+                        if (bookshelfTitle === BooksApp.NoneBookshelfTitle) {
+                            // remove the book from the shelved books list
+                            previousState.books = previousState.books.filter((previousStateBook) => {
+                                return book.id !== previousStateBook.id;
+                            });
+                        }
+                    }
 
                     return {
                         books: previousState.books
                     };
                 })
             });
-    }
+    };
+
+    private getFullBookData = (bookId: string) => {
+        return this.state.books
+            .find((book) => {
+                return book.id === bookId;
+            });
+    };
 
     componentDidMount() {
         BookConnector.getAllBooks()
@@ -95,14 +111,15 @@ class BooksApp extends React.Component {
                 <Route path={BookshelfPage.getRoutePath()} exact render={
                     (props) => {
                         return <BookshelfPage bookshelves={this.buildBookshelves(this.state.books)}
-                                              onUpdateBook={this.updateBook.bind(this)}
+                                              onUpdateBook={this.updateBook}
                                               {...props} />
                     }
                 }/>
                 <Route path={SearchPage.getRoutePath()} render={
                     ({history}) => {
                         return <SearchPage onClose={() => { BooksApp.onSearchPageClose(history); }}
-                                           onUpdateBook={this.updateBook.bind(this)} />
+                                           onUpdateBook={this.updateBook}
+                                           onGetFullBookData={this.getFullBookData}/>
                     }
                 }/>
             </div>

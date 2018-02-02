@@ -4,9 +4,10 @@ import BookData from "src/data/models/BookData";
 import BookConnector from "src/data/connectors/BookConnector";
 import Book from "src/components/Book";
 import {Subject, Subscription} from "rxjs";
+import BooksApp from "src/App";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
-    private searchInputOnChangeSubject: Subject<string> = new Subject<string>();
+    private readonly searchInputOnChangeSubject: Subject<string> = new Subject<string>();
     private subscriptionsToDispose: Subscription[] = [];
 
     constructor(props: SearchPage.IProps) {
@@ -39,8 +40,21 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
     }
 
     private setSearchResults(searchResults: BookData[]) {
+        let fullSearchResults = searchResults
+            // try to map to more complete objects
+            .map((book) => {
+                let result = this.props.onGetFullBookData(book.id);
+
+                if (result == null) {
+                    result = book;
+                    result.shelf = BooksApp.NoneBookshelfTitle;
+                }
+
+                return result;
+            });
+
         this.setState({
-            searchResults: searchResults
+            searchResults: fullSearchResults
         });
     }
 
@@ -62,7 +76,9 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
                           However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                           you don't find a specific author or title. Every search is limited by search terms.
                         */}
-                        <input type="text" placeholder="Search by title or author" onChange={(event) => {
+                        <input type="text"
+                               placeholder="Search by title or author"
+                               onChange={(event) => {
                             this.searchInputOnChangeSubject.next(event.target.value);
                         }}/>
                     </div>
@@ -71,7 +87,7 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
                     <BooksGrid>
                     {
                         this.state.searchResults.map((book) => {
-                            return <Book book={book} onUpdateBook={this.props.onUpdateBook} />
+                            return <Book key={book.id} book={book} onUpdateBook={this.props.onUpdateBook} />
                         })
                     }
                     </BooksGrid>
@@ -84,7 +100,8 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
 module SearchPage {
     export interface IProps {
         onClose: () => void;
-        onUpdateBook(book: BookData, newBookshelfTitle: string): void;
+        onUpdateBook: (book: BookData, newBookshelfTitle: string) => void;
+        onGetFullBookData: (bookId: string) => BookData | undefined;
     }
 
     export class State {

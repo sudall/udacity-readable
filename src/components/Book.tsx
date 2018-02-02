@@ -46,7 +46,7 @@ class Book extends React.Component<Book.IProps> {
 module Book {
     export interface IProps {
         book: BookData,
-        onUpdateBook(book: BookData, newBookshelfTitle: string): void;
+        onUpdateBook: (book: BookData, newBookshelfTitle: string) => void;
     }
 }
 
