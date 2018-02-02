@@ -23,7 +23,14 @@ class BookConnector {
         // if the query isn't null or empty
         if (query != null && query != "") {
             // do the search
-            return Observable.fromPromise(BooksAPI.search(query));
+            return Observable.fromPromise(BooksAPI.search(query))
+                .map((searchResults) => {
+                    if (!Array.isArray(searchResults)) {
+                        return [];
+                    }
+
+                    return searchResults;
+                });
         }
 
         // otherwise don't bother. just complete the observable

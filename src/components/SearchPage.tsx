@@ -3,47 +3,55 @@ import BooksGrid from "src/components/BooksGrid";
 import BookData from "src/data/models/BookData";
 import BookConnector from "src/data/connectors/BookConnector";
 import Book from "src/components/Book";
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
+    private searchInputOnChangeSubject: Subject<string> = new Subject<string>();
+    private subscriptionsToDispose: Subscription[] = [];
+
     constructor(props: SearchPage.IProps) {
         super(props);
 
         this.state = new SearchPage.State();
     }
 
-    static getRoutePath() {
-        return "/search";
+    componentWillMount() {
+        // setup the onChange subscription
+        let subscription = this.searchInputOnChangeSubject
+            .debounceTime(500)
+            .map((query) => {
+                return BookConnector.search(query);
+            })
+            .switch<BookData[]>()
+            .subscribe((searchResults) => {
+                this.setSearchResults(searchResults);
+            });
+
+        this.subscriptionsToDispose.push(subscription);
     }
 
-    private latestSearchSubscription: Subscription;
+    componentWillUnmount() {
+        this.subscriptionsToDispose.forEach((subscription) => {
+            subscription.unsubscribe();
+        });
 
-    private searchForBooks(query: string) {
-        // cancel the previous subscription, if there is one
-        if (this.latestSearchSubscription != null
-            && !this.latestSearchSubscription.closed) {
-            this.latestSearchSubscription.unsubscribe();
-        }
+        this.subscriptionsToDispose = [];
+    }
 
-        this.latestSearchSubscription = BookConnector.search(query)
-            .subscribe((books) => {
-                let searchResults = books;
+    private setSearchResults(searchResults: BookData[]) {
+        this.setState({
+            searchResults: searchResults
+        });
+    }
 
-                if (!Array.isArray(books)) {
-                    searchResults = [];
-                }
-
-                this.setState({
-                    searchResults: searchResults
-                });
-            });
+    static getRoutePath() {
+        return "/search";
     }
 
     render() {
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    {/*<a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>*/}
                     <a className="close-search" onClick={this.props.onClose}>Close</a>
                     <div className="search-books-input-wrapper">
                         {/*
@@ -55,7 +63,7 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
                           you don't find a specific author or title. Every search is limited by search terms.
                         */}
                         <input type="text" placeholder="Search by title or author" onChange={(event) => {
-                            this.searchForBooks(event.target.value);
+                            this.searchInputOnChangeSubject.next(event.target.value);
                         }}/>
                     </div>
                 </div>
