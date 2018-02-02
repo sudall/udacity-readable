@@ -3,6 +3,10 @@ import Bookshelf from "src/components/Bookshelf";
 import * as React from "react";
 
 class BookshelfList extends React.Component<BookshelfList.IProps> {
+    static propTypes = {
+        children: CustomComponentValidators.createChildrenTypesValidator([Bookshelf])
+    };
+
     render() {
         return (
             <div className="list-books">
@@ -27,9 +31,5 @@ module BookshelfList {
         onAddBook: () => void;
     }
 }
-
-BookshelfList["propTypes"] = {
-    children: CustomComponentValidators.createChildrenTypesValidator([Bookshelf])
-};
 
 export default BookshelfList;

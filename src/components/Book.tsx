@@ -4,7 +4,7 @@ import BookshelfChanger from "src/components/BookshelfChanger";
 import BookConnector from "src/data/connectors/BookConnector";
 
 class Book extends React.Component<Book.IProps> {
-    private getSmallThumbnailUrl(book: BookData) {
+    private static getSmallThumbnailUrl(book: BookData) {
         let result: string = "";
         if (book.imageLinks) {
             result = book.imageLinks.smallThumbnail;
@@ -12,7 +12,7 @@ class Book extends React.Component<Book.IProps> {
         return result;
     }
 
-    private getAuthors(book: BookData) {
+    private static getAuthors(book: BookData) {
         let result = "";
 
         if (book.authors) {
@@ -27,7 +27,7 @@ class Book extends React.Component<Book.IProps> {
             <div className="book">
                 <div className="book-top">
                     <div className="book-cover"
-                         style={{width: 128, height: 193, backgroundImage: `url("${this.getSmallThumbnailUrl(this.props.book)}")`}}/>
+                         style={{width: 128, height: 193, backgroundImage: `url("${Book.getSmallThumbnailUrl(this.props.book)}")`}}/>
                     <BookshelfChanger book={this.props.book} onChangeBookshelf={
                         (newBookshelfTitle) => {
                             this.props.onUpdateBook(this.props.book, newBookshelfTitle);
@@ -35,7 +35,7 @@ class Book extends React.Component<Book.IProps> {
                     }/>
                 </div>
                 <div className="book-title">{this.props.book.title}</div>
-                <div className="book-authors">{this.getAuthors(this.props.book)}</div>
+                <div className="book-authors">{Book.getAuthors(this.props.book)}</div>
             </div>
         )
     }

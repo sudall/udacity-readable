@@ -90,7 +90,8 @@ class BooksApp extends React.Component {
                 }/>
                 <Route path={SearchPage.getRoutePath()} render={
                     ({history}) => {
-                        return <SearchPage onClose={() => { BooksApp.onSearchPageClose(history); }} />
+                        return <SearchPage onClose={() => { BooksApp.onSearchPageClose(history); }}
+                                           onUpdateBook={this.updateBook.bind(this)} />
                     }
                 }/>
             </div>
