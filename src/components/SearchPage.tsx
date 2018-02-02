@@ -3,6 +3,7 @@ import BooksGrid from "src/components/BooksGrid";
 import BookData from "src/data/models/BookData";
 import BookConnector from "src/data/connectors/BookConnector";
 import Book from "src/components/Book";
+import {Subscription} from "rxjs";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
     constructor(props: SearchPage.IProps) {
@@ -15,12 +16,26 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
         return "/search";
     }
 
+    private latestSearchSubscription: Subscription;
+
     private searchForBooks(query: string) {
-        BookConnector.search(query)
+        // cancel the previous subscription, if there is one
+        if (this.latestSearchSubscription != null
+            && !this.latestSearchSubscription.closed) {
+            this.latestSearchSubscription.unsubscribe();
+        }
+
+        this.latestSearchSubscription = BookConnector.search(query)
             .subscribe((books) => {
+                let searchResults = books;
+
+                if (!Array.isArray(books)) {
+                    searchResults = [];
+                }
+
                 this.setState({
-                    searchResults: books
-                })
+                    searchResults: searchResults
+                });
             });
     }
 

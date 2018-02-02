@@ -13,10 +13,12 @@ class Book extends React.Component<Book.IProps> {
     }
 
     private static getAuthors(book: BookData) {
-        let result = "";
+        let result: JSX.Element[] = [];
 
         if (book.authors) {
-            result = book.authors.join(" ");
+            result = book.authors.map((author, index) => {
+                return <span>{index > 0 ? <br/> : ""}{author}</span>;
+            });
         }
 
         return result;

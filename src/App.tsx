@@ -56,6 +56,17 @@ class BooksApp extends React.Component {
         BookConnector.updateBook(book, bookshelfTitle)
             .subscribe(() => {
                 this.setState((previousState: BooksApp.State) => {
+                    let bookMatch = previousState.books
+                        .find((previousStateBook) => {
+                            return previousStateBook.id === book.id;
+                        });
+
+                    if (bookMatch != null) {
+                        // update the book from the previous state
+                        bookMatch.shelf = bookshelfTitle;
+                    }
+
+                    // update this book
                     book.shelf = bookshelfTitle;
 
                     return {
