@@ -7,14 +7,10 @@ import {Subject, Subscription} from "rxjs";
 import BooksApp from "src/App";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
+    state = new SearchPage.State();
+
     private readonly searchInputOnChangeSubject: Subject<string> = new Subject<string>();
     private subscriptionsToDispose: Subscription[] = [];
-
-    constructor(props: SearchPage.IProps) {
-        super(props);
-
-        this.state = new SearchPage.State();
-    }
 
     componentWillMount() {
         // setup the onChange subscription
