@@ -1,8 +1,6 @@
 import * as React from "react";
 import BookshelfData from "src/data/models/BookshelfData";
-import CustomComponentValidators from "src/CustomComponentValidators";
 import BooksGrid from "src/components/BooksGrid";
-import Book from "src/components/Book";
 
 class Bookshelf extends React.Component<Bookshelf.IProps> {
     public static calculateBookshelfDisplayTitle(shelfTitle: string) {
@@ -12,10 +10,6 @@ class Bookshelf extends React.Component<Bookshelf.IProps> {
 
         return result;
     }
-
-    static propTypes = {
-        children: CustomComponentValidators.createChildrenTypesValidator([Book])
-    };
 
     render() {
         return (

@@ -2,7 +2,6 @@ import * as React from "react";
 import BooksApp from "src/App";
 import Bookshelf from "src/components/Bookshelf";
 import BookData from "src/data/models/BookData";
-import BookConnector from "src/data/connectors/BookConnector";
 
 class BookshelfChanger extends React.Component<BookshelfChanger.IProps> {
     private static getAllBookshelfTitleOptions() {
