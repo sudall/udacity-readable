@@ -15,10 +15,10 @@ class BooksApp extends React.Component {
     static readonly NoneBookshelfTitle = "none";
 
     private buildBookshelves(books: BookData[]): BookshelfData[] {
-        let bookshelfTitleToBookshelfMap = new Map<string, BookshelfData>();
+        const bookshelfTitleToBookshelfMap = new Map<string, BookshelfData>();
 
         books.forEach((book) => {
-            let shelfTitle = book.shelf || "unknown";
+            const shelfTitle = book.shelf || "unknown";
 
             let shelfData = bookshelfTitleToBookshelfMap.get(shelfTitle);
             if (shelfData == null) {
@@ -31,7 +31,7 @@ class BooksApp extends React.Component {
         });
 
         // get the known bookshelves that we want to display
-        let bookshelves = BooksApp.BookshelfTitlesToDisplay.map((title) => {
+        const bookshelves = BooksApp.BookshelfTitlesToDisplay.map((title) => {
             let bookshelf = bookshelfTitleToBookshelfMap.get(title);
 
             if (bookshelf == null) {
@@ -44,8 +44,8 @@ class BooksApp extends React.Component {
 
         // sort by the known order
         bookshelves.sort((item1, item2) => {
-            let item1Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item1.title);
-            let item2Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item2.title);
+            const item1Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item1.title);
+            const item2Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item2.title);
             return item1Index - item2Index;
         });
 
@@ -59,7 +59,7 @@ class BooksApp extends React.Component {
                     // update this book
                     book.shelf = bookshelfTitle;
 
-                    let bookMatch = previousState.books
+                    const bookMatch = previousState.books
                     .find((previousStateBook) => {
                         return previousStateBook.id === book.id;
                     });

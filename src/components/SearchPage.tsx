@@ -18,7 +18,7 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
 
     componentWillMount() {
         // setup the onChange subscription
-        let subscription = this.searchInputOnChangeSubject
+        const subscription = this.searchInputOnChangeSubject
             .debounceTime(500)
             .map((query) => {
                 return BookConnector.search(query);
@@ -40,7 +40,7 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
     }
 
     private setSearchResults(searchResults: BookData[]) {
-        let fullSearchResults = searchResults
+        const fullSearchResults = searchResults
             // try to map to more complete objects
             .map((book) => {
                 let result = this.props.onGetFullBookData(book.id);
