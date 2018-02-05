@@ -1,3 +1,13 @@
+## Instructions for Installing and Running
+
+1. Clone repository via git
+2. Run these commands in a terminal with current working directory at
+the root of the project:
+    - yarn install
+    - yarn start
+
+## About
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
