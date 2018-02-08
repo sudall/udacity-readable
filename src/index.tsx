@@ -1,14 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from 'src/App';
 import registerServiceWorker from 'src/registerServiceWorker';
 import 'src/index.css';
 import {BrowserRouter} from "react-router-dom";
+import ReadableApplication from "src/components/ReadableApplication";
 
 ReactDOM.render(
     (
         <BrowserRouter>
-            <App />
+            <ReadableApplication />
         </BrowserRouter>
     ),
     document.getElementById('root') as HTMLElement

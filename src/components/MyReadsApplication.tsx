@@ -8,8 +8,8 @@ import BookConnector from "src/data/connectors/BookConnector";
 import {Route} from "react-router";
 import {History} from "history";
 
-class BooksApp extends React.Component {
-    state = new BooksApp.State();
+class MyReadsApplication extends React.Component {
+    state = new MyReadsApplication.State();
 
     static readonly BookshelfTitlesToDisplay: string[] = ["currentlyReading", "wantToRead", "read"];
     static readonly NoneBookshelfTitle = "none";
@@ -31,7 +31,7 @@ class BooksApp extends React.Component {
         });
 
         // get the known bookshelves that we want to display
-        const bookshelves = BooksApp.BookshelfTitlesToDisplay.map((title) => {
+        const bookshelves = MyReadsApplication.BookshelfTitlesToDisplay.map((title) => {
             let bookshelf = bookshelfTitleToBookshelfMap.get(title);
 
             if (bookshelf == null) {
@@ -44,8 +44,8 @@ class BooksApp extends React.Component {
 
         // sort by the known order
         bookshelves.sort((item1, item2) => {
-            const item1Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item1.title);
-            const item2Index = BooksApp.BookshelfTitlesToDisplay.indexOf(item2.title);
+            const item1Index = MyReadsApplication.BookshelfTitlesToDisplay.indexOf(item1.title);
+            const item2Index = MyReadsApplication.BookshelfTitlesToDisplay.indexOf(item2.title);
             return item1Index - item2Index;
         });
 
@@ -55,7 +55,7 @@ class BooksApp extends React.Component {
     private updateBook = (book: BookData, bookshelfTitle: string) => {
         BookConnector.updateBook(book, bookshelfTitle)
             .subscribe(() => {
-                this.setState((previousState: BooksApp.State) => {
+                this.setState((previousState: MyReadsApplication.State) => {
                     // update this book
                     book.shelf = bookshelfTitle;
 
@@ -70,7 +70,7 @@ class BooksApp extends React.Component {
                         previousState.books.push(book);
                     } else {
                         // if the new bookshelf is none...
-                        if (bookshelfTitle === BooksApp.NoneBookshelfTitle) {
+                        if (bookshelfTitle === MyReadsApplication.NoneBookshelfTitle) {
                             // remove the book from the shelved books list
                             previousState.books = previousState.books.filter((previousStateBook) => {
                                 return book.id !== previousStateBook.id;
@@ -117,7 +117,7 @@ class BooksApp extends React.Component {
                 }/>
                 <Route path={SearchPage.getRoutePath()} render={
                     ({history}) => {
-                        return <SearchPage onClose={() => { BooksApp.onSearchPageClose(history); }}
+                        return <SearchPage onClose={() => { MyReadsApplication.onSearchPageClose(history); }}
                                            onUpdateBook={this.updateBook}
                                            onGetFullBookData={this.getFullBookData}/>
                     }
@@ -127,10 +127,10 @@ class BooksApp extends React.Component {
     }
 }
 
-module BooksApp {
+module MyReadsApplication {
     export class State {
         books: BookData[] = [];
     }
 }
 
-export default BooksApp;
+export default MyReadsApplication;

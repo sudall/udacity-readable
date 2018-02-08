@@ -4,7 +4,7 @@ import BookData from "src/data/models/BookData";
 import BookConnector from "src/data/connectors/BookConnector";
 import Book from "src/components/Book";
 import {Subject, Subscription} from "rxjs";
-import BooksApp from "src/App";
+import MyReadsApplication from "src/components/MyReadsApplication";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
     state = new SearchPage.State();
@@ -43,7 +43,7 @@ class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
 
                 if (result == null) {
                     result = book;
-                    result.shelf = BooksApp.NoneBookshelfTitle;
+                    result.shelf = MyReadsApplication.NoneBookshelfTitle;
                 }
 
                 return result;

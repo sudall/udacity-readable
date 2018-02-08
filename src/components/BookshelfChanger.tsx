@@ -1,11 +1,12 @@
 import * as React from "react";
-import BooksApp from "src/App";
+
 import Bookshelf from "src/components/Bookshelf";
 import BookData from "src/data/models/BookData";
+import MyReadsApplication from "src/components/MyReadsApplication";
 
 class BookshelfChanger extends React.Component<BookshelfChanger.IProps> {
     private static getAllBookshelfTitleOptions() {
-        return BooksApp.BookshelfTitlesToDisplay.concat(BooksApp.NoneBookshelfTitle);
+        return MyReadsApplication.BookshelfTitlesToDisplay.concat(MyReadsApplication.NoneBookshelfTitle);
     }
 
     render() {
