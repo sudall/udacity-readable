@@ -25,7 +25,7 @@ import ListItem from "material-ui/List/ListItem";
 import ListItemText from "material-ui/List/ListItemText";
 import Menu from "material-ui-icons/Menu";
 import CategoryData from "src/data/models/CategoryData";
-import {Link, LinkProps} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 interface IProps {
 
@@ -114,12 +114,11 @@ class ReadableApplication extends React.Component<IProps, State> {
     };
 
     render() {
-        const drawerWidth = 240;
         return (
             <MuiThemeProvider theme={this.theme}>
                 <Reboot/>
 
-                <AppBar position="static">
+                <AppBar position="sticky">
                     <Toolbar>
                         <IconButton
                             color="inherit"
@@ -155,11 +154,9 @@ class ReadableApplication extends React.Component<IProps, State> {
                         {
                             Array.of(1,2,3,4,5,6).map(() => {
                             return ReadableApplication.posts.map((post) => {
-                                const postPageRoute = this.getPostPageRoute(post);
-
                                 return (
                                     <Grid item>
-                                        <Card>
+                                    <Card>
                                             <CardContent>
                                                 <Button component={this.getPostLinkComponentFactory(post)}>
                                                     <Typography variant="headline">
@@ -196,8 +193,6 @@ class ReadableApplication extends React.Component<IProps, State> {
                     right: 16}}>
                     <Add />
                 </Button>
-
-
 
             </MuiThemeProvider>
         );
