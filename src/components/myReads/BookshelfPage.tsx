@@ -1,9 +1,9 @@
 import * as React from "react";
-import BookshelfList from "src/components/BookshelfList";
-import Bookshelf from "src/components/Bookshelf";
-import Book from "src/components/Book";
+import BookshelfList from "src/components/myReads/BookshelfList";
+import Bookshelf from "src/components/myReads/Bookshelf";
+import Book from "src/components/myReads/Book";
 import {RouteComponentProps} from "react-router";
-import SearchPage from "src/components/SearchPage";
+import SearchPage from "src/components/myReads/SearchPage";
 import BookshelfData from "src/data/models/BookshelfData";
 import BookData from "src/data/models/BookData";
 

@@ -1,5 +1,5 @@
 import CustomComponentValidators from "src/CustomComponentValidators";
-import Bookshelf from "src/components/Bookshelf";
+import Bookshelf from "src/components/myReads/Bookshelf";
 import * as React from "react";
 
 class BookshelfList extends React.Component<BookshelfList.IProps> {

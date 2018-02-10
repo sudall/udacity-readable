@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import MyReadsApplication from "src/components/MyReadsApplication";
+import MyReadsApplication from "src/components/myReads/MyReadsApplication";
 
 it('renders without crashing', () => {
   const div = document.createElement('div');

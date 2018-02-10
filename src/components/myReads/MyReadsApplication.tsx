@@ -2,8 +2,8 @@ import "src/App.css";
 import * as React from "react";
 import BookData from "src/data/models/BookData";
 import BookshelfData from "src/data/models/BookshelfData";
-import SearchPage from "src/components/SearchPage";
-import BookshelfPage from "src/components/BookshelfPage"
+import SearchPage from "src/components/myReads/SearchPage";
+import BookshelfPage from "src/components/myReads/BookshelfPage"
 import BookConnector from "src/data/connectors/BookConnector";
 import {Route} from "react-router";
 import {History} from "history";

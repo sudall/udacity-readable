@@ -1,6 +1,6 @@
 import * as React from "react";
 import BookshelfData from "src/data/models/BookshelfData";
-import BooksGrid from "src/components/BooksGrid";
+import BooksGrid from "src/components/myReads/BooksGrid";
 
 class Bookshelf extends React.Component<Bookshelf.IProps> {
     public static calculateBookshelfDisplayTitle(shelfTitle: string) {

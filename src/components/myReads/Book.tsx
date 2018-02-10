@@ -1,6 +1,6 @@
 import * as React from "react";
 import BookData from "src/data/models/BookData";
-import BookshelfChanger from "src/components/BookshelfChanger";
+import BookshelfChanger from "src/components/myReads/BookshelfChanger";
 
 
 class Book extends React.Component<Book.IProps> {

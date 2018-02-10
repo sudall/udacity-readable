@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import Bookshelf from "src/components/Bookshelf";
+import Bookshelf from "src/components/myReads/Bookshelf";
 import BookData from "src/data/models/BookData";
-import MyReadsApplication from "src/components/MyReadsApplication";
+import MyReadsApplication from "src/components/myReads/MyReadsApplication";
 
 class BookshelfChanger extends React.Component<BookshelfChanger.IProps> {
     private static getAllBookshelfTitleOptions() {

@@ -1,10 +1,10 @@
 import * as React from "react";
-import BooksGrid from "src/components/BooksGrid";
+import BooksGrid from "src/components/myReads/BooksGrid";
 import BookData from "src/data/models/BookData";
 import BookConnector from "src/data/connectors/BookConnector";
-import Book from "src/components/Book";
+import Book from "src/components/myReads/Book";
 import {Subject, Subscription} from "rxjs";
-import MyReadsApplication from "src/components/MyReadsApplication";
+import MyReadsApplication from "src/components/myReads/MyReadsApplication";
 
 class SearchPage extends React.Component<SearchPage.IProps, SearchPage.State> {
     state = new SearchPage.State();

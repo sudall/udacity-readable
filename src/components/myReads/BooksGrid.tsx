@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ReactNode} from "react";
-import Book from "src/components/Book";
+import Book from "src/components/myReads/Book";
 import CustomComponentValidators from "src/CustomComponentValidators";
 
 class BooksGrid extends React.Component {
