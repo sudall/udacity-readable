@@ -158,11 +158,11 @@ class ReadableApplication extends React.Component<IProps, State> {
                                     <Grid item>
                                     <Card>
                                             <CardContent>
-                                                <Button component={this.getPostLinkComponentFactory(post)}>
-                                                    <Typography variant="headline">
+                                                <Link to={this.getPostPageRoute(post)}>
+                                                    <Typography variant="title">
                                                         {post.title}
                                                     </Typography>
-                                                </Button>
+                                                </Link>
                                                 <Typography>
                                                     {post.body}
                                                 </Typography>
