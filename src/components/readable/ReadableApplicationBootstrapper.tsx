@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 import CommentData from "src/data/models/CommentData";
 import PostData from "src/data/models/PostData";
 
-class ApplicationStore {
+export class ApplicationState {
     posts: PostData[] = [];
     comments: CommentData[] = [];
 }
@@ -32,7 +32,7 @@ class ReadableApplicationBootstrapper extends React.Component<IProps, State> {
                     // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
                 }) : compose;
 
-        const rootEpic: Epic<Action, ApplicationStore> = (action$: ActionsObservable<Action>): Observable<Action> => {
+        const rootEpic: Epic<Action, ApplicationState> = (action$: ActionsObservable<Action>): Observable<Action> => {
             // TODO
             return Observable.empty<Action>();
         };
@@ -44,7 +44,13 @@ class ReadableApplicationBootstrapper extends React.Component<IProps, State> {
             // other store enhancers if any
         );
 
-        const reducer = () => {};
+        const reducer = (state = new ApplicationState(), action: Action) => {
+            switch (action.type) {
+
+                default:
+                    return state;
+            }
+        };
 
         return createStore(reducer, enhancer);
     }

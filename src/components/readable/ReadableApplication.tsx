@@ -9,14 +9,7 @@ import AppBar from "material-ui/AppBar";
 import Grid from "material-ui/Grid";
 import PostData from "src/data/models/PostData";
 import Add from "material-ui-icons/Add";
-import Comment from "material-ui-icons/Comment";
-import ArrowUpward from "material-ui-icons/ArrowUpward";
-import ArrowDownward from "material-ui-icons/ArrowDownward";
-import Card from "material-ui/Card";
-import CardContent from "material-ui/Card/CardContent";
-import CardActions from "material-ui/Card/CardActions";
 import IconButton from "material-ui/IconButton";
-import Badge from "material-ui/Badge";
 import deepPurple from "material-ui/colors/deepPurple";
 import lime from "material-ui/colors/lime"
 import List from "material-ui/List";
@@ -26,6 +19,10 @@ import ListItemText from "material-ui/List/ListItemText";
 import Menu from "material-ui-icons/Menu";
 import CategoryData from "src/data/models/CategoryData";
 import {Link} from "react-router-dom";
+import {connect, Dispatch} from "react-redux";
+import {ApplicationState} from "src/components/readable/ReadableApplicationBootstrapper";
+import PostPage from "src/components/readable/PostPage";
+import PostSummary from "src/components/readable/PostSummary";
 
 interface IProps {
 
@@ -102,12 +99,8 @@ class ReadableApplication extends React.Component<IProps, State> {
         });
     };
 
-    getPostPageRoute(post: PostData) {
-        return `post/${post.id}`;
-    }
-
-    getPostLinkComponentFactory(post: PostData) {
-        let postPageRoute = this.getPostPageRoute(post);
+    static getPostLinkComponentFactory(post: PostData) {
+        let postPageRoute = PostPage.getPostPageRoute(post);
         return (props: any) => {
             return <Link to={postPageRoute} {...props} />
         };
@@ -153,37 +146,13 @@ class ReadableApplication extends React.Component<IProps, State> {
                           alignItems="stretch">
                         {
                             Array.of(1,2,3,4,5,6).map(() => {
-                            return ReadableApplication.posts.map((post) => {
-                                return (
-                                    <Grid item>
-                                    <Card>
-                                            <CardContent>
-                                                <Link to={this.getPostPageRoute(post)}>
-                                                    <Typography variant="title">
-                                                        {post.title}
-                                                    </Typography>
-                                                </Link>
-                                                <Typography>
-                                                    {post.body}
-                                                </Typography>
-                                            </CardContent>
-                                            <CardActions>
-                                                <IconButton>
-                                                    <ArrowUpward/>
-                                                </IconButton>
-                                                <IconButton>
-                                                    <ArrowDownward/>
-                                                </IconButton>
-                                                <IconButton component={this.getPostLinkComponentFactory(post)}>
-                                                    <Badge badgeContent={4} color="primary">
-                                                        <Comment/>
-                                                    </Badge>
-                                                </IconButton>
-                                            </CardActions>
-                                        </Card>
-                                    </Grid>
-                                );
-                            })
+                                return ReadableApplication.posts.map((post) => {
+                                    return (
+                                        <Grid item>
+                                            <PostSummary post={post} />
+                                        </Grid>
+                                    );
+                                })
                             })
                         }
                     </Grid>
@@ -199,4 +168,17 @@ class ReadableApplication extends React.Component<IProps, State> {
     }
 }
 
-export default ReadableApplication;
+const mapStateToProps = (state: ApplicationState, ownProps: IProps) => {
+    return {
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IProps) => {
+    return {
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ReadableApplication);
