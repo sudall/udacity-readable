@@ -1,11 +1,12 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import PostData from "src/data/models/PostData";
+import Button from "material-ui/Button";
+import Add from "material-ui-icons/Add";
 
 // props that are provided as parameters
 interface IOwnProps {
-    post: PostData;
+
 }
 
 // props that are provided via injection
@@ -20,7 +21,7 @@ class State {
 
 }
 
-class Post extends React.Component<IAllProps, State> {
+class AddNewPostButton extends React.Component<IAllProps, State> {
     readonly state = new State();
 
     static propTypes = {
@@ -31,7 +32,11 @@ class Post extends React.Component<IAllProps, State> {
         const {} = this.props;
 
         return (
-            <div>This is a post!</div>
+            <Button variant="fab" color="primary" style={{position: "fixed",
+                bottom: 16,
+                right: 16}}>
+                <Add />
+            </Button>
         );
     }
 }
@@ -52,4 +57,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Post);
+)(AddNewPostButton);

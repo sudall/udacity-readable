@@ -1,49 +1,20 @@
 import * as React from "react";
 import Reboot from "material-ui/Reboot";
-import Button from "material-ui/Button";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Typography from "material-ui/Typography";
-import Toolbar from "material-ui/Toolbar";
-import AppBar from "material-ui/AppBar";
-import Grid from "material-ui/Grid";
-import PostData from "src/data/models/PostData";
-import Add from "material-ui-icons/Add";
-import IconButton from "material-ui/IconButton";
 import deepPurple from "material-ui/colors/deepPurple";
 import lime from "material-ui/colors/lime"
-import List from "material-ui/List";
-import Drawer from "material-ui/Drawer";
-import ListItem from "material-ui/List/ListItem";
-import ListItemText from "material-ui/List/ListItemText";
-import Menu from "material-ui-icons/Menu";
+import {Provider} from "react-redux";
+import {Action, applyMiddleware, compose, createStore, Middleware} from "redux";
+import {ActionsObservable, createEpicMiddleware, Epic} from "redux-observable";
+import {Observable} from "rxjs/Rx";
+import CommentData from "src/data/models/CommentData";
+import PostData from "src/data/models/PostData";
 import CategoryData from "src/data/models/CategoryData";
-import {Link} from "react-router-dom";
-import {connect, Dispatch} from "react-redux";
-import {ApplicationState} from "src/components/readable/ReadableApplicationBootstrapper";
-import PostPage from "src/components/readable/PostPage";
-import PostSummary from "src/components/readable/PostSummary";
+import ReadableApplicationRouter from "src/components/readable/ReadableApplicationRouter";
 
-interface IProps {
-
-}
-
-class State {
-    drawerOpen = false
-}
-
-class ReadableApplication extends React.Component<IProps, State> {
-    readonly state = new State();
-
-    theme = createMuiTheme({
-        palette: {
-            type: 'dark',
-            primary: deepPurple,
-            secondary: lime
-        },
-    });
-
-    static categories: CategoryData[] = [
+export class ApplicationState {
+    categories: CategoryData[] = [
         {
             name: "Category 1",
             urlPath: "Category 1"
@@ -58,7 +29,7 @@ class ReadableApplication extends React.Component<IProps, State> {
         }
     ];
 
-    static posts: PostData[] = [
+    posts: PostData[] = [
         {
             author: "Some author",
             body: "Some body",
@@ -91,94 +62,80 @@ class ReadableApplication extends React.Component<IProps, State> {
         }
     ];
 
-    toggleDrawer = () => {
-        this.setState((previousState) => {
-            return {
-                drawerOpen: !previousState.drawerOpen
-            };
-        });
-    };
 
-    static getPostLinkComponentFactory(post: PostData) {
-        let postPageRoute = PostPage.getPostPageRoute(post);
-        return (props: any) => {
-            return <Link to={postPageRoute} {...props} />
+    comments: CommentData[] = [];
+}
+
+// props that are provided as parameters
+interface IOwnProps {
+
+}
+
+// props that are provided via injection
+interface IInjectedProps {
+
+}
+
+type IAllProps = IOwnProps & IInjectedProps;
+
+class State {
+
+}
+
+class ReadableApplication extends React.Component<IAllProps, State> {
+    readonly state = new State();
+
+    theme = createMuiTheme({
+        palette: {
+            type: 'dark',
+            primary: deepPurple,
+            secondary: lime
+        },
+    });
+
+    private static createReduxStore() {
+        const composeEnhancers =
+            typeof window === 'object' &&
+            window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] ?
+                window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]({
+                    // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+                }) : compose;
+
+        const rootEpic: Epic<Action, ApplicationState> = (action$: ActionsObservable<Action>): Observable<Action> => {
+            // TODO
+            return Observable.empty<Action>();
         };
-    };
+
+        const middleware: Middleware = createEpicMiddleware(rootEpic);
+
+        const enhancer = composeEnhancers(
+            applyMiddleware(middleware),
+            // other store enhancers if any
+        );
+
+        const reducer = (state = new ApplicationState(), action: Action) => {
+            switch (action.type) {
+
+                default:
+                    return state;
+            }
+        };
+
+        return createStore(reducer, enhancer);
+    }
 
     render() {
+        const {} = this.props;
+
         return (
-            <MuiThemeProvider theme={this.theme}>
-                <Reboot/>
-
-                <AppBar position="sticky">
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.toggleDrawer}>
-                            <Menu/>
-                        </IconButton>
-                        <Typography variant="title">
-                            Readable
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
-
-                <Drawer open={this.state.drawerOpen}
-                        onClose={this.toggleDrawer}
-                        anchor="left">
-                    <List>
-                        {
-                            ReadableApplication.categories.map((category) => (
-                                <ListItem button component={props => <Link to={category.urlPath} {...props}/>}>
-                                    <ListItemText primary={category.name} />
-                                </ListItem>
-                            ))
-                        }
-                    </List>
-                </Drawer>
-                <div style={{margin: "16px"}}>
-                    <Grid container
-                          direction="column"
-                          justify="flex-start"
-                          alignItems="stretch">
-                        {
-                            Array.of(1,2,3,4,5,6).map(() => {
-                                return ReadableApplication.posts.map((post) => {
-                                    return (
-                                        <Grid item>
-                                            <PostSummary post={post} />
-                                        </Grid>
-                                    );
-                                })
-                            })
-                        }
-                    </Grid>
-                </div>
-                <Button variant="fab" color="primary" style={{position: "fixed",
-                    bottom: 16,
-                    right: 16}}>
-                    <Add />
-                </Button>
-
-            </MuiThemeProvider>
+            <Provider store={ReadableApplication.createReduxStore()}>
+                <MuiThemeProvider theme={this.theme}>
+                    <Reboot/>
+                    <ReadableApplicationRouter/>
+                </MuiThemeProvider>
+            </Provider>
         );
     }
 }
 
-const mapStateToProps = (state: ApplicationState, ownProps: IProps) => {
-    return {
-    };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IProps) => {
-    return {
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ReadableApplication);
+export default ReadableApplication;

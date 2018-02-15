@@ -1,11 +1,11 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import PostData from "src/data/models/PostData";
+import Typography from "material-ui/Typography";
 
 // props that are provided as parameters
 interface IOwnProps {
-    post: PostData;
+
 }
 
 // props that are provided via injection
@@ -20,7 +20,7 @@ class State {
 
 }
 
-class Post extends React.Component<IAllProps, State> {
+class PageNotFoundPage extends React.Component<IAllProps, State> {
     readonly state = new State();
 
     static propTypes = {
@@ -31,7 +31,9 @@ class Post extends React.Component<IAllProps, State> {
         const {} = this.props;
 
         return (
-            <div>This is a post!</div>
+            <Typography>
+                Page not found.
+            </Typography>
         );
     }
 }
@@ -52,4 +54,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Post);
+)(PageNotFoundPage);

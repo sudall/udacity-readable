@@ -10,8 +10,8 @@ import IconButton from "material-ui/IconButton";
 import Badge from "material-ui/Badge";
 import {Link} from "react-router-dom";
 import {connect, Dispatch} from "react-redux";
-import {ApplicationState} from "src/components/readable/ReadableApplicationBootstrapper";
-import PostPage from "src/components/readable/PostPage";
+import {ApplicationState} from "src/components/readable/ReadableApplication";
+import PostPage, {PostPageUtils} from "src/components/readable/PostPage";
 import PostData from "src/data/models/PostData";
 import {bindActionCreators} from "redux";
 import PostActions from "src/redux-actions/PostActions";
@@ -41,7 +41,7 @@ class PostSummary extends React.Component<IAllProps, State> {
         return (
             <Card>
                 <CardContent>
-                    <Link to={PostPage.getPostPageRoute(post)}>
+                    <Link to={PostPageUtils.getLinkPath(post)}>
                         <Typography variant="title">
                             {post.title}
                         </Typography>
@@ -51,7 +51,7 @@ class PostSummary extends React.Component<IAllProps, State> {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <IconButton onClick={upvote()}>
+                    <IconButton onClick={upvote}>
                         <ArrowUpward/>
                     </IconButton>
                     <Typography>
@@ -60,7 +60,7 @@ class PostSummary extends React.Component<IAllProps, State> {
                     <IconButton>
                         <ArrowDownward/>
                     </IconButton>
-                    <IconButton component={PostPage.getPostLinkComponentFactory(post)}>
+                    <IconButton component={PostPageUtils.getPostPageLinkComponentFactory(post)}>
                         <Badge badgeContent={4} color="primary">
                             <Comment/>
                         </Badge>
