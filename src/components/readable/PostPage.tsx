@@ -2,13 +2,13 @@ import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
-import {bindActionCreators} from "redux";
-import PostActions from "src/redux-actions/PostActions";
 import Post from "src/components/readable/Post";
 import {Link} from "react-router-dom";
 import {RouteComponentProps} from "react-router";
 import Typography from "material-ui/Typography";
-import ReadablePageContainer from "src/components/readable/ReadablePageContainer";
+import CommentData from "src/data/models/CommentData";
+import Comment from "src/components/readable/Comment";
+import PostAndCommentList from "src/components/readable/PostAndCommentList";
 
 interface IRoutePathParameters {
     id: string;
@@ -23,6 +23,7 @@ interface IOwnProps extends RouteComponentProps<IRoutePathParameters> {
 interface IInjectedProps {
     // someAction: () => any;
     posts: PostData[];
+    comments: CommentData[];
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -45,6 +46,12 @@ class PostPage extends React.Component<IAllProps, State> {
         });
     }
 
+    private getPostComments(post: PostData): CommentData[] {
+        return this.props.comments.filter((comment) => {
+           return comment.parentId === post.id;
+        });
+    }
+
     render() {
         const {match} = this.props;
 
@@ -52,14 +59,25 @@ class PostPage extends React.Component<IAllProps, State> {
 
         const post = this.getPostById(postId);
 
-        let body = (<Typography>{`No post with id "${postId}" found.`}</Typography>);
-
-        if (post != null) {
-            body = (<Post post={post}/>);
+        if (post == null) {
+            return (<Typography>{`No post with id "${postId}" found.`}</Typography>);
         }
 
+        const comments = this.getPostComments(post);
+
         return (
-            body
+            <PostAndCommentList>
+                <Post post={post}/>
+                <div style={{marginLeft: 16}}>
+                    {
+                        comments.map((comment) =>
+                            (
+                                <Comment comment={comment}/>
+                            )
+                        )
+                    }
+                </div>
+            </PostAndCommentList>
         );
     }
 }
@@ -85,7 +103,8 @@ export class PostPageUtils {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        posts: state.posts
+        posts: state.posts,
+        comments: state.comments
     }
 };
 

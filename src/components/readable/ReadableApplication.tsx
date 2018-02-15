@@ -62,8 +62,18 @@ export class ApplicationState {
         }
     ];
 
-
-    comments: CommentData[] = [];
+    comments: CommentData[] = [
+        {
+            parentId: "someUniqueId",
+            author: "Some guy on the internet",
+            body: "Body stuff",
+            deleted: false,
+            id: "someCommentId",
+            parentDeleted: false,
+            timestamp: 123412313,
+            voteScore: 12
+        }
+    ];
 }
 
 // props that are provided as parameters

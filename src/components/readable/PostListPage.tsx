@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
-import PostList from "src/components/readable/PostList";
+import PostAndCommentList from "src/components/readable/PostAndCommentList";
 import Post from "src/components/readable/Post";
 import AddNewPostButton from "src/components/readable/AddNewPostButton";
 
@@ -36,13 +36,13 @@ class PostListPage extends React.Component<IAllProps, State> {
 
         return (
             <div>
-                <PostList>
+                <PostAndCommentList>
                     {
                         posts.map((post) => {
                             return <Post post={post}/>;
                         })
                     }
-                </PostList>
+                </PostAndCommentList>
 
                 <AddNewPostButton />
             </div>

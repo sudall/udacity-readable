@@ -1,9 +1,10 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import PostSummary from "src/components/readable/Post";
+import Post from "src/components/readable/Post";
 import Grid from "material-ui/Grid";
 import CustomComponentValidators from "src/CustomComponentValidators";
+import Comment from "src/components/readable/Comment";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -22,11 +23,11 @@ class State {
 
 }
 
-class PostList extends React.Component<IAllProps, State> {
+class PostAndCommentList extends React.Component<IAllProps, State> {
     readonly state = new State();
 
     static propTypes = {
-        children: CustomComponentValidators.createChildrenTypesValidator([PostSummary])
+        children: CustomComponentValidators.createChildrenTypesValidator([Post, Comment])
     };
 
     mapChildrenToGridItems() {
@@ -48,9 +49,7 @@ class PostList extends React.Component<IAllProps, State> {
                   justify="flex-start"
                   alignItems="stretch">
                 {
-                    Array.of(1,2,3,4,5,6).map(() => {
-                        return this.mapChildrenToGridItems();
-                    })
+                    this.mapChildrenToGridItems()
                 }
             </Grid>
         );
@@ -73,4 +72,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(PostList);
+)(PostAndCommentList);

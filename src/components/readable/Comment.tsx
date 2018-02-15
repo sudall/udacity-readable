@@ -6,46 +6,44 @@ import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
 import CardActions from "material-ui/Card/CardActions";
 import IconButton from "material-ui/IconButton";
-import {Link} from "react-router-dom";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import {PostPageUtils} from "src/components/readable/PostPage";
-import PostData from "src/data/models/PostData";
-import {bindActionCreators} from "redux";
-import PostActions from "src/redux-actions/PostActions";
+import CommentData from "src/data/models/CommentData";
+import CommentActions from "src/redux-actions/CommentActions";
 
 // props that are provided as parameters
 interface IOwnProps {
-    post: PostData;
+    comment: CommentData;
 }
 
 // props that are provided via injection
 interface IInjectedProps {
-    upvote: () => any;
+    // someAction: () => any;
+    upvote: () => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
 
+// internal state of the component
 class State {
 
 }
 
-class Post extends React.Component<IAllProps, State> {
+class Comment extends React.Component<IAllProps, State> {
     readonly state = new State();
 
+    static propTypes = {
+        // children: CustomComponentValidators.createChildrenTypesValidator([])
+    };
+
     render() {
-        const {post, upvote} = this.props;
+        const {comment, upvote} = this.props;
 
         return (
             <Card>
                 <CardContent>
-                    <Link to={PostPageUtils.getLinkPath(post)}>
-                        <Typography variant="title">
-                            {post.title}
-                        </Typography>
-                    </Link>
                     <Typography>
-                        {post.body}
+                        {comment.body}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -53,7 +51,7 @@ class Post extends React.Component<IAllProps, State> {
                         <ArrowUpward/>
                     </IconButton>
                     <Typography>
-                        {post.voteScore}
+                        {comment.voteScore}
                     </Typography>
                     <IconButton>
                         <ArrowDownward/>
@@ -71,14 +69,15 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
-    const upvote = PostActions.upvote.bind(PostActions);
-
+    const upvote = CommentActions.upvote.bind(CommentActions);
     return {
-        upvote: bindActionCreators(upvote, dispatch)
+        // Add mapped properties here
+        // someAction: bindActionCreators(actionCreator, dispatch)
+        upvote
     };
 };
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Post);
+)(Comment);
