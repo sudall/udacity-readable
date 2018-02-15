@@ -47,6 +47,8 @@ class Post extends React.Component<IAllProps, State> {
                     <Typography>
                         {post.body}
                     </Typography>
+                    <Typography>
+                    </Typography>
                 </CardContent>
                 <CardActions>
                     <IconButton onClick={upvote}>
@@ -58,6 +60,16 @@ class Post extends React.Component<IAllProps, State> {
                     <IconButton>
                         <ArrowDownward/>
                     </IconButton>
+                    <Typography>
+                        Category: {post.category}
+                    </Typography>
+                    <Typography>
+                        Author: {post.author}
+                    </Typography>
+                    <Typography>
+                        {/*TODO use moment to get the formatted time*/}
+                        Date: {post.timestamp}
+                    </Typography>
                 </CardActions>
             </Card>
         );

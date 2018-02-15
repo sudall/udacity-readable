@@ -3,7 +3,7 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import {PostPageUtils} from "src/components/readable/PostPage";
 import PostPage from "src/components/readable/PostPage";
-import PostListPage from "src/components/readable/PostListPage";
+import PostListPage, {PostListPageUtils} from "src/components/readable/PostListPage";
 import PageNotFoundPage from "src/components/readable/PageNotFoundPage";
 import {Route, Switch} from "react-router";
 import {BrowserRouter} from "react-router-dom";
@@ -51,6 +51,7 @@ class ReadableApplicationRouter extends React.Component<IAllProps, State> {
             <BrowserRouter>
                 <Switch>
                     <Route path="/" exact render={this.getRouteRender(PostListPage)} />
+                    <Route path={PostListPageUtils.getRoutePath()} exact render={this.getRouteRender(PostListPage)} />
                     <Route path={PostPageUtils.getRoutePath()} exact render={this.getRouteRender(PostPage)} />
                     <Route render={this.getRouteRender(PageNotFoundPage)} />
                 </Switch>

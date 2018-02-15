@@ -16,16 +16,16 @@ import ReadableApplicationRouter from "src/components/readable/ReadableApplicati
 export class ApplicationState {
     categories: CategoryData[] = [
         {
-            name: "Category 1",
-            urlPath: "Category 1"
+            name: "Some category 1",
+            urlPath: "Some category 1"
         },
         {
-            name: "Category 2",
-            urlPath: "Category 2"
+            name: "Some category 2",
+            urlPath: "Some category 2"
         },
         {
-            name: "Category 3",
-            urlPath: "Category 3"
+            name: "Some category 3",
+            urlPath: "Some category 3"
         }
     ];
 
@@ -33,7 +33,7 @@ export class ApplicationState {
         {
             author: "Some author",
             body: "Some body",
-            category: "Some category",
+            category: "Some category 1",
             deleted: false,
             id: "someUniqueId",
             timestamp: 123412312,
@@ -43,7 +43,7 @@ export class ApplicationState {
         {
             author: "Some author 2",
             body: "Some body 2",
-            category: "Some category",
+            category: "Some category 1",
             deleted: false,
             id: "someUniqueId2",
             timestamp: 123412313,

@@ -12,6 +12,7 @@ import Menu from "material-ui-icons/Menu";
 import ListItem from "material-ui/List/ListItem";
 import ListItemText from "material-ui/List/ListItemText";
 import CategoryData from "src/data/models/CategoryData";
+import PostListPage, {PostListPageUtils} from "src/components/readable/PostListPage";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -48,7 +49,7 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
 
     private getDrawerListItem(name: string, urlPath: string) {
         return (
-            <ListItem button component={props => <Link to={urlPath} {...props}/>}>
+            <ListItem button onClick={this.toggleDrawer} component={props => <Link to={urlPath} {...props}/>}>
                 <ListItemText primary={name} />
             </ListItem>
         );
@@ -80,7 +81,7 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
                         {this.getDrawerListItem("All", "/")}
                         {
                             categories.map((category) => (
-                                this.getDrawerListItem(category.name, `/${category.urlPath}`)
+                                this.getDrawerListItem(category.name, PostListPageUtils.getLinkPath(category))
                             ))
                         }
                     </List>

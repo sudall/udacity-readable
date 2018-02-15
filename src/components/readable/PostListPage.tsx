@@ -5,9 +5,16 @@ import PostData from "src/data/models/PostData";
 import PostAndCommentList from "src/components/readable/PostAndCommentList";
 import Post from "src/components/readable/Post";
 import AddNewPostButton from "src/components/readable/AddNewPostButton";
+import CategoryData from "src/data/models/CategoryData";
+import {RouteComponentProps} from "react-router";
+import Typography from "material-ui/Typography";
+
+interface IRoutePathParameters {
+    urlPath: string;
+}
 
 // props that are provided as parameters
-interface IOwnProps {
+interface IOwnProps extends RouteComponentProps<IRoutePathParameters> {
 
 }
 
@@ -15,6 +22,7 @@ interface IOwnProps {
 interface IInjectedProps {
     // someAction: () => any;
     posts: PostData[];
+    categories: CategoryData[];
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -31,14 +39,42 @@ class PostListPage extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
+    private getCategoryByUrlPath(urlPath: string) {
+        return this.props.categories.find((category) => {
+            return category.urlPath === urlPath;
+        });
+    }
+
+    private getPostsByCategory(category: CategoryData) {
+        return this.props.posts.filter((post) => {
+            return post.category === category.name;
+        });
+    }
+
     render() {
-        const {posts} = this.props;
+        const {posts, match} = this.props;
+
+        let postsToShow = posts;
+
+        const categoryUrlPathParameter = match.params.urlPath;
+
+        if (categoryUrlPathParameter != null) {
+            const category = this.getCategoryByUrlPath(categoryUrlPathParameter);
+
+            if (category != null) {
+                postsToShow = this.getPostsByCategory(category);
+            } else {
+                return (
+                    <Typography>{`Could not find category "${categoryUrlPathParameter}"`}</Typography>
+                );
+            }
+        }
 
         return (
             <div>
                 <PostAndCommentList>
                     {
-                        posts.map((post) => {
+                        postsToShow.map((post) => {
                             return <Post post={post}/>;
                         })
                     }
@@ -50,10 +86,21 @@ class PostListPage extends React.Component<IAllProps, State> {
     }
 }
 
+export class PostListPageUtils {
+    static getRoutePath() {
+        return "/category/:urlPath";
+    }
+
+    static getLinkPath(category: CategoryData) {
+        return `/category/${category.urlPath}`;
+    }
+}
+
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        posts: state.posts
+        posts: state.posts,
+        categories: state.categories
     }
 };
 
