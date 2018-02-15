@@ -65,6 +65,8 @@ class PostPage extends React.Component<IAllProps, State> {
 
         const comments = this.getPostComments(post);
 
+        const noCommentsYetMessage = (<Typography>No comments yet.</Typography>);
+
         return (
             <PostAndCommentList>
                 <Post post={post}/>
@@ -77,6 +79,7 @@ class PostPage extends React.Component<IAllProps, State> {
                         )
                     }
                 </div>
+                {comments.length === 0 ? noCommentsYetMessage : null}
             </PostAndCommentList>
         );
     }
