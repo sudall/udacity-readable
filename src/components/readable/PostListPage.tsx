@@ -2,13 +2,9 @@ import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
-import {bindActionCreators} from "redux";
-import PostActions from "src/redux-actions/PostActions";
-import ReadableToolbar from "src/components/readable/ReadableToolbar";
-import PostSummaryList from "src/components/readable/PostSummaryList";
-import PostSummary from "src/components/readable/PostSummary";
+import PostList from "src/components/readable/PostList";
+import Post from "src/components/readable/Post";
 import AddNewPostButton from "src/components/readable/AddNewPostButton";
-import ReadablePageContainer from "src/components/readable/ReadablePageContainer";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -40,13 +36,13 @@ class PostListPage extends React.Component<IAllProps, State> {
 
         return (
             <div>
-                <PostSummaryList>
+                <PostList>
                     {
                         posts.map((post) => {
-                            return <PostSummary post={post}/>;
+                            return <Post post={post}/>;
                         })
                     }
-                </PostSummaryList>
+                </PostList>
 
                 <AddNewPostButton />
             </div>

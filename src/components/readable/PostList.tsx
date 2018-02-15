@@ -1,14 +1,9 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import PostData from "src/data/models/PostData";
-import {bindActionCreators} from "redux";
-import PostActions from "src/redux-actions/PostActions";
-import PostSummary from "src/components/readable/PostSummary";
+import PostSummary from "src/components/readable/Post";
 import Grid from "material-ui/Grid";
-import ReadableApplication from "src/components/readable/ReadableApplication";
 import CustomComponentValidators from "src/CustomComponentValidators";
-import Book from "src/components/myReads/Book";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -27,7 +22,7 @@ class State {
 
 }
 
-class PostSummaryList extends React.Component<IAllProps, State> {
+class PostList extends React.Component<IAllProps, State> {
     readonly state = new State();
 
     static propTypes = {
@@ -78,4 +73,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(PostSummaryList);
+)(PostList);

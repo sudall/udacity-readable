@@ -1,7 +1,20 @@
 import * as React from "react";
+import Typography from "material-ui/Typography";
+import Comment from "material-ui-icons/Comment";
+import ArrowUpward from "material-ui-icons/ArrowUpward";
+import ArrowDownward from "material-ui-icons/ArrowDownward";
+import Card from "material-ui/Card";
+import CardContent from "material-ui/Card/CardContent";
+import CardActions from "material-ui/Card/CardActions";
+import IconButton from "material-ui/IconButton";
+import Badge from "material-ui/Badge";
+import {Link} from "react-router-dom";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {PostPageUtils} from "src/components/readable/PostPage";
 import PostData from "src/data/models/PostData";
+import {bindActionCreators} from "redux";
+import PostActions from "src/redux-actions/PostActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -10,12 +23,11 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
+    upvote: () => any;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
 
-// internal state of the component
 class State {
 
 }
@@ -23,15 +35,38 @@ class State {
 class Post extends React.Component<IAllProps, State> {
     readonly state = new State();
 
-    static propTypes = {
-        // children: CustomComponentValidators.createChildrenTypesValidator([])
-    };
-
     render() {
-        const {} = this.props;
+        const {post, upvote} = this.props;
 
         return (
-            <div>This is a post!</div>
+            <Card>
+                <CardContent>
+                    <Link to={PostPageUtils.getLinkPath(post)}>
+                        <Typography variant="title">
+                            {post.title}
+                        </Typography>
+                    </Link>
+                    <Typography>
+                        {post.body}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <IconButton onClick={upvote}>
+                        <ArrowUpward/>
+                    </IconButton>
+                    <Typography>
+                        {post.voteScore}
+                    </Typography>
+                    <IconButton>
+                        <ArrowDownward/>
+                    </IconButton>
+                    <IconButton component={PostPageUtils.getPostPageLinkComponentFactory(post)}>
+                        <Badge badgeContent={4} color="primary">
+                            <Comment/>
+                        </Badge>
+                    </IconButton>
+                </CardActions>
+            </Card>
         );
     }
 }
@@ -43,9 +78,10 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const upvote = PostActions.upvote.bind(PostActions);
+
     return {
-        // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
+        upvote: bindActionCreators(upvote, dispatch)
     };
 };
 
