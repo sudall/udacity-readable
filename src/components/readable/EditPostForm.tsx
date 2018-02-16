@@ -5,6 +5,7 @@ import TextField from "material-ui/TextField";
 import CategoryData from "src/data/models/CategoryData";
 import MenuItem from "material-ui/Menu/MenuItem"
 import PostData from "src/data/models/PostData";
+import FormUtils from "src/utilities/FormUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -36,16 +37,8 @@ class EditPostForm extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
-    private onTextFieldChange = (dataPropertyName: string) => {
-        return (event: React.ChangeEvent<HTMLInputElement>) => {
-            let newPost = new PostData();
-
-            Object.assign(newPost, this.props.post, {
-                [dataPropertyName]: event.target.value
-            });
-
-            this.props.onChange(newPost);
-        };
+    private getOnTextFieldChangeCallback(dataPropertyName: keyof PostData) {
+        return FormUtils.getOnTextFieldChangeCallback(this.props.post, dataPropertyName, this.props.onChange);
     };
 
     render() {
@@ -59,27 +52,27 @@ class EditPostForm extends React.Component<IAllProps, State> {
                     label="Title"
                     fullWidth
                     value={post.title}
-                    onChange={this.onTextFieldChange("title")}
+                    onChange={this.getOnTextFieldChangeCallback("title")}
                 />
                 <TextField
                     label="Body"
                     fullWidth
                     multiline
                     value={post.body}
-                    onChange={this.onTextFieldChange("body")}
+                    onChange={this.getOnTextFieldChangeCallback("body")}
                 />
                 <TextField
                     label="Author"
                     fullWidth
                     value={post.author}
-                    onChange={this.onTextFieldChange("author")}
+                    onChange={this.getOnTextFieldChangeCallback("author")}
                 />
                 <TextField
                     label="Category"
                     fullWidth
                     select
                     value={post.category}
-                    onChange={this.onTextFieldChange("category")}
+                    onChange={this.getOnTextFieldChangeCallback("category")}
                 >
                     {
                         categories.map((category) => {

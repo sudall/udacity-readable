@@ -18,6 +18,11 @@ import DeleteForever from "material-ui-icons/DeleteForever";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
+import Dialog from "material-ui/Dialog";
+import DialogTitle from "material-ui/Dialog/DialogTitle";
+import DialogActions from "material-ui/Dialog/DialogActions";
+import DialogContent from "material-ui/Dialog/DialogContent";
+import Button from "material-ui/Button";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -34,6 +39,7 @@ type IAllProps = IOwnProps & IInjectedProps;
 class State {
     editPostDialogOpen: boolean = false;
     editedPost: PostData;
+    deletePostConfirmationDialogOpen: boolean = false;
 }
 
 class Post extends React.Component<IAllProps, State> {
@@ -72,9 +78,27 @@ class Post extends React.Component<IAllProps, State> {
         // TODO dispatch save post action
     };
 
+    private openDeletePostConfirmationDialog = () => {
+        this.setDeletePostConfirmationDialogOpen(true);
+    };
+
+    private closeDeletePostConfirmationDialog = () => {
+        this.setDeletePostConfirmationDialogOpen(false);
+    };
+
+    private setDeletePostConfirmationDialogOpen = (value: boolean) => {
+        this.setState({
+            deletePostConfirmationDialogOpen: value
+        });
+    };
+
+    private deletePost = () => {
+        // TODO dispatch delete post action
+    };
+
     render() {
         const {post, upvote} = this.props;
-        const {editPostDialogOpen, editedPost} = this.state;
+        const {editPostDialogOpen, editedPost, deletePostConfirmationDialogOpen} = this.state;
 
         return (
             <div>
@@ -112,7 +136,7 @@ class Post extends React.Component<IAllProps, State> {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                            <IconButton>
+                            <IconButton onClick={this.openDeletePostConfirmationDialog}>
                                 <DeleteForever />
                             </IconButton>
                         </Tooltip>
@@ -141,6 +165,22 @@ class Post extends React.Component<IAllProps, State> {
                                 onSave={this.saveEditedPost}
                                 title="Edit Post"
                 />
+                <Dialog open={deletePostConfirmationDialogOpen} onClose={this.closeDeletePostConfirmationDialog}>
+                    <DialogTitle>Delete</DialogTitle>
+                    <DialogContent>
+                        <Typography>
+                            Are you sure you want to delete this post?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeDeletePostConfirmationDialog} color="secondary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.deletePost} color="primary" variant="raised">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }
