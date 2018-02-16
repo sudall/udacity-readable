@@ -55,6 +55,34 @@ class PostPage extends React.Component<IAllProps, State> {
         });
     }
 
+    private static getCommentElements(comments: CommentData[]) {
+        const noCommentsYetMessage = (
+            <Card>
+                <CardContent>
+                    <Typography>
+                        No comments yet.
+                    </Typography>
+                </CardContent>
+            </Card>
+        );
+
+        if (comments.length === 0) {
+            return noCommentsYetMessage;
+        }
+
+        return (
+            <div style={{marginLeft: 16}}>
+                {
+                    comments.map((comment) =>
+                        (
+                            <Comment comment={comment}/>
+                        )
+                    )
+                }
+            </div>
+        )
+    }
+
     render() {
         const {match} = this.props;
 
@@ -68,29 +96,10 @@ class PostPage extends React.Component<IAllProps, State> {
 
         const comments = this.getPostComments(post);
 
-        const noCommentsYetMessage = (
-            <Card>
-                <CardContent>
-                    <Typography>
-                        No comments yet.
-                    </Typography>
-                </CardContent>
-            </Card>
-        );
-
         return (
             <PostAndCommentList>
                 <Post post={post}/>
-                <div style={{marginLeft: 16}}>
-                    {
-                        comments.map((comment) =>
-                            (
-                                <Comment comment={comment}/>
-                            )
-                        )
-                    }
-                </div>
-                {comments.length === 0 ? noCommentsYetMessage : null}
+                {PostPage.getCommentElements(comments)}
             </PostAndCommentList>
         );
     }

@@ -11,6 +11,7 @@ import {ApplicationState} from "src/components/readable/ReadableApplication";
 import CommentData from "src/data/models/CommentData";
 import CommentActions from "src/redux-actions/CommentActions";
 import Divider from "material-ui/Divider";
+import Tooltip from "material-ui/Tooltip";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -49,15 +50,21 @@ class Comment extends React.Component<IAllProps, State> {
                 </CardContent>
                 <Divider/>
                 <CardActions>
-                    <IconButton onClick={upvote}>
-                        <ArrowUpward/>
-                    </IconButton>
-                    <Typography>
-                        {comment.voteScore}
-                    </Typography>
-                    <IconButton>
-                        <ArrowDownward/>
-                    </IconButton>
+                    <Tooltip title="Upvote">
+                        <IconButton onClick={upvote}>
+                            <ArrowUpward/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Vote Score">
+                        <Typography>
+                            {comment.voteScore}
+                        </Typography>
+                    </Tooltip>
+                    <Tooltip title="Downvote">
+                        <IconButton>
+                            <ArrowDownward/>
+                        </IconButton>
+                    </Tooltip>
                 </CardActions>
             </Card>
         );

@@ -14,8 +14,10 @@ import PostData from "src/data/models/PostData";
 import {bindActionCreators} from "redux";
 import PostActions from "src/redux-actions/PostActions";
 import ModeEdit from "material-ui-icons/ModeEdit";
+import DeleteForever from "material-ui-icons/DeleteForever";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Divider from "material-ui/Divider";
+import Tooltip from "material-ui/Tooltip";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -89,28 +91,47 @@ class Post extends React.Component<IAllProps, State> {
                     </CardContent>
                     <Divider/>
                     <CardActions>
-                        <IconButton onClick={upvote}>
-                            <ArrowUpward/>
-                        </IconButton>
-                        <Typography>
-                            {post.voteScore}
-                        </Typography>
-                        <IconButton>
-                            <ArrowDownward/>
-                        </IconButton>
-                        <IconButton onClick={this.openEditDialog}>
-                            <ModeEdit />
-                        </IconButton>
-                        <Typography>
-                            Category: {post.category}
-                        </Typography>
-                        <Typography>
-                            Author: {post.author}
-                        </Typography>
-                        <Typography>
-                            {/*TODO use moment to get the formatted time*/}
-                            Date: {post.timestamp}
-                        </Typography>
+                        <Tooltip title="Upvote">
+                            <IconButton onClick={upvote}>
+                                <ArrowUpward/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Vote Score">
+                            <Typography>
+                                {post.voteScore}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title="Downvote">
+                            <IconButton>
+                                <ArrowDownward/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                            <IconButton onClick={this.openEditDialog}>
+                                <ModeEdit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <IconButton>
+                                <DeleteForever />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Category">
+                            <Typography>
+                                {post.category}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title="Author">
+                            <Typography>
+                                {post.author}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title="Timestamp">
+                            <Typography>
+                                {/*TODO use moment to get the formatted time*/}
+                                {post.timestamp}
+                            </Typography>
+                        </Tooltip>
                     </CardActions>
                 </Card>
                 <EditPostDialog post={editedPost}

@@ -12,7 +12,8 @@ import Menu from "material-ui-icons/Menu";
 import ListItem from "material-ui/List/ListItem";
 import ListItemText from "material-ui/List/ListItemText";
 import CategoryData from "src/data/models/CategoryData";
-import PostListPage, {PostListPageUtils} from "src/components/readable/PostListPage";
+import {PostListPageUtils} from "src/components/readable/PostListPage";
+import Divider from "material-ui/Divider";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -78,6 +79,10 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
                         onClose={this.toggleDrawer}
                         anchor="left">
                     <List>
+                        <ListItem>
+                            <ListItemText primary="Categories"/>
+                        </ListItem>
+                        <Divider />
                         {this.getDrawerListItem("All", "/")}
                         {
                             categories.map((category) => (
