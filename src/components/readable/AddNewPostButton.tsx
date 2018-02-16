@@ -3,12 +3,8 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import Button from "material-ui/Button";
 import Add from "material-ui-icons/Add";
-import Dialog from "material-ui/Dialog";
-import DialogTitle from "material-ui/Dialog/DialogTitle";
-import DialogActions from "material-ui/Dialog/DialogActions";
-import DialogContent from "material-ui/Dialog/DialogContent";
-import EditPostForm from "src/components/readable/EditPostForm";
 import PostData from "src/data/models/PostData";
+import EditPostDialog from "src/components/readable/EditPostDialog";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -49,14 +45,14 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
         this.setDialogOpen(false);
     };
 
-    private onAddEditPostFormChange = (newPost: PostData) => {
+    private onEditPostFormChange = (newPost: PostData) => {
         this.setState({
             newPost
         });
     };
 
-    private submitNewPost = () => {
-        //TODO
+    private saveNewPost = () => {
+        // TODO dispatch save post action
     };
 
     render() {
@@ -76,22 +72,13 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
                 >
                     <Add />
                 </Button>
-                <Dialog open={dialogOpen}
-                    onClose={this.closeDialog}
-                >
-                    <DialogTitle>Add a New Post</DialogTitle>
-                    <DialogContent>
-                        <EditPostForm post={newPost} onChange={this.onAddEditPostFormChange} />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.closeDialog} color="secondary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.submitNewPost} color="primary" variant="raised">
-                            Post
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <EditPostDialog post={newPost}
+                                open={dialogOpen}
+                                onChange={this.onEditPostFormChange}
+                                onClose={this.closeDialog}
+                                onSave={this.saveNewPost}
+                                title="Add a New Post"
+                />
             </div>
         );
     }

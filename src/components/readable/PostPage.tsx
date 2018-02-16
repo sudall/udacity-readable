@@ -9,6 +9,9 @@ import Typography from "material-ui/Typography";
 import CommentData from "src/data/models/CommentData";
 import Comment from "src/components/readable/Comment";
 import PostAndCommentList from "src/components/readable/PostAndCommentList";
+import Paper from "material-ui/Paper";
+import Card from "material-ui/Card";
+import CardContent from "material-ui/Card/CardContent";
 
 interface IRoutePathParameters {
     id: string;
@@ -65,7 +68,15 @@ class PostPage extends React.Component<IAllProps, State> {
 
         const comments = this.getPostComments(post);
 
-        const noCommentsYetMessage = (<Typography>No comments yet.</Typography>);
+        const noCommentsYetMessage = (
+            <Card>
+                <CardContent>
+                    <Typography>
+                        No comments yet.
+                    </Typography>
+                </CardContent>
+            </Card>
+        );
 
         return (
             <PostAndCommentList>
