@@ -10,6 +10,7 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import CommentData from "src/data/models/CommentData";
 import CommentActions from "src/redux-actions/CommentActions";
+import Divider from "material-ui/Divider";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -46,6 +47,7 @@ class Comment extends React.Component<IAllProps, State> {
                         {comment.body}
                     </Typography>
                 </CardContent>
+                <Divider/>
                 <CardActions>
                     <IconButton onClick={upvote}>
                         <ArrowUpward/>

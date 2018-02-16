@@ -5,6 +5,7 @@ import Button from "material-ui/Button";
 import Add from "material-ui-icons/Add";
 import PostData from "src/data/models/PostData";
 import EditPostDialog from "src/components/readable/EditPostDialog";
+import Tooltip from "material-ui/Tooltip";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -61,17 +62,19 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
 
         return (
             <div>
-                <Button variant="fab"
-                        color="primary"
-                        style={{
-                            position: "fixed",
-                            bottom: 16,
-                            right: 16
-                        }}
-                        onClick={this.openDialog}
-                >
-                    <Add />
-                </Button>
+                <Tooltip title="Add a New Post">
+                    <Button variant="fab"
+                            color="primary"
+                            style={{
+                                position: "fixed",
+                                bottom: 16,
+                                right: 16
+                            }}
+                            onClick={this.openDialog}
+                    >
+                        <Add />
+                    </Button>
+                </Tooltip>
                 <EditPostDialog post={newPost}
                                 open={dialogOpen}
                                 onChange={this.onEditPostFormChange}
