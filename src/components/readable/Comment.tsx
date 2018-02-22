@@ -12,11 +12,8 @@ import CommentData from "src/data/models/CommentData";
 import CommentActions from "src/redux-actions/CommentActions";
 import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
-import ModeEdit from "material-ui-icons/ModeEdit";
-import EditDialog from "src/components/readable/EditDialog";
-import EditCommentForm from "src/components/readable/EditCommentForm";
-import EditCommentDialog from "src/components/readable/EditCommentDialog";
 import DeleteButton from "src/components/readable/DeleteButton";
+import EditCommentButton from "src/components/readable/EditCommentButton";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -33,8 +30,7 @@ type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-    editCommentDialogOpen: boolean = false;
-    editedComment: CommentData;
+
 }
 
 class Comment extends React.Component<IAllProps, State> {
@@ -44,31 +40,8 @@ class Comment extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
-    private openEditDialog = () => {
-        this.setEditDialogOpen(true);
-    };
-
-    private closeEditDialog = () => {
-        this.setEditDialogOpen(false);
-    };
-
-    private setEditDialogOpen(value: boolean) {
-        this.setState((previousState, props) => {
-            return {
-                editCommentDialogOpen: value,
-                editedComment: props.comment
-            }
-        });
-    }
-
-    private saveEditedComment = () => {
+    private saveEditedComment = (editedComment: CommentData) => {
         // TODO dispatch save comment action
-    };
-
-    private onEditCommentFormChange = (comment: CommentData) => {
-        this.setState({
-            editedComment: comment
-        });
     };
 
     private deleteComment() {
@@ -77,7 +50,6 @@ class Comment extends React.Component<IAllProps, State> {
 
     render() {
         const {comment, upvote} = this.props;
-        const {editCommentDialogOpen, editedComment} = this.state;
 
         return (
             <div>
@@ -104,11 +76,7 @@ class Comment extends React.Component<IAllProps, State> {
                                 <ArrowDownward/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Edit">
-                            <IconButton onClick={this.openEditDialog}>
-                                <ModeEdit />
-                            </IconButton>
-                        </Tooltip>
+                        <EditCommentButton comment={comment} onSave={this.saveEditedComment}/>
                         <DeleteButton onDelete={this.deleteComment}/>
                         <Tooltip title="Author">
                             <Typography>
@@ -117,12 +85,6 @@ class Comment extends React.Component<IAllProps, State> {
                         </Tooltip>
                     </CardActions>
                 </Card>
-                <EditCommentDialog open={editCommentDialogOpen}
-                                   onClose={this.closeEditDialog}
-                                   onSave={this.saveEditedComment}
-                                   title="Edit Comment"
-                                   comment={comment}
-                                   onChange={this.onEditCommentFormChange}/>
             </div>
         );
     }
