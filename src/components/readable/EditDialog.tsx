@@ -1,9 +1,11 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import EditPostForm from "src/components/readable/EditPostForm";
-import EditDialog from "src/components/readable/EditDialog";
-import PostData from "src/data/models/PostData";
+import Button from "material-ui/Button";
+import Dialog from "material-ui/Dialog";
+import DialogTitle from "material-ui/Dialog/DialogTitle";
+import DialogActions from "material-ui/Dialog/DialogActions";
+import DialogContent from "material-ui/Dialog/DialogContent";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -11,8 +13,6 @@ interface IOwnProps {
     onSave: () => void;
     open: boolean;
     onClose: () => void;
-    post: PostData,
-    onChange: (post: PostData) => void;
 }
 
 // props that are provided via injection
@@ -27,25 +27,38 @@ class State {
 
 }
 
-class EditPostDialog extends React.Component<IAllProps, State> {
+class EditDialog extends React.Component<IAllProps, State> {
     readonly state = new State();
+
+    constructor(props: IAllProps) {
+        super(props);
+    }
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
     render() {
-        const {open, onClose, onSave, onChange, post, title} = this.props;
+        const {title, open, onClose, onSave, children} = this.props;
         const {} = this.state;
 
         return (
-            <EditDialog open={open}
-                        onClose={onClose}
-                        onSave={onSave}
-                        title={title}
+            <Dialog open={open}
+                    onClose={onClose}
             >
-                <EditPostForm post={post} onChange={onChange} />
-            </EditDialog>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogContent>
+                    {children}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={onSave} color="primary" variant="raised">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         );
     }
 }
@@ -66,4 +79,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EditPostDialog);
+)(EditDialog);

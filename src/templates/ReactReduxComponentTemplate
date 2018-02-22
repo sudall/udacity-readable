@@ -21,7 +21,9 @@ class State {
 }
 
 class ${NAME} extends React.Component<IAllProps, State> {
-    readonly state = new State();
+    readonly state: State = {
+
+    };
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])

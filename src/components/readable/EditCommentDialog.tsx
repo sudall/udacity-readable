@@ -1,9 +1,12 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import EditPostForm from "src/components/readable/EditPostForm";
+import {bindActionCreators} from "redux";
 import EditDialog from "src/components/readable/EditDialog";
+import EditCommentForm from "src/components/readable/EditCommentForm";
 import PostData from "src/data/models/PostData";
+import CommentData from "src/data/models/CommentData";
+import EditPostForm from "src/components/readable/EditPostForm";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -11,8 +14,8 @@ interface IOwnProps {
     onSave: () => void;
     open: boolean;
     onClose: () => void;
-    post: PostData,
-    onChange: (post: PostData) => void;
+    comment: CommentData,
+    onChange: (comment: CommentData) => void;
 }
 
 // props that are provided via injection
@@ -27,7 +30,7 @@ class State {
 
 }
 
-class EditPostDialog extends React.Component<IAllProps, State> {
+class EditCommentDialog extends React.Component<IAllProps, State> {
     readonly state = new State();
 
     static propTypes = {
@@ -35,7 +38,7 @@ class EditPostDialog extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {open, onClose, onSave, onChange, post, title} = this.props;
+        const {open, onClose, onSave, onChange, comment, title} = this.props;
         const {} = this.state;
 
         return (
@@ -44,7 +47,7 @@ class EditPostDialog extends React.Component<IAllProps, State> {
                         onSave={onSave}
                         title={title}
             >
-                <EditPostForm post={post} onChange={onChange} />
+                <EditCommentForm comment={comment} onChange={onChange} />
             </EditDialog>
         );
     }
@@ -66,4 +69,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EditPostDialog);
+)(EditCommentDialog);

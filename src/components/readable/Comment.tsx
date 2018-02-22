@@ -12,6 +12,11 @@ import CommentData from "src/data/models/CommentData";
 import CommentActions from "src/redux-actions/CommentActions";
 import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
+import ModeEdit from "material-ui-icons/ModeEdit";
+import EditDialog from "src/components/readable/EditDialog";
+import EditCommentForm from "src/components/readable/EditCommentForm";
+import EditCommentDialog from "src/components/readable/EditCommentDialog";
+import DeleteButton from "src/components/readable/DeleteButton";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -28,7 +33,8 @@ type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-
+    editCommentDialogOpen: boolean = false;
+    editedComment: CommentData;
 }
 
 class Comment extends React.Component<IAllProps, State> {
@@ -38,35 +44,86 @@ class Comment extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
+    private openEditDialog = () => {
+        this.setEditDialogOpen(true);
+    };
+
+    private closeEditDialog = () => {
+        this.setEditDialogOpen(false);
+    };
+
+    private setEditDialogOpen(value: boolean) {
+        this.setState((previousState, props) => {
+            return {
+                editCommentDialogOpen: value,
+                editedComment: props.comment
+            }
+        });
+    }
+
+    private saveEditedComment = () => {
+        // TODO dispatch save comment action
+    };
+
+    private onEditCommentFormChange = (comment: CommentData) => {
+        this.setState({
+            editedComment: comment
+        });
+    };
+
+    private deleteComment() {
+
+    }
+
     render() {
         const {comment, upvote} = this.props;
+        const {editCommentDialogOpen, editedComment} = this.state;
 
         return (
-            <Card>
-                <CardContent>
-                    <Typography>
-                        {comment.body}
-                    </Typography>
-                </CardContent>
-                <Divider/>
-                <CardActions>
-                    <Tooltip title="Upvote">
-                        <IconButton onClick={upvote}>
-                            <ArrowUpward/>
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Vote Score">
+            <div>
+                <Card>
+                    <CardContent>
                         <Typography>
-                            {comment.voteScore}
+                            {comment.body}
                         </Typography>
-                    </Tooltip>
-                    <Tooltip title="Downvote">
-                        <IconButton>
-                            <ArrowDownward/>
-                        </IconButton>
-                    </Tooltip>
-                </CardActions>
-            </Card>
+                    </CardContent>
+                    <Divider/>
+                    <CardActions>
+                        <Tooltip title="Upvote">
+                            <IconButton onClick={upvote}>
+                                <ArrowUpward/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Vote Score">
+                            <Typography>
+                                {comment.voteScore}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title="Downvote">
+                            <IconButton>
+                                <ArrowDownward/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                            <IconButton onClick={this.openEditDialog}>
+                                <ModeEdit />
+                            </IconButton>
+                        </Tooltip>
+                        <DeleteButton onDelete={this.deleteComment}/>
+                        <Tooltip title="Author">
+                            <Typography>
+                                {comment.author}
+                            </Typography>
+                        </Tooltip>
+                    </CardActions>
+                </Card>
+                <EditCommentDialog open={editCommentDialogOpen}
+                                   onClose={this.closeEditDialog}
+                                   onSave={this.saveEditedComment}
+                                   title="Edit Comment"
+                                   comment={comment}
+                                   onChange={this.onEditCommentFormChange}/>
+            </div>
         );
     }
 }
