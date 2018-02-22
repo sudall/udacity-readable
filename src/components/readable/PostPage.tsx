@@ -12,6 +12,7 @@ import PostAndCommentList from "src/components/readable/PostAndCommentList";
 import Paper from "material-ui/Paper";
 import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
+import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
 
 interface IRoutePathParameters {
     id: string;
@@ -97,10 +98,13 @@ class PostPage extends React.Component<IAllProps, State> {
         const comments = this.getPostComments(post);
 
         return (
-            <PostAndCommentList>
-                <Post post={post}/>
-                {PostPage.getCommentElements(comments)}
-            </PostAndCommentList>
+            <div>
+                <PostAndCommentList>
+                    <Post post={post}/>
+                    {PostPage.getCommentElements(comments)}
+                </PostAndCommentList>
+                <AddNewCommentButton/>
+            </div>
         );
     }
 }

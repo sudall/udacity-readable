@@ -1,7 +1,11 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import {bindActionCreators} from "redux";
+import Button from "material-ui/Button";
+import Add from "material-ui-icons/Add";
+import Tooltip from "material-ui/Tooltip";
+import CommentData from "src/data/models/CommentData";
+import EditCommentDialog from "src/components/readable/EditCommentDialog";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -17,22 +21,71 @@ type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-
+    newComment: CommentData;
+    dialogOpen: boolean;
 }
 
 class AddNewCommentButton extends React.Component<IAllProps, State> {
-    readonly state = new State();
+    readonly state: State = {
+        dialogOpen: false,
+        newComment: new CommentData()
+    };
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
+    private setDialogOpen(value: boolean) {
+        this.setState({
+            dialogOpen: value
+        });
+    };
+
+    private openDialog = () => {
+        this.setDialogOpen(true);
+    };
+
+    private closeDialog = () => {
+        this.setDialogOpen(false);
+    };
+
+    private onEditCommentFormChange = (newComment: CommentData) => {
+        this.setState({
+            newComment
+        });
+    };
+
+    private saveNewComment = () => {
+        // TODO dispatch save comment action
+    };
+
     render() {
         const {} = this.props;
-        const {} = this.state;
+        const {dialogOpen, newComment} = this.state;
 
         return (
-            <div></div>
+            <div>
+                <Tooltip title="Add a New Comment">
+                    <Button variant="fab"
+                            color="secondary"
+                            style={{
+                                position: "fixed",
+                                bottom: 16,
+                                right: 16
+                            }}
+                            onClick={this.openDialog}
+                    >
+                        <Add />
+                    </Button>
+                </Tooltip>
+                <EditCommentDialog comment={newComment}
+                                open={dialogOpen}
+                                onChange={this.onEditCommentFormChange}
+                                onClose={this.closeDialog}
+                                onSave={this.saveNewComment}
+                                title="Add a New Comment"
+                />
+            </div>
         );
     }
 }
