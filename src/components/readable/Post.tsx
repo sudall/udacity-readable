@@ -22,6 +22,7 @@ import CommentData from "src/data/models/CommentData";
 import PostUtils from "src/utilities/PostUtils";
 import Comment from "material-ui-icons/Comment";
 import Badge from "material-ui/Badge";
+import ReadableLink from "src/components/readable/ReadableLink";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -63,11 +64,11 @@ class Post extends React.Component<IAllProps, State> {
             <div>
                 <Card>
                     <CardContent>
-                        <Link to={PostPageUtils.getLinkPath(post)} style={{display: "inline-block"}}>
+                        <ReadableLink to={PostPageUtils.getLinkPath(post)} style={{display: "inline-block"}}>
                             <Typography variant="title">
                                 {post.title}
                             </Typography>
-                        </Link>
+                        </ReadableLink>
                         <Typography>
                             {post.body}
                         </Typography>

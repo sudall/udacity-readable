@@ -14,6 +14,7 @@ import ListItemText from "material-ui/List/ListItemText";
 import CategoryData from "src/data/models/CategoryData";
 import {PostListPageUtils} from "src/components/readable/PostListPage";
 import Divider from "material-ui/Divider";
+import ReadableLink from "src/components/readable/ReadableLink";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -50,7 +51,7 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
 
     private getDrawerListItem(name: string, urlPath: string) {
         return (
-            <ListItem button onClick={this.toggleDrawer} component={props => <Link to={urlPath} {...props}/>}>
+            <ListItem button onClick={this.toggleDrawer} component={props => <ReadableLink to={urlPath} {...props}/>}>
                 <ListItemText primary={name} />
             </ListItem>
         );

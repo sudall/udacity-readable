@@ -14,6 +14,7 @@ import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
 import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
 import PostUtils from "src/utilities/PostUtils";
+import ReadableLink from "src/components/readable/ReadableLink";
 
 interface IRoutePathParameters {
     id: string;
@@ -120,7 +121,7 @@ export class PostPageUtils {
     static getPostPageLinkComponentFactory(post: PostData) {
         let postPageRoute = PostPageUtils.getLinkPath(post);
         return (props: any) => {
-            return <Link to={postPageRoute} {...props} />
+            return <ReadableLink to={postPageRoute} {...props} />
         };
     };
 }
