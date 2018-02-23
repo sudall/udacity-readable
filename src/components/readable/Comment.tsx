@@ -14,6 +14,7 @@ import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
 import DeleteButton from "src/components/readable/DeleteButton";
 import EditCommentButton from "src/components/readable/EditCommentButton";
+import * as moment from "moment";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -81,6 +82,11 @@ class Comment extends React.Component<IAllProps, State> {
                         <Tooltip title="Author">
                             <Typography>
                                 {comment.author}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title="Timestamp">
+                            <Typography>
+                                {moment(comment.timestamp).format("l h:mm a")}
                             </Typography>
                         </Tooltip>
                     </CardActions>
