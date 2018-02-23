@@ -13,6 +13,7 @@ import Paper from "material-ui/Paper";
 import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
 import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
+import PostUtils from "src/utilities/PostUtils";
 
 interface IRoutePathParameters {
     id: string;
@@ -51,9 +52,7 @@ class PostPage extends React.Component<IAllProps, State> {
     }
 
     private getPostComments(post: PostData): CommentData[] {
-        return this.props.comments.filter((comment) => {
-           return comment.parentId === post.id;
-        });
+        return PostUtils.getPostComments(post, this.props.comments);
     }
 
     private static getCommentElements(comments: CommentData[]) {

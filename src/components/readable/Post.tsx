@@ -17,6 +17,11 @@ import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
 import DeleteButton from "src/components/readable/DeleteButton";
 import EditPostButton from "src/components/readable/EditPostButton";
+import * as moment from "moment";
+import CommentData from "src/data/models/CommentData";
+import PostUtils from "src/utilities/PostUtils";
+import Comment from "material-ui-icons/Comment";
+import Badge from "material-ui/Badge";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -26,6 +31,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     upvote: () => any;
+    comments: CommentData[];
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -43,9 +49,15 @@ class Post extends React.Component<IAllProps, State> {
         // TODO dispatch delete post action
     };
 
+    private getPostComments(post: PostData): CommentData[] {
+        return PostUtils.getPostComments(post, this.props.comments);
+    }
+
     render() {
         const {post, upvote} = this.props;
         const {} = this.state;
+
+        const commentCount = this.getPostComments(post).length;
 
         return (
             <div>
@@ -77,6 +89,13 @@ class Post extends React.Component<IAllProps, State> {
                                 <ArrowDownward/>
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title={`${commentCount} Comment${commentCount === 1 ? "" : "s"}`}>
+                            <IconButton component={PostPageUtils.getPostPageLinkComponentFactory(post)}>
+                                <Badge badgeContent={commentCount} color="primary">
+                                    <Comment/>
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
                         <EditPostButton post={post} onSave={this.saveEditedPost} />
                         <DeleteButton onDelete={this.deletePost}/>
                         <Tooltip title="Category">
@@ -91,8 +110,7 @@ class Post extends React.Component<IAllProps, State> {
                         </Tooltip>
                         <Tooltip title="Timestamp">
                             <Typography>
-                                {/*TODO use moment to get the formatted time*/}
-                                {post.timestamp}
+                                {moment(post.timestamp).format("l h:mm a")}
                             </Typography>
                         </Tooltip>
                     </CardActions>
@@ -105,6 +123,7 @@ class Post extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
+        comments: state.comments
     }
 };
 
