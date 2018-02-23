@@ -8,6 +8,12 @@ import AddNewPostButton from "src/components/readable/AddNewPostButton";
 import CategoryData from "src/data/models/CategoryData";
 import {RouteComponentProps} from "react-router";
 import Typography from "material-ui/Typography";
+import Card from "material-ui/Card";
+import CardActions from "material-ui/Card/CardActions";
+import CardContent from "material-ui/Card/CardContent";
+import PostSortMethod from "src/enums/PostSortMethods";
+import TextField from "material-ui/TextField";
+import MenuItem from "material-ui/Menu/MenuItem";
 
 interface IRoutePathParameters {
     urlPath: string;
@@ -29,11 +35,13 @@ type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-
+    sortMethod: PostSortMethod
 }
 
 class PostListPage extends React.Component<IAllProps, State> {
-    readonly state = new State();
+    readonly state: State = {
+        sortMethod: PostSortMethod.TimestampNewestFirst
+    };
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
@@ -51,8 +59,25 @@ class PostListPage extends React.Component<IAllProps, State> {
         });
     }
 
+    private onSortMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const postSortMethods = PostSortMethod.getEnumValues() as PostSortMethod[];
+
+        let newSortMethod = postSortMethods.find((sortMethod) => {
+            return sortMethod.id.toString() === event.target.value;
+        });
+
+        if (newSortMethod == null) {
+            newSortMethod = PostSortMethod.TimestampNewestFirst;
+        }
+
+        this.setState({
+            sortMethod: newSortMethod
+        });
+    };
+
     render() {
         const {posts, match} = this.props;
+        const {sortMethod} = this.state;
 
         let postsToShow = posts;
 
@@ -70,13 +95,38 @@ class PostListPage extends React.Component<IAllProps, State> {
             }
         }
 
+        const postSortMethods = PostSortMethod.getEnumValues() as PostSortMethod[];
+
         return (
             <div>
                 <PostAndCommentList>
+                    <Card>
+                        <CardContent>
+                            <TextField
+                                label="Sort By"
+                                select
+                                value={sortMethod.id.toString()}
+                                onChange={this.onSortMethodChange}
+                            >
+                                {
+                                    postSortMethods.map((sortMethod) => {
+                                        return (
+                                            <MenuItem value={sortMethod.id.toString()}>
+                                                {sortMethod.displayText}
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </TextField>
+                        </CardContent>
+                    </Card>
                     {
-                        postsToShow.map((post) => {
-                            return <Post post={post}/>;
-                        })
+                        postsToShow
+                            .slice()
+                            .sort(sortMethod.sortCompareFunction)
+                            .map((post) => {
+                                return <Post post={post}/>;
+                            })
                     }
                 </PostAndCommentList>
 

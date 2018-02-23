@@ -26,9 +26,9 @@ class State {
 class PostAndCommentList extends React.Component<IAllProps, State> {
     readonly state = new State();
 
-    static propTypes = {
-        children: CustomComponentValidators.createChildrenTypesValidator([Post, Comment])
-    };
+    // static propTypes = {
+    //     children: CustomComponentValidators.createChildrenTypesValidator([Post, Comment])
+    // };
 
     mapChildrenToGridItems() {
         return React.Children.map(this.props.children, (child) => {

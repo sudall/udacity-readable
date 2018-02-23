@@ -51,7 +51,7 @@ class Post extends React.Component<IAllProps, State> {
             <div>
                 <Card>
                     <CardContent>
-                        <Link to={PostPageUtils.getLinkPath(post)}>
+                        <Link to={PostPageUtils.getLinkPath(post)} style={{display: "inline-block"}}>
                             <Typography variant="title">
                                 {post.title}
                             </Typography>

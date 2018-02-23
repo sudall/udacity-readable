@@ -48,6 +48,7 @@ class EditCommentForm extends React.Component<IAllProps, State> {
         return (
             <div>
                 <TextField
+                    autoFocus
                     label="Body"
                     fullWidth
                     multiline
