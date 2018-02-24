@@ -8,6 +8,11 @@ class PostActions extends ActionGenerator {
     upvote(post: PostData): PayloadAction<PostData> {
         return this.createAction(this.upvote, post);
     }
+
+    @actionCreator
+    downvote(post: PostData): PayloadAction<PostData> {
+        return this.createAction(this.downvote, post);
+    }
 }
 
 export default new PostActions("POST");

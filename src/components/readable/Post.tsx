@@ -6,7 +6,6 @@ import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
 import CardActions from "material-ui/Card/CardActions";
 import IconButton from "material-ui/IconButton";
-import {Link} from "react-router-dom";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import {PostPageUtils} from "src/components/readable/PostPage";
@@ -32,6 +31,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     upvote: () => any;
+    downvote: () => any;
     comments: CommentData[];
 }
 
@@ -75,28 +75,28 @@ class Post extends React.Component<IAllProps, State> {
                     </CardContent>
                     <Divider/>
                     <CardActions>
-                        <Tooltip title="Upvote">
-                            <IconButton onClick={upvote}>
+                        <IconButton onClick={upvote}>
+                            <Tooltip title="Upvote">
                                 <ArrowUpward/>
-                            </IconButton>
-                        </Tooltip>
+                            </Tooltip>
+                        </IconButton>
                         <Tooltip title="Vote Score">
                             <Typography>
                                 {post.voteScore}
                             </Typography>
                         </Tooltip>
-                        <Tooltip title="Downvote">
-                            <IconButton>
+                        <IconButton>
+                            <Tooltip title="Downvote">
                                 <ArrowDownward/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={`${commentCount} Comment${commentCount === 1 ? "" : "s"}`}>
-                            <IconButton component={PostPageUtils.getPostPageLinkComponentFactory(post)}>
+                            </Tooltip>
+                        </IconButton>
+                        <IconButton component={PostPageUtils.getPostPageLinkComponentFactory(post)}>
+                            <Tooltip title={`${commentCount} Comment${commentCount === 1 ? "" : "s"}`}>
                                 <Badge badgeContent={commentCount} color="primary">
                                     <Comment/>
                                 </Badge>
-                            </IconButton>
-                        </Tooltip>
+                            </Tooltip>
+                        </IconButton>
                         <EditPostButton post={post} onSave={this.saveEditedPost} />
                         <DeleteButton onDelete={this.deletePost}/>
                         <Tooltip title="Category">
@@ -130,9 +130,11 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     const upvote = PostActions.upvote.bind(PostActions);
+    const downvote = PostActions.downvote.bind(PostActions);
 
     return {
-        upvote: bindActionCreators(upvote, dispatch)
+        upvote: bindActionCreators(upvote, dispatch),
+        downvote: bindActionCreators(downvote, dispatch)
     };
 };
 

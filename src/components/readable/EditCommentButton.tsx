@@ -69,11 +69,11 @@ class EditCommentButton extends React.Component<IAllProps, State> {
 
         return (
             <div>
-                <Tooltip title="Edit">
-                    <IconButton onClick={this.openEditDialog}>
+                <IconButton onClick={this.openEditDialog}>
+                    <Tooltip title="Edit">
                         <ModeEdit />
-                    </IconButton>
-                </Tooltip>
+                    </Tooltip>
+                </IconButton>
                 <EditCommentDialog open={editCommentDialogOpen}
                                    onClose={this.closeEditDialog}
                                    onSave={this.onSave}

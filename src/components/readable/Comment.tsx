@@ -62,21 +62,21 @@ class Comment extends React.Component<IAllProps, State> {
                     </CardContent>
                     <Divider/>
                     <CardActions>
-                        <Tooltip title="Upvote">
-                            <IconButton onClick={upvote}>
-                                <ArrowUpward/>
-                            </IconButton>
-                        </Tooltip>
+                        <IconButton onClick={upvote}>
+                            <Tooltip title="Upvote">
+                                    <ArrowUpward/>
+                            </Tooltip>
+                        </IconButton>
                         <Tooltip title="Vote Score">
                             <Typography>
                                 {comment.voteScore}
                             </Typography>
                         </Tooltip>
-                        <Tooltip title="Downvote">
-                            <IconButton>
-                                <ArrowDownward/>
-                            </IconButton>
-                        </Tooltip>
+                        <IconButton>
+                            <Tooltip title="Downvote">
+                                    <ArrowDownward/>
+                            </Tooltip>
+                        </IconButton>
                         <EditCommentButton comment={comment} onSave={this.saveEditedComment}/>
                         <DeleteButton onDelete={this.deleteComment}/>
                         <Tooltip title="Author">

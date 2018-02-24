@@ -60,11 +60,11 @@ class DeleteButton extends React.Component<IAllProps, State> {
 
         return (
             <div>
-                <Tooltip title="Delete">
-                    <IconButton onClick={this.openDeleteConfirmationDialog}>
+                <IconButton onClick={this.openDeleteConfirmationDialog}>
+                    <Tooltip title="Delete">
                         <DeleteForever />
-                    </IconButton>
-                </Tooltip>
+                    </Tooltip>
+                </IconButton>
                 <Dialog open={deleteConfirmationDialogOpen} onClose={this.closeDeleteConfirmationDialog}>
                     <DialogTitle>Delete</DialogTitle>
                     <DialogContent>
