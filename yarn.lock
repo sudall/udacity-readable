@@ -65,6 +65,12 @@
   version "16.0.36"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/@types/react/-/react-16.0.36.tgz#ceb5639013bdb92a94147883052e69bb2c22c69b"
 
+"@types/uuid@^3.4.3":
+  version "3.4.3"
+  resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/@types/uuid/-/uuid-3.4.3.tgz#121ace265f5569ce40f4f6d0ff78a338c732a754"
+  dependencies:
+    "@types/node" "*"
+
 abab@^1.0.3:
   version "1.0.4"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -6025,7 +6031,7 @@ uuid@^2.0.2:
   version "2.0.3"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0, uuid@^3.1.0:
+uuid@^3.0.0, uuid@^3.1.0, uuid@^3.2.1:
   version "3.2.1"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
