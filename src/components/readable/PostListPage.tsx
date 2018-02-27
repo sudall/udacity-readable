@@ -138,7 +138,7 @@ class PostListPage extends React.Component<IAllProps, State> {
     }
 
     private static getSortMethodById(id: number | string): PostSortMethod {
-        if (typeof(id) === "string") {
+        if (typeof id === "string") {
             id = parseInt(id);
         }
 
