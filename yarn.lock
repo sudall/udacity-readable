@@ -22,6 +22,10 @@
   version "15.5.2"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/@types/prop-types/-/prop-types-15.5.2.tgz#3c6b8dceb2906cc87fe4358e809f9d20c8d59be1"
 
+"@types/query-string@^5.1.0":
+  version "5.1.0"
+  resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/@types/query-string/-/query-string-5.1.0.tgz#7f40cdea49ddafa0ea4f3db35fb6c24d3bfd4dcc"
+
 "@types/react-dom@^16.0.3":
   version "16.0.3"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/@types/react-dom/-/react-dom-16.0.3.tgz#8accad7eabdab4cca3e1a56f5ccb57de2da0ff64"
@@ -1299,6 +1303,10 @@ debug@^3.1.0:
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
+
+decode-uri-component@^0.2.0:
+  version "0.2.0"
+  resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
 
 deep-equal@^1.0.1:
   version "1.0.1"
@@ -4600,6 +4608,14 @@ query-string@^4.1.0:
   version "4.3.4"
   resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/query-string/-/query-string-4.3.4.tgz#bbb693b9ca915c232515b228b1a02b609043dbeb"
   dependencies:
+    object-assign "^4.1.0"
+    strict-uri-encode "^1.0.0"
+
+query-string@^5.1.0:
+  version "5.1.0"
+  resolved "http://d-jfrog-01.lv9devmbo.com:8081/artifactory/api/npm/npm/query-string/-/query-string-5.1.0.tgz#9583b15fd1307f899e973ed418886426a9976469"
+  dependencies:
+    decode-uri-component "^0.2.0"
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 

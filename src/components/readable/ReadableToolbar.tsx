@@ -7,7 +7,6 @@ import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import Drawer from "material-ui/Drawer";
 import List from "material-ui/List";
-import {Link} from "react-router-dom";
 import Menu from "material-ui-icons/Menu";
 import ListItem from "material-ui/List/ListItem";
 import ListItemText from "material-ui/List/ListItemText";
@@ -84,7 +83,7 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
                             <ListItemText primary="Categories"/>
                         </ListItem>
                         <Divider />
-                        {this.getDrawerListItem("All", "/")}
+                        {this.getDrawerListItem(PostListPageUtils.AllCategory.name, PostListPageUtils.getLinkPath(PostListPageUtils.AllCategory))}
                         {
                             categories.map((category) => (
                                 this.getDrawerListItem(category.name, PostListPageUtils.getLinkPath(category))

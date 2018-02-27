@@ -9,14 +9,18 @@ import CategoryData from "src/data/models/CategoryData";
 import {RouteComponentProps} from "react-router";
 import Typography from "material-ui/Typography";
 import Card from "material-ui/Card";
-import CardActions from "material-ui/Card/CardActions";
 import CardContent from "material-ui/Card/CardContent";
 import PostSortMethod from "src/enums/PostSortMethods";
 import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
+import * as QueryString from "query-string";
+
+interface IQueryStringParameters {
+    sortMethodId: string;
+}
 
 interface IRoutePathParameters {
-    urlPath: string;
+    categoryUrlPath: string;
 }
 
 // props that are provided as parameters
@@ -35,12 +39,12 @@ type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-    sortMethod: PostSortMethod
+
 }
 
 class PostListPage extends React.Component<IAllProps, State> {
     readonly state: State = {
-        sortMethod: PostSortMethod.TimestampNewestFirst
+
     };
 
     static propTypes = {
@@ -48,7 +52,7 @@ class PostListPage extends React.Component<IAllProps, State> {
     };
 
     private getCategoryByUrlPath(urlPath: string) {
-        return this.props.categories.find((category) => {
+        return this.selectableCategories.find((category) => {
             return category.urlPath === urlPath;
         });
     }
@@ -59,35 +63,116 @@ class PostListPage extends React.Component<IAllProps, State> {
         });
     }
 
+    private static readonly DefaultSortMethod = PostSortMethod.TimestampNewestFirst;
+
     private onSortMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const postSortMethods = PostSortMethod.getEnumValues() as PostSortMethod[];
+        const sortMethodId = event.target.value;
+        const newSortMethod = PostListPage.getSortMethodById(sortMethodId);
 
-        let newSortMethod = postSortMethods.find((sortMethod) => {
-            return sortMethod.id.toString() === event.target.value;
-        });
+        const oldQueryStringParameters = this.getQueryStringParameters();
+        const oldSortMethod = PostListPage.getSortMethodById(oldQueryStringParameters.sortMethodId);
 
-        if (newSortMethod == null) {
-            newSortMethod = PostSortMethod.TimestampNewestFirst;
+        const newQueryStringParameters = Object.assign({}, oldQueryStringParameters);
+        newQueryStringParameters.sortMethodId = newSortMethod.id.toString();
+
+        const newQueryString = QueryString.stringify(newQueryStringParameters);
+
+        // if the new sort method is different from the old one...
+        if (oldQueryStringParameters.sortMethodId !== newQueryStringParameters.sortMethodId) {
+            const newHistory = {
+                search: newQueryString
+            };
+
+            // if the sort methods are still the same... (which can happen with the default sort method)
+            if (newSortMethod === oldSortMethod) {
+                // do a replace instead
+                this.props.history.replace(newHistory);
+            } else {
+                this.props.history.push(newHistory);
+            }
         }
-
-        this.setState({
-            sortMethod: newSortMethod
-        });
     };
 
+    private readonly selectableCategories = [PostListPageUtils.AllCategory].concat(this.props.categories);
+
+    private onSelectedCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newSelectedCategoryName = event.target.value;
+
+        let selectedCategory = this.selectableCategories.find((category) => {
+            return category.name === newSelectedCategoryName;
+        });
+
+        selectedCategory = selectedCategory || PostListPageUtils.AllCategory;
+
+        const newCategoryLinkPath = PostListPageUtils.getLinkPath(selectedCategory);
+
+        const oldCategory = this.getCategoryByUrlPath(this.getUrlPathParameters().categoryUrlPath);
+
+        if (selectedCategory !== oldCategory) {
+            this.props.history.push({
+                pathname: newCategoryLinkPath,
+                search: this.props.location.search
+            });
+        }
+    };
+
+    private static getNoPostsMessageElements() {
+        return (
+            <Card>
+                <CardContent>
+                    <Typography>
+                        No posts matching this filter.
+                    </Typography>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    private getQueryStringParameters(): IQueryStringParameters {
+        let queryString = this.props.location.search;
+        return QueryString.parse(queryString);
+    }
+
+    private static getAllSortMethods() {
+        return PostSortMethod.getEnumValues() as PostSortMethod[];
+    }
+
+    private static getSortMethodById(id: number | string): PostSortMethod {
+        if (typeof(id) === "string") {
+            id = parseInt(id);
+        }
+
+        let result = PostSortMethod.getEnumValueById(id) as PostSortMethod;
+
+        if (result == null) {
+            result = PostListPage.DefaultSortMethod;
+        }
+
+        return result;
+    }
+
+    private getSelectedSortMethod(): PostSortMethod {
+        const selectedSortMethodId = this.getQueryStringParameters().sortMethodId;
+
+        return PostListPage.getSortMethodById(selectedSortMethodId);
+    }
+
+    private getUrlPathParameters() {
+        return this.props.match.params;
+    }
+
     render() {
-        const {posts, match} = this.props;
-        const {sortMethod} = this.state;
+        const {posts} = this.props;
+        const {} = this.state;
 
         let postsToShow = posts;
 
-        const categoryUrlPathParameter = match.params.urlPath;
+        const categoryUrlPathParameter = this.getUrlPathParameters().categoryUrlPath;
 
+        const selectedCategory = this.getCategoryByUrlPath(categoryUrlPathParameter) || PostListPageUtils.AllCategory;
         if (categoryUrlPathParameter != null) {
-            const category = this.getCategoryByUrlPath(categoryUrlPathParameter);
-
-            if (category != null) {
-                postsToShow = this.getPostsByCategory(category);
+            if (selectedCategory != null) {
+                postsToShow = this.getPostsByCategory(selectedCategory);
             } else {
                 return (
                     <Typography>{`Could not find category "${categoryUrlPathParameter}"`}</Typography>
@@ -95,7 +180,13 @@ class PostListPage extends React.Component<IAllProps, State> {
             }
         }
 
-        const postSortMethods = PostSortMethod.getEnumValues() as PostSortMethod[];
+        const sortMethod = this.getSelectedSortMethod();
+        const postElements = postsToShow
+            .slice()
+            .sort(sortMethod.sortCompareFunction)
+            .map((post) => {
+                return <Post post={post}/>;
+            });
 
         return (
             <div>
@@ -103,13 +194,30 @@ class PostListPage extends React.Component<IAllProps, State> {
                     <Card>
                         <CardContent>
                             <TextField
+                                label="Category"
+                                select
+                                value={selectedCategory.name}
+                                onChange={this.onSelectedCategoryChange}
+                            >
+                                {
+                                    this.selectableCategories.map((category) => {
+                                        return (
+                                            <MenuItem value={category.name}>
+                                                {category.name}
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </TextField>
+                            <span style={{marginLeft: 15}}/>
+                            <TextField
                                 label="Sort By"
                                 select
                                 value={sortMethod.id.toString()}
                                 onChange={this.onSortMethodChange}
                             >
                                 {
-                                    postSortMethods.map((sortMethod) => {
+                                    PostListPage.getAllSortMethods().map((sortMethod) => {
                                         return (
                                             <MenuItem value={sortMethod.id.toString()}>
                                                 {sortMethod.displayText}
@@ -121,12 +229,7 @@ class PostListPage extends React.Component<IAllProps, State> {
                         </CardContent>
                     </Card>
                     {
-                        postsToShow
-                            .slice()
-                            .sort(sortMethod.sortCompareFunction)
-                            .map((post) => {
-                                return <Post post={post}/>;
-                            })
+                        postsToShow.length !== 0 ? postElements : PostListPage.getNoPostsMessageElements()
                     }
                 </PostAndCommentList>
 
@@ -138,10 +241,19 @@ class PostListPage extends React.Component<IAllProps, State> {
 
 export class PostListPageUtils {
     static getRoutePath() {
-        return "/category/:urlPath";
+        return "/category/:categoryUrlPath";
     }
 
+    public static readonly AllCategory: CategoryData = {
+        name: "All",
+        urlPath: ""
+    };
+
     static getLinkPath(category: CategoryData) {
+        if (category === PostListPageUtils.AllCategory) {
+            return "/";
+        }
+
         return `/category/${category.urlPath}`;
     }
 }

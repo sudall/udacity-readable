@@ -28,6 +28,12 @@ abstract class Enum<TEnum extends Enum<TEnum>> {
     static getEnumValues() {
         return Enum.getOrCreateEnumStaticDetails(this).enumValues;
     }
+
+    static getEnumValueById(id: number) {
+        return this.getEnumValues().find((enumValue) => {
+            return enumValue.id === id;
+        });
+    }
 }
 
 export default Enum;
