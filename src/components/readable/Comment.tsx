@@ -103,11 +103,10 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
-    const upvote = CommentActions.upvote.bind(CommentActions);
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
-        upvote
+        upvote: CommentActions.upvote.bindToDispatch(dispatch)
     };
 };
 

@@ -34,7 +34,7 @@
 //     // POST /comments/:id
 //     // Used for voting on a comment.
 //     // option - [String]: Either "upVote" or "downVote".
-//     vote(commentId: string, direction: "upVote" | "downVote") {
+//     vote(commentId: string, option: "upVote" | "downVote") {
 //
 //     }
 //

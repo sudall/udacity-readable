@@ -14,6 +14,8 @@ import PostSortMethod from "src/enums/PostSortMethods";
 import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
 import * as QueryString from "query-string";
+import PostActions2 from "src/redux-actions/PostActions2";
+import PayloadAction from "src/redux-actions/PayloadAction";
 
 interface IQueryStringParameters {
     sortMethodId: string;
@@ -33,6 +35,7 @@ interface IInjectedProps {
     // someAction: () => any;
     posts: PostData[];
     categories: CategoryData[];
+    getPosts: () => PayloadAction<void>;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -50,6 +53,10 @@ class PostListPage extends React.Component<IAllProps, State> {
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
+
+    componentDidMount() {
+        this.props.getPosts();
+    }
 
     private getCategoryByUrlPath(urlPath: string) {
         return this.selectableCategories.find((category) => {
@@ -270,6 +277,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        getPosts: PostActions2.getAll.bindToDispatch(dispatch)
     };
 };
 

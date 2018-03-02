@@ -5,13 +5,15 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import deepPurple from "material-ui/colors/deepPurple";
 import lime from "material-ui/colors/lime"
 import {Provider} from "react-redux";
-import {Action, applyMiddleware, compose, createStore, Middleware} from "redux";
-import {ActionsObservable, createEpicMiddleware, Epic} from "redux-observable";
-import {Observable} from "rxjs/Rx";
+import {applyMiddleware, compose, createStore, Middleware} from "redux";
+import {combineEpics, createEpicMiddleware} from "redux-observable";
 import CommentData from "src/data/models/CommentData";
 import PostData from "src/data/models/PostData";
 import CategoryData from "src/data/models/CategoryData";
 import ReadableApplicationRouter from "src/components/readable/ReadableApplicationRouter";
+import PayloadAction from "src/redux-actions/PayloadAction";
+import "src/utilities/RxOperators";
+import {ActionMeta} from "src/redux-actions/PostActions2";
 
 export class ApplicationState {
     categories: CategoryData[] = [
@@ -111,10 +113,24 @@ class ReadableApplication extends React.Component<IAllProps, State> {
                     // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
                 }) : compose;
 
-        const rootEpic: Epic<Action, ApplicationState> = (action$: ActionsObservable<Action>): Observable<Action> => {
-            // TODO
-            return Observable.empty<Action>();
-        };
+        // const rootEpic: Epic<PayloadAction<any>, ApplicationState> = (action$: ActionsObservable<PayloadAction<any>>, store, dependencies): Observable<PayloadAction<any>> => {
+        //     // return action$
+        //     //     .ofType(PostActions2.getAll.type)
+        //     //     .mergeMap((action) => {
+        //     //         return PostConnector.getAll()
+        //     //             .map((result) => {
+        //     //                 return PostActions2.getAllCompleted.factory(result);
+        //     //             });
+        //     //     });
+        //
+        //     // const allEpics = ActionMeta.getAllRootEpics();
+        //     //
+        //     // return combineEpics.apply(null, allEpics);
+        // };
+
+        const allEpics = ActionMeta.getAllRootEpics();
+
+        const rootEpic = combineEpics.apply(null, allEpics);
 
         const middleware: Middleware = createEpicMiddleware(rootEpic);
 
@@ -123,12 +139,22 @@ class ReadableApplication extends React.Component<IAllProps, State> {
             // other store enhancers if any
         );
 
-        const reducer = (state = new ApplicationState(), action: Action) => {
-            switch (action.type) {
+        const reducer = (state = new ApplicationState(), action: PayloadAction<any>): ApplicationState => {
+            // switch (action.type) {
+            //     case PostActions2.getAllCompleted.getType(): //PostActions.getFullyQualifiedActionType(PostActions.getAllCompleted):
+            //         return PostActions2.getAllCompleted.reducer(state, action);
+            //     default:
+            //         return state;
+            // }
 
-                default:
-                    return state;
+            const actionMeta = ActionMeta.getActionMetaByType(action.type);
+
+            if (actionMeta == null) {
+                console.warn(`No action found for type: ${action.type}`);
+                return state;
             }
+
+            return actionMeta.reducer(state, action);
         };
 
         return createStore(reducer, enhancer);

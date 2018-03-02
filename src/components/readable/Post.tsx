@@ -10,8 +10,6 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import {PostPageUtils} from "src/components/readable/PostPage";
 import PostData from "src/data/models/PostData";
-import {bindActionCreators} from "redux";
-import PostActions from "src/redux-actions/PostActions";
 import Divider from "material-ui/Divider";
 import Tooltip from "material-ui/Tooltip";
 import DeleteButton from "src/components/readable/DeleteButton";
@@ -22,6 +20,7 @@ import PostUtils from "src/utilities/PostUtils";
 import Comment from "material-ui-icons/Comment";
 import Badge from "material-ui/Badge";
 import ReadableLink from "src/components/readable/ReadableLink";
+import PostActions2 from "src/redux-actions/PostActions2";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -30,8 +29,8 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    upvote: () => any;
-    downvote: () => any;
+    upvote: () => void;
+    downvote: () => void;
     comments: CommentData[];
 }
 
@@ -129,12 +128,9 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
-    const upvote = PostActions.upvote.bind(PostActions);
-    const downvote = PostActions.downvote.bind(PostActions);
-
     return {
-        upvote: bindActionCreators(upvote, dispatch),
-        downvote: bindActionCreators(downvote, dispatch)
+        upvote: PostActions2.upvote.bindToDispatch(dispatch),
+        downvote: PostActions2.downvote.bindToDispatch(dispatch)
     };
 };
 

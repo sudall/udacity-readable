@@ -1,20 +1,20 @@
-import {Observable} from "rxjs/Observable";
 import PostData from "src/data/models/PostData";
 import UniqueIdGenerator from "src/utilities/IdUtils";
 import * as moment from "moment";
+import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
+import {Observable} from "rxjs/Observable";
 
 class PostConnector {
-    // GET /:category/posts	Get all of the posts for a particular category.
-    // getForCategory(categoryName: string): Observable<PostData[]> {
-    //
-    // }
+    // GET /:category/posts
+    // Get all of the posts for a particular category.
+    getForCategory(categoryName: string): Observable<PostData[]> {
+        return ReadableAjaxUtils.get(`/${categoryName}/posts`);
+    }
 
-    // GET /posts	Get all of the posts. Useful for the main page when no category is selected.
+    // GET /posts
+    // Get all of the posts. Useful for the main page when no category is selected.
     getAll(): Observable<PostData[]> {
-        return Observable.ajax.get(`/posts`)
-            .map((response) => {
-                return response.response;
-            });
+        return ReadableAjaxUtils.get("/posts");
     }
 
     // POST /posts	Add a new post.
@@ -33,17 +33,21 @@ class PostConnector {
         const timestamp = moment();
     }
 
-    // GET /posts/:id	Get the details of a single post.
+    // GET /posts/:id
+    // Get the details of a single post.
     // get(postId: string): Observable<PostData> {
     //
     // }
 
-    // POST /posts/:id	Used for voting on a post.	option - [String]: Either "upVote" or "downVote".
-    vote(postId: string, direction: "upVote" | "downVote") {
+    // POST /posts/:id
+    // Used for voting on a post.
+    // option - [String]: Either "upVote" or "downVote".
+    vote(postId: string, option: "upVote" | "downVote") {
 
     }
 
-    // PUT /posts/:id	Edit the details of an existing post.
+    // PUT /posts/:id
+    // Edit the details of an existing post.
     // title - [String]
     // body - [String]
     update(postId: string,
@@ -52,7 +56,8 @@ class PostConnector {
 
     }
 
-    // DELETE /posts/:id	Sets the deleted flag for a post to 'true'.
+    // DELETE /posts/:id
+    // Sets the deleted flag for a post to 'true'.
     // Sets the parentDeleted flag for all child comments to 'true'.
     delete(postId: string) {
 
