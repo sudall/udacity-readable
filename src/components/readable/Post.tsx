@@ -29,8 +29,8 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    upvote: () => void;
-    downvote: () => void;
+    upvote: (post: PostData) => void;
+    downvote: (post: PostData) => void;
     comments: CommentData[];
 }
 
@@ -53,8 +53,12 @@ class Post extends React.Component<IAllProps, State> {
         return PostUtils.getPostComments(post, this.props.comments);
     }
 
+    private upvote = () => {
+        this.props.upvote(this.props.post);
+    };
+
     render() {
-        const {post, upvote} = this.props;
+        const {post} = this.props;
         const {} = this.state;
 
         const commentCount = this.getPostComments(post).length;
@@ -74,7 +78,7 @@ class Post extends React.Component<IAllProps, State> {
                     </CardContent>
                     <Divider/>
                     <CardActions>
-                        <IconButton onClick={upvote}>
+                        <IconButton onClick={this.upvote}>
                             <Tooltip title="Upvote">
                                 <ArrowUpward/>
                             </Tooltip>

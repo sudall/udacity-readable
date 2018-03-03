@@ -268,7 +268,7 @@ export class PostListPageUtils {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        posts: state.posts,
+        posts: Object.values(state.posts),
         categories: state.categories
     }
 };

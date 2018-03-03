@@ -29,12 +29,20 @@ class ReadableAjaxUtils {
         return Observable.ajax.getJSON<TResponse>(fullApiUrl, headers);
     }
 
-    static post(path: string, body?: any, headers: Object = {}): Observable<AjaxResponse> {
+    static post<TResponse>(path: string, body?: any, headers: Object = {}): Observable<TResponse> {
         this.addMinimumRequestHeaders(headers);
+
+        // send body as JSON
+        Object.assign(headers, {
+            'Content-Type': 'application/json'
+        });
 
         const fullApiUrl = this.getFullApiUrl(path);
 
-        return Observable.ajax.post(fullApiUrl, body, headers);
+        return Observable.ajax.post(fullApiUrl, body, headers)
+            .map((ajaxResponse) => {
+                return ajaxResponse.response;
+            });
     }
 }
 

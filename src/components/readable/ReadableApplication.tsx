@@ -14,6 +14,7 @@ import ReadableApplicationRouter from "src/components/readable/ReadableApplicati
 import PayloadAction from "src/redux-actions/PayloadAction";
 import "src/utilities/RxOperators";
 import {ActionMeta} from "src/redux-actions/PostActions2";
+import "core-js";
 
 export class ApplicationState {
     categories: CategoryData[] = [
@@ -31,38 +32,7 @@ export class ApplicationState {
         }
     ];
 
-    posts: PostData[] = [
-        {
-            author: "Some author",
-            body: "Some body",
-            category: "Some category 1",
-            deleted: false,
-            id: "someUniqueId",
-            timestamp: 123412312,
-            title: "Some Title",
-            voteScore: 1
-        },
-        {
-            author: "Some author 2",
-            body: "Some body 2",
-            category: "Some category 1",
-            deleted: false,
-            id: "someUniqueId2",
-            timestamp: 123412313,
-            title: "Some Title 2",
-            voteScore: 10
-        },
-        {
-            author: "Some author 3",
-            body: "Some body 3",
-            category: "Some category 2",
-            deleted: false,
-            id: "someUniqueId3",
-            timestamp: 123412314,
-            title: "Some Title 3",
-            voteScore: 100
-        }
-    ];
+    posts: {[postId: number]: PostData} = {};
 
     comments: CommentData[] = [
         {

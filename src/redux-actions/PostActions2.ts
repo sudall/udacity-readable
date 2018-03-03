@@ -88,7 +88,7 @@ export abstract class ActionMeta<TActionPayload> {
 }
 
 class GetAll extends ActionMeta<void> {
-    epic: Epic<PayloadAction<void>, ApplicationState> = (action$: ActionsObservable<PayloadAction<void>>): Observable<PayloadAction<any>> => {
+    epic = (action$: ActionsObservable<PayloadAction<void>>): Observable<PayloadAction<any>> => {
         return action$
             .mergeMap((action) => {
                 return PostConnector.getAll()
@@ -101,17 +101,45 @@ class GetAll extends ActionMeta<void> {
 
 class GetAllCompleted extends ActionMeta<PostData[]> {
     reducer(state: ApplicationState, action: PayloadAction<PostData[]>): ApplicationState {
+        const postsArray = action.payload;
+
+        const posts: {[postId: number]: PostData} = {};
+        Object.values(postsArray).forEach((post) => {
+            posts[post.id] = post;
+        });
+
         return <ApplicationState>{
             ...state,
-            posts: action.payload
+            posts
         };
     }
 }
 
 class Upvote extends ActionMeta<PostData> {
+    epic = (action$: ActionsObservable<PayloadAction<PostData>>): Observable<PayloadAction<any>> => {
+        return action$
+            .mergeMap((action: PayloadAction<PostData>) => {
+                const postId = action.payload.id;
+                return PostConnector.vote(postId, "upVote")
+                    .map((result) => {
+                        return instance.upvoteCompleted.factory(result);
+                    });
+            });
+    }
 }
 
-class UpvoteCompleted extends ActionMeta<void> {
+class UpvoteCompleted extends ActionMeta<PostData> {
+    reducer(state: ApplicationState, action: PayloadAction<PostData>): ApplicationState {
+        const newPostData = action.payload;
+
+        return {
+            ...state,
+            posts: {
+                ...state.posts,
+                [newPostData.id]: newPostData
+            }
+        };
+    }
 }
 
 class Downvote extends ActionMeta<PostData> {

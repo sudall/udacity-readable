@@ -42,8 +42,10 @@ class PostConnector {
     // POST /posts/:id
     // Used for voting on a post.
     // option - [String]: Either "upVote" or "downVote".
-    vote(postId: string, option: "upVote" | "downVote") {
-
+    vote(postId: string, option: "upVote" | "downVote"): Observable<PostData> {
+        return ReadableAjaxUtils.post(`/posts/${postId}`, {
+            option
+        });
     }
 
     // PUT /posts/:id
