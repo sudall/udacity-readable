@@ -1,5 +1,5 @@
 import PayloadAction from "src/redux-actions/PayloadAction";
-import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {ApplicationState, PostIdToPostDataMap} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
 import {Dispatch} from "react-redux";
 import {Action, bindActionCreators} from "redux";
@@ -30,10 +30,11 @@ export abstract class ActionSet implements ActionSet {
     }
 }
 
-export abstract class ActionMeta<TActionPayload> {
-    private static TypeToActionMetaMap = new Map<string, ActionMeta<any>>();
+export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationState> {
+    private static TypeToActionMetaMap = new Map<string, ActionMeta<any, any>>();
 
     readonly type: string;
+    readonly reducerStateKey: keyof ApplicationState;
 
     constructor(readonly actionSet: ActionSet) {
         const type = this.type = `${this.actionSet.namespace}.${this.constructor.name}`;
@@ -56,7 +57,7 @@ export abstract class ActionMeta<TActionPayload> {
             });
     }
 
-    reducer(state: ApplicationState, action: PayloadAction<TActionPayload>): ApplicationState {
+    reducer(state: TReducerState, action: PayloadAction<TActionPayload>): TReducerState {
         return state;
     }
 
@@ -128,16 +129,15 @@ class Upvote extends ActionMeta<PostData> {
     }
 }
 
-class UpvoteCompleted extends ActionMeta<PostData> {
-    reducer(state: ApplicationState, action: PayloadAction<PostData>): ApplicationState {
+class UpvoteCompleted extends ActionMeta<PostData, PostIdToPostDataMap> {
+    readonly reducerStateKey = "posts";
+
+    reducer(state: PostIdToPostDataMap, action: PayloadAction<PostData>): PostIdToPostDataMap {
         const newPostData = action.payload;
 
         return {
             ...state,
-            posts: {
-                ...state.posts,
-                [newPostData.id]: newPostData
-            }
+            [newPostData.id]: newPostData
         };
     }
 }

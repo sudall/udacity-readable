@@ -16,6 +16,8 @@ import "src/utilities/RxOperators";
 import {ActionMeta} from "src/redux-actions/PostActions2";
 import "core-js";
 
+export type PostIdToPostDataMap = {[postId: number]: PostData};
+
 export class ApplicationState {
     categories: CategoryData[] = [
         {
@@ -32,7 +34,7 @@ export class ApplicationState {
         }
     ];
 
-    posts: {[postId: number]: PostData} = {};
+    posts: PostIdToPostDataMap = {};
 
     comments: CommentData[] = [
         {
@@ -124,6 +126,16 @@ class ReadableApplication extends React.Component<IAllProps, State> {
                 return state;
             }
 
+            // if there is a state key specified...
+            if (actionMeta.reducerStateKey != undefined) {
+                // only run the reducer against that part of state
+                return {
+                    ...state,
+                    [actionMeta.reducerStateKey]: actionMeta.reducer(state[actionMeta.reducerStateKey], action)
+                }
+            }
+
+            // otherwise, run the reducer on the entire state
             return actionMeta.reducer(state, action);
         };
 
