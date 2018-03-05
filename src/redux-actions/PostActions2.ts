@@ -143,6 +143,30 @@ class UpvoteCompleted extends ActionMeta<PostData> {
 }
 
 class Downvote extends ActionMeta<PostData> {
+    epic = (action$: ActionsObservable<PayloadAction<PostData>>): Observable<PayloadAction<any>> => {
+        return action$
+            .mergeMap((action: PayloadAction<PostData>) => {
+                const postId = action.payload.id;
+                return PostConnector.vote(postId, "downVote")
+                    .map((result) => {
+                        return instance.downvoteCompleted.factory(result);
+                    });
+            });
+    }
+}
+
+class DownvoteCompleted extends ActionMeta<PostData> {
+    reducer(state: ApplicationState, action: PayloadAction<PostData>): ApplicationState {
+        const newPostData = action.payload;
+
+        return {
+            ...state,
+            posts: {
+                ...state.posts,
+                [newPostData.id]: newPostData
+            }
+        };
+    }
 }
 
 class PostActions2 extends ActionSet {
@@ -155,6 +179,8 @@ class PostActions2 extends ActionSet {
     upvoteCompleted = new UpvoteCompleted(this);
 
     downvote = new Downvote(this);
+
+    downvoteCompleted = new DownvoteCompleted(this);
 }
 
 const instance = new PostActions2();

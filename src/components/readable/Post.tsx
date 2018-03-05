@@ -57,6 +57,10 @@ class Post extends React.Component<IAllProps, State> {
         this.props.upvote(this.props.post);
     };
 
+    private downvote = () => {
+        this.props.downvote(this.props.post);
+    };
+
     render() {
         const {post} = this.props;
         const {} = this.state;
@@ -88,7 +92,7 @@ class Post extends React.Component<IAllProps, State> {
                                 {post.voteScore}
                             </Typography>
                         </Tooltip>
-                        <IconButton>
+                        <IconButton onClick={this.downvote}>
                             <Tooltip title="Downvote">
                                 <ArrowDownward/>
                             </Tooltip>
