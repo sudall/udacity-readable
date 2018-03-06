@@ -10,7 +10,7 @@ import {RouteComponentProps} from "react-router";
 import Typography from "material-ui/Typography";
 import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
-import PostSortMethod from "src/enums/PostSortMethods";
+import PostSortMethod from "src/enums/PostSortMethod";
 import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
 import * as QueryString from "query-string";

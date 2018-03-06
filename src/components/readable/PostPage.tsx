@@ -15,6 +15,7 @@ import PostUtils from "src/utilities/PostUtils";
 import ReadableLink from "src/components/readable/ReadableLink";
 import PostActions2 from "src/redux-actions/PostActions2";
 import CommentActions from "src/redux-actions/CommentActions";
+import CommentSortMethod from "src/enums/CommentSortMethods";
 
 interface IRoutePathParameters {
     id: string;
@@ -123,7 +124,11 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     const postId = PostPage.getPostIdParameter(ownProps);
     const post = state.posts[postId];
 
-    const comments = PostUtils.getPostComments(postId, Object.values(state.comments));
+    let comments = PostUtils.getPostComments(postId, Object.values(state.comments));
+
+    comments = comments
+        .slice()
+        .sort(CommentSortMethod.VoteScoreHighestToLowest.sortCompareFunction);
 
     return {
         // Add mapped properties here
