@@ -17,6 +17,7 @@ import {ActionMeta} from "src/redux-actions/PostActions2";
 import "core-js";
 
 export type PostIdToPostDataMap = {[postId: number]: PostData};
+export type CommentIdToCommentDataMap = {[commentId: number]: CommentData};
 
 export class ApplicationState {
     categories: CategoryData[] = [
@@ -36,18 +37,7 @@ export class ApplicationState {
 
     posts: PostIdToPostDataMap = {};
 
-    comments: CommentData[] = [
-        {
-            parentId: "someUniqueId",
-            author: "Some guy on the internet",
-            body: "Body stuff",
-            deleted: false,
-            id: "someCommentId",
-            parentDeleted: false,
-            timestamp: 123412313,
-            voteScore: 12
-        }
-    ];
+    comments: CommentIdToCommentDataMap = {};
 }
 
 // props that are provided as parameters

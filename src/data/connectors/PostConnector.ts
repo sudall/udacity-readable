@@ -35,9 +35,9 @@ class PostConnector {
 
     // GET /posts/:id
     // Get the details of a single post.
-    // get(postId: string): Observable<PostData> {
-    //
-    // }
+    get(postId: string): Observable<PostData> {
+        return ReadableAjaxUtils.get(`/posts/${postId}`);
+    }
 
     // POST /posts/:id
     // Used for voting on a post.

@@ -3,18 +3,18 @@ import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
 import Post from "src/components/readable/Post";
-import {Link} from "react-router-dom";
 import {RouteComponentProps} from "react-router";
 import Typography from "material-ui/Typography";
 import CommentData from "src/data/models/CommentData";
 import Comment from "src/components/readable/Comment";
 import PostAndCommentList from "src/components/readable/PostAndCommentList";
-import Paper from "material-ui/Paper";
 import Card from "material-ui/Card";
 import CardContent from "material-ui/Card/CardContent";
 import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
 import PostUtils from "src/utilities/PostUtils";
 import ReadableLink from "src/components/readable/ReadableLink";
+import PostActions2 from "src/redux-actions/PostActions2";
+import CommentActions from "src/redux-actions/CommentActions";
 
 interface IRoutePathParameters {
     id: string;
@@ -28,7 +28,10 @@ interface IOwnProps extends RouteComponentProps<IRoutePathParameters> {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    posts: PostData[];
+    getPost: () => void;
+    post: PostData;
+
+    getComments: () => void;
     comments: CommentData[];
 }
 
@@ -46,14 +49,9 @@ class PostPage extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
-    private getPostById(postId: string) {
-        return this.props.posts.find((post) => {
-           return postId === post.id;
-        });
-    }
-
-    private getPostComments(post: PostData): CommentData[] {
-        return PostUtils.getPostComments(post, this.props.comments);
+    componentDidMount() {
+        this.props.getPost();
+        this.props.getComments();
     }
 
     private static getCommentElements(comments: CommentData[]) {
@@ -71,31 +69,25 @@ class PostPage extends React.Component<IAllProps, State> {
             return noCommentsYetMessage;
         }
 
-        return (
+        return comments.map((comment) => (
             <div style={{marginLeft: 16}}>
-                {
-                    comments.map((comment) =>
-                        (
-                            <Comment comment={comment}/>
-                        )
-                    )
-                }
+                <Comment comment={comment}/>
             </div>
-        )
+        ));
+    }
+
+    static getPostIdParameter(props: IOwnProps) {
+        return props.match.params.id;
     }
 
     render() {
-        const {match} = this.props;
+        const {match, post, comments} = this.props;
 
         const postId = match.params.id;
-
-        const post = this.getPostById(postId);
 
         if (post == null) {
             return (<Typography>{`No post with id "${postId}" found.`}</Typography>);
         }
-
-        const comments = this.getPostComments(post);
 
         return (
             <div>
@@ -128,17 +120,36 @@ export class PostPageUtils {
 
 
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
+    const postId = PostPage.getPostIdParameter(ownProps);
+    const post = state.posts[postId];
+
+    const comments = PostUtils.getPostComments(postId, Object.values(state.comments));
+
     return {
         // Add mapped properties here
-        posts: state.posts,
-        comments: state.comments
+        comments,
+        post
     }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const postId = PostPage.getPostIdParameter(ownProps);
+
+    const getPostById = PostActions2.get.bindToDispatch(dispatch);
+    const getPost = () => {
+        return getPostById(postId);
+    };
+
+    const getCommentsForPost = CommentActions.getForPost.bindToDispatch(dispatch);
+    const getComments = () => {
+        return getCommentsForPost(postId);
+    };
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        getPost,
+        getComments
     };
 };
 

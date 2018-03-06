@@ -92,6 +92,13 @@ export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationStat
     }
 }
 
+const updatePostInState = (newPostData: PostData, state: PostsState): PostsState => {
+    return {
+        ...state,
+        [newPostData.id]: newPostData
+    };
+};
+
 class GetAll extends ActionMeta<void, PostsState> {
     epic = (action$: ActionsObservable<PayloadAction<void>>): Observable<PayloadAction<any>> => {
         return action$
@@ -134,10 +141,7 @@ class UpvoteCompleted extends ActionMeta<PostData, PostsState> {
     reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
         const newPostData = action.payload;
 
-        return {
-            ...state,
-            [newPostData.id]: newPostData
-        };
+        return updatePostInState(newPostData, state);
     }
 }
 
@@ -158,10 +162,28 @@ class DownvoteCompleted extends ActionMeta<PostData, PostsState> {
     reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
         const newPostData = action.payload;
 
-        return {
-            ...state,
-            [newPostData.id]: newPostData
-        };
+        return updatePostInState(newPostData, state);
+    }
+}
+
+class Get extends ActionMeta<string, PostsState> {
+    epic = (action$: ActionsObservable<PayloadAction<string>>): Observable<PayloadAction<any>> => {
+        return action$
+            .mergeMap((action: PayloadAction<string>) => {
+                const postId = action.payload;
+                return PostConnector.get(postId)
+                    .map((result) => {
+                        return instance.getCompleted.factory(result);
+                    });
+            });
+    }
+}
+
+class GetCompleted extends ActionMeta<PostData, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
+        const newPostData = action.payload;
+
+        return updatePostInState(newPostData, state);
     }
 }
 
@@ -169,15 +191,15 @@ type PostsState = PostIdToPostDataMap;
 
 class PostActions2 extends ActionSet<"posts", PostsState> {
     getAll = new GetAll(this);
-
     getAllCompleted = new GetAllCompleted(this);
 
-    upvote = new Upvote(this);
+    get = new Get(this);
+    getCompleted = new GetCompleted(this);
 
+    upvote = new Upvote(this);
     upvoteCompleted = new UpvoteCompleted(this);
 
     downvote = new Downvote(this);
-
     downvoteCompleted = new DownvoteCompleted(this);
 }
 
