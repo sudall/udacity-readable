@@ -15,8 +15,6 @@ import Tooltip from "material-ui/Tooltip";
 import DeleteButton from "src/components/readable/DeleteButton";
 import EditPostButton from "src/components/readable/EditPostButton";
 import * as moment from "moment";
-import CommentData from "src/data/models/CommentData";
-import PostUtils from "src/utilities/PostUtils";
 import Comment from "material-ui-icons/Comment";
 import Badge from "material-ui/Badge";
 import ReadableLink from "src/components/readable/ReadableLink";
@@ -31,7 +29,6 @@ interface IOwnProps {
 interface IInjectedProps {
     upvote: (post: PostData) => void;
     downvote: (post: PostData) => void;
-    comments: CommentData[];
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -49,10 +46,6 @@ class Post extends React.Component<IAllProps, State> {
         // TODO dispatch delete post action
     };
 
-    private getPostComments(post: PostData): CommentData[] {
-        return PostUtils.getPostComments(post, this.props.comments);
-    }
-
     private upvote = () => {
         this.props.upvote(this.props.post);
     };
@@ -65,7 +58,7 @@ class Post extends React.Component<IAllProps, State> {
         const {post} = this.props;
         const {} = this.state;
 
-        const commentCount = this.getPostComments(post).length;
+        const commentCount = post.commentCount;
 
         return (
             <div>
@@ -131,7 +124,6 @@ class Post extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        comments: state.comments
     }
 };
 

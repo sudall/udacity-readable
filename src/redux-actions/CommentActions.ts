@@ -1,5 +1,10 @@
 import CommentData from "src/data/models/CommentData";
 import {ActionMeta, ActionSet} from "src/redux-actions/PostActions2";
+import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {ActionsObservable, Epic} from "redux-observable";
+import PayloadAction from "src/redux-actions/PayloadAction";
+import {Observable} from "rxjs/Rx";
+import PostConnector from "src/data/connectors/PostConnector";
 
 // class CommentActions extends ActionGenerator {
 //     @actionCreator
@@ -8,12 +13,19 @@ import {ActionMeta, ActionSet} from "src/redux-actions/PostActions2";
 //     }
 // }
 
-class Upvote extends ActionMeta<CommentData> {
-
+class Upvote extends ActionMeta<CommentData, CommentsState> {
+    // epic = (action$: ActionsObservable<PayloadAction<CommentData>>): Observable<PayloadAction<any>> => {
+    //     return action$
+    //         .mergeMap((action) => {
+    //             return CommentConnector.
+    //         });
+    // };
 }
 
-class CommentActions extends ActionSet {
+type CommentsState = CommentData[];
+
+class CommentActions extends ActionSet<"comments", CommentsState> {
     upvote = new Upvote(this);
 }
 
-export default new CommentActions();
+export default new CommentActions("comments");

@@ -2,17 +2,20 @@ import PayloadAction from "src/redux-actions/PayloadAction";
 import {ApplicationState, PostIdToPostDataMap} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
 import {Dispatch} from "react-redux";
-import {Action, bindActionCreators} from "redux";
+import {bindActionCreators} from "redux";
 import {ActionsObservable, Epic} from "redux-observable";
 import {Observable} from "rxjs/Rx";
 import PostConnector from "src/data/connectors/PostConnector";
 
-export abstract class ActionSet implements ActionSet {
+export class ActionSet<TReducerStateKey extends keyof ApplicationState, TReducerState extends ApplicationState[TReducerStateKey]> {
     private static readonly TakenNamespaces = new Set<string>();
 
     readonly namespace = this.constructor.name;
 
-    constructor() {
+    // this is only used to enforce the reducer state type. TypeScript seems to ignore type parameters if they aren't used
+    private readonly reducerStateType: TReducerState;
+
+    constructor(public readonly reducerStateKey: TReducerStateKey) {
         const namespace = this.namespace;
         if (ActionSet.isNamespaceTaken(namespace)) {
             throw new Error(`Namespace '${namespace}' is already taken.`);
@@ -36,8 +39,9 @@ export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationStat
     readonly type: string;
     readonly reducerStateKey: keyof ApplicationState;
 
-    constructor(readonly actionSet: ActionSet) {
+    constructor(readonly actionSet: ActionSet<any, TReducerState>) {
         const type = this.type = `${this.actionSet.namespace}.${this.constructor.name}`;
+        this.reducerStateKey = actionSet.reducerStateKey;
 
         if (ActionMeta.TypeToActionMetaMap.has(type)) {
             throw new Error(`An action with this type already exists: ${type}`);
@@ -88,7 +92,7 @@ export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationStat
     }
 }
 
-class GetAll extends ActionMeta<void> {
+class GetAll extends ActionMeta<void, PostsState> {
     epic = (action$: ActionsObservable<PayloadAction<void>>): Observable<PayloadAction<any>> => {
         return action$
             .mergeMap((action) => {
@@ -100,23 +104,20 @@ class GetAll extends ActionMeta<void> {
     };
 }
 
-class GetAllCompleted extends ActionMeta<PostData[]> {
-    reducer(state: ApplicationState, action: PayloadAction<PostData[]>): ApplicationState {
+class GetAllCompleted extends ActionMeta<PostData[], PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData[]>): PostsState {
         const postsArray = action.payload;
 
-        const posts: {[postId: number]: PostData} = {};
+        const posts: PostsState = {};
         Object.values(postsArray).forEach((post) => {
             posts[post.id] = post;
         });
 
-        return <ApplicationState>{
-            ...state,
-            posts
-        };
+        return posts;
     }
 }
 
-class Upvote extends ActionMeta<PostData> {
+class Upvote extends ActionMeta<PostData, PostsState> {
     epic = (action$: ActionsObservable<PayloadAction<PostData>>): Observable<PayloadAction<any>> => {
         return action$
             .mergeMap((action: PayloadAction<PostData>) => {
@@ -129,10 +130,8 @@ class Upvote extends ActionMeta<PostData> {
     }
 }
 
-class UpvoteCompleted extends ActionMeta<PostData, PostIdToPostDataMap> {
-    readonly reducerStateKey = "posts";
-
-    reducer(state: PostIdToPostDataMap, action: PayloadAction<PostData>): PostIdToPostDataMap {
+class UpvoteCompleted extends ActionMeta<PostData, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
         const newPostData = action.payload;
 
         return {
@@ -142,7 +141,7 @@ class UpvoteCompleted extends ActionMeta<PostData, PostIdToPostDataMap> {
     }
 }
 
-class Downvote extends ActionMeta<PostData> {
+class Downvote extends ActionMeta<PostData, PostsState> {
     epic = (action$: ActionsObservable<PayloadAction<PostData>>): Observable<PayloadAction<any>> => {
         return action$
             .mergeMap((action: PayloadAction<PostData>) => {
@@ -155,21 +154,20 @@ class Downvote extends ActionMeta<PostData> {
     }
 }
 
-class DownvoteCompleted extends ActionMeta<PostData> {
-    reducer(state: ApplicationState, action: PayloadAction<PostData>): ApplicationState {
+class DownvoteCompleted extends ActionMeta<PostData, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
         const newPostData = action.payload;
 
         return {
             ...state,
-            posts: {
-                ...state.posts,
-                [newPostData.id]: newPostData
-            }
+            [newPostData.id]: newPostData
         };
     }
 }
 
-class PostActions2 extends ActionSet {
+type PostsState = PostIdToPostDataMap;
+
+class PostActions2 extends ActionSet<"posts", PostsState> {
     getAll = new GetAll(this);
 
     getAllCompleted = new GetAllCompleted(this);
@@ -183,6 +181,6 @@ class PostActions2 extends ActionSet {
     downvoteCompleted = new DownvoteCompleted(this);
 }
 
-const instance = new PostActions2();
+const instance = new PostActions2("posts");
 
 export default instance;
