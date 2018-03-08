@@ -1,5 +1,5 @@
 import PostData from "src/data/models/PostData";
-import UniqueIdGenerator from "src/utilities/IdUtils";
+import IdUtils from "src/utilities/IdUtils";
 import * as moment from "moment";
 import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
 import {Observable} from "rxjs/Observable";
@@ -29,8 +29,17 @@ class PostConnector {
         author: string,
         category: string) {
 
-        const id = UniqueIdGenerator.getUniqueId();
-        const timestamp = moment();
+        const id = IdUtils.getUniqueId();
+        const timestamp = moment().unix();
+
+        return ReadableAjaxUtils.post("/posts", {
+            id,
+            timestamp,
+            title,
+            body,
+            author,
+            category
+        });
     }
 
     // GET /posts/:id
@@ -55,14 +64,17 @@ class PostConnector {
     update(postId: string,
         title: string,
         body: string) {
-
+        return ReadableAjaxUtils.put(`/posts/${postId}`, {
+            title,
+            body
+        });
     }
 
     // DELETE /posts/:id
     // Sets the deleted flag for a post to 'true'.
     // Sets the parentDeleted flag for all child comments to 'true'.
     delete(postId: string) {
-
+        return ReadableAjaxUtils.delete(`/posts/${postId}`);
     }
 }
 

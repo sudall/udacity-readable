@@ -44,6 +44,30 @@ class ReadableAjaxUtils {
                 return ajaxResponse.response;
             });
     }
+
+    static put<TResponse>(path: string, body?: any, headers: Object = {}): Observable<TResponse> {
+        this.addMinimumRequestHeaders(headers);
+
+        // send body as JSON
+        Object.assign(headers, {
+            'Content-Type': 'application/json'
+        });
+
+        const fullApiUrl = this.getFullApiUrl(path);
+
+        return Observable.ajax.post(fullApiUrl, body, headers)
+            .map((ajaxResponse) => {
+                return ajaxResponse.response;
+            });
+    }
+
+    static delete(path: string, headers: Object = {}) {
+        this.addMinimumRequestHeaders(headers);
+
+        const fullApiUrl = this.getFullApiUrl(path);
+
+        return Observable.ajax.delete(fullApiUrl, headers);
+    }
 }
 
 export default ReadableAjaxUtils;
