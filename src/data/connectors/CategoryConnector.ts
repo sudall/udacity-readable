@@ -6,7 +6,10 @@ class CategoryConnector {
     // GET /categories
     // Get all of the categories available for the app. List is found in categories.js. Feel free to extend this list as you desire.
     getAll(): Observable<CategoryData[]> {
-        return ReadableAjaxUtils.get(`/categories`);
+        return ReadableAjaxUtils.get(`/categories`)
+            .map((response: {categories: CategoryData[]}) => {
+                return response.categories;
+            });
     }
 }
 

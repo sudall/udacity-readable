@@ -18,22 +18,10 @@ import "core-js";
 
 export type PostIdToPostDataMap = {[postId: number]: PostData};
 export type CommentIdToCommentDataMap = {[commentId: number]: CommentData};
+export type CategoryPathToCategoryDataMap = {[categoryPath: string]: CategoryData};
 
 export class ApplicationState {
-    categories: CategoryData[] = [
-        {
-            name: "Some category 1",
-            urlPath: "Some category 1"
-        },
-        {
-            name: "Some category 2",
-            urlPath: "Some category 2"
-        },
-        {
-            name: "Some category 3",
-            urlPath: "Some category 3"
-        }
-    ];
+    categories: CategoryPathToCategoryDataMap = {};
 
     posts: PostIdToPostDataMap = {};
 

@@ -16,7 +16,6 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    categories: CategoryData[];
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -29,10 +28,6 @@ class State {
 class EditCommentForm extends React.Component<IAllProps, State> {
     readonly state = new State();
 
-    constructor(props: IAllProps) {
-        super(props);
-    }
-
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
@@ -42,7 +37,7 @@ class EditCommentForm extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {categories, comment} = this.props;
+        const {comment} = this.props;
         const {} = this.state;
 
         return (
@@ -55,12 +50,6 @@ class EditCommentForm extends React.Component<IAllProps, State> {
                     value={comment.body}
                     onChange={this.getOnTextFieldChangeCallback("body")}
                 />
-                <TextField
-                    label="Author"
-                    fullWidth
-                    value={comment.author}
-                    onChange={this.getOnTextFieldChangeCallback("author")}
-                />
             </div>
         );
     }
@@ -69,7 +58,6 @@ class EditCommentForm extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        categories: state.categories
     }
 };
 

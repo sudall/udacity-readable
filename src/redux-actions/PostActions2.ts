@@ -187,6 +187,49 @@ class GetCompleted extends ActionMeta<PostData, PostsState> {
     }
 }
 
+class GetForCategory extends ActionMeta<string, PostsState> {
+    epic = (action$: ActionsObservable<PayloadAction<string>>): Observable<PayloadAction<any>> => {
+        return action$
+            .mergeMap((action: PayloadAction<string>) => {
+                const categoryPath = action.payload;
+                return PostConnector.getForCategory(categoryPath)
+                    .map((result) => {
+                        return instance.getForCategoryCompleted.factory(result);
+                    });
+            });
+    }
+}
+
+class GetForCategoryCompleted extends ActionMeta<PostData[], PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData[]>): PostsState {
+        const result = <PostsState>{
+            ...state,
+        };
+
+        const posts = action.payload;
+
+        posts.forEach((post) => {
+            result[post.id] = post;
+        });
+
+        return result;
+    }
+}
+
+class GetForCategoryOrAll extends ActionMeta<string, PostsState> {
+    epic = (action$: ActionsObservable<PayloadAction<string>>): Observable<PayloadAction<any>> => {
+        return action$
+            .map((action) => {
+                const categoryPath = action.payload;
+                if (categoryPath == "") {
+                    return instance.getAll.factory(undefined);
+                }
+
+                return instance.getForCategory.factory(categoryPath);
+            });
+    }
+}
+
 type PostsState = PostIdToPostDataMap;
 
 class PostActions2 extends ActionSet<"posts", PostsState> {
@@ -195,6 +238,9 @@ class PostActions2 extends ActionSet<"posts", PostsState> {
 
     get = new Get(this);
     getCompleted = new GetCompleted(this);
+
+    getForCategory = new GetForCategory(this);
+    getForCategoryCompleted = new GetForCategoryCompleted(this);
 
     upvote = new Upvote(this);
     upvoteCompleted = new UpvoteCompleted(this);

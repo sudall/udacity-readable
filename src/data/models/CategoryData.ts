@@ -1,6 +1,6 @@
 class CategoryData {
     name: string;
-    urlPath: string;
+    path: string;
 }
 
 export default CategoryData;

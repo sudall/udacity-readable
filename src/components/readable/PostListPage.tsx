@@ -15,7 +15,7 @@ import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
 import * as QueryString from "query-string";
 import PostActions2 from "src/redux-actions/PostActions2";
-import PayloadAction from "src/redux-actions/PayloadAction";
+import CategoryActions from "src/redux-actions/CategoryActions";
 
 interface IQueryStringParameters {
     sortMethodId: string;
@@ -35,7 +35,9 @@ interface IInjectedProps {
     // someAction: () => any;
     posts: PostData[];
     categories: CategoryData[];
-    getPosts: () => PayloadAction<void>;
+    getPostsForCategory: (categoryName: string) => void;
+    getAllCategories: () => void;
+    getAllPosts: () => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -55,18 +57,23 @@ class PostListPage extends React.Component<IAllProps, State> {
     };
 
     componentDidMount() {
-        this.props.getPosts();
+        this.getPostsForCategoryUrlPathParameter();
+        this.props.getAllCategories();
     }
 
-    private getCategoryByUrlPath(urlPath: string) {
+    private getCategoryByPath(path: string) {
         return this.selectableCategories.find((category) => {
-            return category.urlPath === urlPath;
+            return category.path === path;
         });
     }
 
-    private getPostsByCategory(category: CategoryData) {
+    private getPostsByCategoryPath(categoryPath: string) {
+        if (categoryPath === PostListPageUtils.AllCategory.path) {
+            return this.props.posts;
+        }
+
         return this.props.posts.filter((post) => {
-            return post.category === category.name;
+            return post.category === categoryPath;
         });
     }
 
@@ -100,7 +107,9 @@ class PostListPage extends React.Component<IAllProps, State> {
         }
     };
 
-    private readonly selectableCategories = [PostListPageUtils.AllCategory].concat(this.props.categories);
+    private get selectableCategories() {
+        return [PostListPageUtils.AllCategory].concat(this.props.categories);
+    }
 
     private onSelectedCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newSelectedCategoryName = event.target.value;
@@ -113,13 +122,16 @@ class PostListPage extends React.Component<IAllProps, State> {
 
         const newCategoryLinkPath = PostListPageUtils.getLinkPath(selectedCategory);
 
-        const oldCategory = this.getCategoryByUrlPath(this.getUrlPathParameters().categoryUrlPath);
+        const oldCategory = this.getCategoryByPath(this.getCategoryPathParameter());
 
         if (selectedCategory !== oldCategory) {
             this.props.history.push({
                 pathname: newCategoryLinkPath,
                 search: this.props.location.search
             });
+
+            // get the posts for the new category
+            this.getPostsForCategoryPath(selectedCategory.path);
         }
     };
 
@@ -168,26 +180,45 @@ class PostListPage extends React.Component<IAllProps, State> {
         return this.props.match.params;
     }
 
+    private getCategoryPathParameter() {
+        let categoryUrlPathParameter = this.getUrlPathParameters().categoryUrlPath;
+
+        if (categoryUrlPathParameter == null) {
+            categoryUrlPathParameter = "";
+        }
+
+        return categoryUrlPathParameter;
+    }
+
+    private getPostsForCategoryUrlPathParameter() {
+        let categoryPath = this.getCategoryPathParameter();
+
+        this.getPostsForCategoryPath(categoryPath);
+    }
+
+    private getPostsForCategoryPath(categoryPath: string) {
+        if (categoryPath === PostListPageUtils.AllCategory.path) {
+            this.props.getAllPosts();
+        } else {
+            this.props.getPostsForCategory(categoryPath);
+        }
+    }
+
     render() {
-        const {posts} = this.props;
+        const {} = this.props;
         const {} = this.state;
 
-        let postsToShow = posts;
+        const categoryPathParameter = this.getCategoryPathParameter();
 
-        const categoryUrlPathParameter = this.getUrlPathParameters().categoryUrlPath;
-
-        const selectedCategory = this.getCategoryByUrlPath(categoryUrlPathParameter) || PostListPageUtils.AllCategory;
-        if (categoryUrlPathParameter != null) {
-            if (selectedCategory != null) {
-                postsToShow = this.getPostsByCategory(selectedCategory);
-            } else {
-                return (
-                    <Typography>{`Could not find category "${categoryUrlPathParameter}"`}</Typography>
-                );
-            }
+        const selectedCategory = this.getCategoryByPath(categoryPathParameter);
+        if (selectedCategory == null) {
+            return (
+                <Typography>{`Could not find category "${categoryPathParameter}"`}</Typography>
+            );
         }
 
         const sortMethod = this.getSelectedSortMethod();
+        const postsToShow = this.getPostsByCategoryPath(categoryPathParameter);
         const postElements = postsToShow
             .slice()
             .sort(sortMethod.sortCompareFunction)
@@ -253,7 +284,7 @@ export class PostListPageUtils {
 
     public static readonly AllCategory: CategoryData = {
         name: "All",
-        urlPath: ""
+        path: ""
     };
 
     static getLinkPath(category: CategoryData) {
@@ -261,7 +292,7 @@ export class PostListPageUtils {
             return "/";
         }
 
-        return `/category/${category.urlPath}`;
+        return `/category/${category.path}`;
     }
 }
 
@@ -269,7 +300,7 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
         posts: Object.values(state.posts),
-        categories: state.categories
+        categories: Object.values(state.categories)
     }
 };
 
@@ -277,7 +308,9 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
-        getPosts: PostActions2.getAll.bindToDispatch(dispatch)
+        getPostsForCategory: PostActions2.getForCategory.bindToDispatch(dispatch),
+        getAllPosts: PostActions2.getAll.bindToDispatch(dispatch),
+        getAllCategories: CategoryActions.getAll.bindToDispatch(dispatch)
     };
 };
 

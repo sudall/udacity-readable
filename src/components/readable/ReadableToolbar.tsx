@@ -14,6 +14,7 @@ import CategoryData from "src/data/models/CategoryData";
 import {PostListPageUtils} from "src/components/readable/PostListPage";
 import Divider from "material-ui/Divider";
 import ReadableLink from "src/components/readable/ReadableLink";
+import CategoryActions from "src/redux-actions/CategoryActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -24,6 +25,7 @@ interface IOwnProps {
 interface IInjectedProps {
     // someAction: () => any;
     categories: CategoryData[];
+    getAllCategories: () => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -39,6 +41,10 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
+
+    componentDidMount() {
+        this.props.getAllCategories();
+    }
 
     toggleDrawer = () => {
         this.setState((previousState) => {
@@ -99,14 +105,17 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        categories: state.categories
+        categories: Object.values(state.categories)
     }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const getAllCategories = CategoryActions.getAll.bindToDispatch(dispatch);
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        getAllCategories
     };
 };
 

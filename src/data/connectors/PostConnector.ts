@@ -7,8 +7,8 @@ import {Observable} from "rxjs/Observable";
 class PostConnector {
     // GET /:category/posts
     // Get all of the posts for a particular category.
-    getForCategory(categoryName: string): Observable<PostData[]> {
-        return ReadableAjaxUtils.get(`/${categoryName}/posts`);
+    getForCategory(categoryPath: string): Observable<PostData[]> {
+        return ReadableAjaxUtils.get(`/${categoryPath}/posts`);
     }
 
     // GET /posts
