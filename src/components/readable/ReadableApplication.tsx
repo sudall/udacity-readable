@@ -63,21 +63,6 @@ class ReadableApplication extends React.Component<IAllProps, State> {
                     // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
                 }) : compose;
 
-        // const rootEpic: Epic<PayloadAction<any>, ApplicationState> = (action$: ActionsObservable<PayloadAction<any>>, store, dependencies): Observable<PayloadAction<any>> => {
-        //     // return action$
-        //     //     .ofType(PostActions2.getAll.type)
-        //     //     .mergeMap((action) => {
-        //     //         return PostConnector.getAll()
-        //     //             .map((result) => {
-        //     //                 return PostActions2.getAllCompleted.factory(result);
-        //     //             });
-        //     //     });
-        //
-        //     // const allEpics = ActionMeta.getAllRootEpics();
-        //     //
-        //     // return combineEpics.apply(null, allEpics);
-        // };
-
         const allEpics = ActionMeta.getAllRootEpics();
 
         const rootEpic = combineEpics.apply(null, allEpics);
@@ -90,13 +75,6 @@ class ReadableApplication extends React.Component<IAllProps, State> {
         );
 
         const reducer = (state = new ApplicationState(), action: PayloadAction<any>): ApplicationState => {
-            // switch (action.type) {
-            //     case PostActions2.getAllCompleted.getType(): //PostActions.getFullyQualifiedActionType(PostActions.getAllCompleted):
-            //         return PostActions2.getAllCompleted.reducer(state, action);
-            //     default:
-            //         return state;
-            // }
-
             const actionMeta = ActionMeta.getActionMetaByType(action.type);
 
             if (actionMeta == null) {
