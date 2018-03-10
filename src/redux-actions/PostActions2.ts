@@ -2,7 +2,7 @@ import PayloadAction from "src/redux-actions/PayloadAction";
 import {ApplicationState, PostIdToPostDataMap} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
 import {Dispatch} from "react-redux";
-import {bindActionCreators} from "redux";
+import {bindActionCreators, MiddlewareAPI} from "redux";
 import {ActionsObservable, Epic} from "redux-observable";
 import {Observable} from "rxjs/Rx";
 import PostConnector from "src/data/connectors/PostConnector";
@@ -31,6 +31,13 @@ export class ActionSet<TReducerStateKey extends keyof ApplicationState, TReducer
     private static takeNamespace(namespace: string) {
         this.TakenNamespaces.add(namespace);
     }
+}
+
+interface FilteredEpic<TAction extends PayloadAction<any>, TStore, TDependencies = any, TOutputAction extends TAction = TAction> {
+    (filteredAction$: ActionsObservable<TAction>,
+        store: MiddlewareAPI<TStore>,
+        dependencies: TDependencies,
+        allAction$: ActionsObservable<PayloadAction<any>>): Observable<TOutputAction>;
 }
 
 export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationState> {
@@ -69,10 +76,13 @@ export abstract class ActionMeta<TActionPayload, TReducerState = ApplicationStat
         const filteredAction$ = action$
             .ofType(this.type);
 
-        return this.epic(filteredAction$, store, dependencies);
+        return this.epic(filteredAction$, store, dependencies, action$);
     };
 
-    epic: Epic<PayloadAction<TActionPayload>, ApplicationState> = (action$: ActionsObservable<PayloadAction<TActionPayload>>): Observable<PayloadAction<any>> => {
+    epic: FilteredEpic<PayloadAction<TActionPayload>, ApplicationState> = (filteredAction$: ActionsObservable<PayloadAction<TActionPayload>>,
+        store,
+        dependencies,
+        allAction$): Observable<PayloadAction<any>> => {
         return Observable.empty<PayloadAction<any>>();
     };
 
