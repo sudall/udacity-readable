@@ -23,6 +23,7 @@ class EpicUtils {
         completedAction: ActionMeta<TCompletedActionPayload, any>) {
 
         return action$
+            .debounceTime(100)
             .switchMap((action: PayloadAction<TActionPayload>) => {
                 const payload = action.payload;
                 return call(payload)
