@@ -1,25 +1,21 @@
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
 import {ApplicationState, PostIdToPostDataMap} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
-import {ActionsObservable} from "redux-observable";
 import {Observable} from "rxjs/Rx";
 import PostConnector from "src/data/connectors/PostConnector";
 import ReduxStateUtils from "src/utilities/ReduxStateUtils";
 import ActionMeta, {FilteredEpic} from "src/redux-actions/framework/ActionMeta";
 import ActionSet from "src/redux-actions/framework/ActionSet";
+import EpicUtils from "src/utilities/EpicUtils";
 
 type Dependencies = {postConnector: PostConnector};
 
 class GetAll extends ActionMeta<void, PostsState> {
     epic: FilteredEpic<PayloadAction<void>, ApplicationState, Dependencies> =
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
-            return action$
-                .mergeMap((action) => {
-                    return postConnector.getAll()
-                        .map((result) => {
-                            return instance.getAllCompleted.factory(result);
-                        });
-                });
+            return EpicUtils.restEpicLatestCallOnly(action$,
+                postConnector.getAll,
+                instance.getAllCompleted);
         };
 }
 
@@ -33,14 +29,9 @@ class GetAllCompleted extends ActionMeta<PostData[], PostsState> {
 class Upvote extends ActionMeta<PostData, PostsState> {
     epic: FilteredEpic<PayloadAction<PostData>, ApplicationState, Dependencies> =
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
-        return action$
-            .mergeMap((action: PayloadAction<PostData>) => {
-                const postId = action.payload.id;
-                return postConnector.vote(postId, "upVote")
-                    .map((result) => {
-                        return instance.upvoteCompleted.factory(result);
-                    });
-            });
+        return EpicUtils.restEpicConcurrentCalls(action$,
+            (payload) => postConnector.vote(payload.id, "upVote"),
+            instance.upvoteCompleted);
     }
 }
 
@@ -54,14 +45,9 @@ class UpvoteCompleted extends ActionMeta<PostData, PostsState> {
 class Downvote extends ActionMeta<PostData, PostsState> {
     epic: FilteredEpic<PayloadAction<PostData>, ApplicationState, Dependencies> =
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
-        return action$
-            .mergeMap((action: PayloadAction<PostData>) => {
-                const postId = action.payload.id;
-                return postConnector.vote(postId, "downVote")
-                    .map((result) => {
-                        return instance.downvoteCompleted.factory(result);
-                    });
-            });
+        return EpicUtils.restEpicConcurrentCalls(action$,
+            (payload) => postConnector.vote(payload.id, "downVote"),
+            instance.downvoteCompleted);
     }
 }
 
@@ -72,32 +58,12 @@ class DownvoteCompleted extends ActionMeta<PostData, PostsState> {
     }
 }
 
-//TODO
-const getBasicRestEpic = <TActionPayload, TCompletedActionPayload>(action$: ActionsObservable<PayloadAction<TActionPayload>>,
-    call: (payload: TActionPayload) => Observable<TCompletedActionPayload>,
-    completedAction: ActionMeta<TCompletedActionPayload>) => {
-
-    return action$
-        .mergeMap((action: PayloadAction<TActionPayload>) => {
-            const payload = action.payload;
-            return call(payload)
-                .map((result) => {
-                    return completedAction.factory(result);
-                });
-        });
-};
-
 class Get extends ActionMeta<string, PostsState> {
     epic: FilteredEpic<PayloadAction<string>, ApplicationState, Dependencies> =
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
-        return action$
-            .mergeMap((action: PayloadAction<string>) => {
-                const postId = action.payload;
-                return postConnector.get(postId)
-                    .map((result) => {
-                        return instance.getCompleted.factory(result);
-                    });
-            });
+        return EpicUtils.restEpicConcurrentCalls(action$,
+            postConnector.get,
+            instance.getCompleted);
     }
 }
 
@@ -111,35 +77,27 @@ class GetCompleted extends ActionMeta<PostData, PostsState> {
 class GetForCategory extends ActionMeta<string, PostsState> {
     epic: FilteredEpic<PayloadAction<string>, ApplicationState, Dependencies> =
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
-        return action$
-            .mergeMap((action: PayloadAction<string>) => {
-                const categoryPath = action.payload;
-                return postConnector.getForCategory(categoryPath)
-                    .map((result) => {
-                        return instance.getForCategoryCompleted.factory(result);
+        return EpicUtils.restEpicLatestCallOnly(action$,
+            (category) => {
+                return postConnector.getForCategory(category)
+                    .map((posts) => {
+                        return {
+                            category,
+                            posts
+                        };
                     });
-            });
+            },
+            instance.getForCategoryCompleted);
     }
 }
 
-class GetForCategoryCompleted extends ActionMeta<PostData[], PostsState> {
-    reducer(state: PostsState, action: PayloadAction<PostData[]>): PostsState {
-        const posts = action.payload;
-        return ReduxStateUtils.updateItemsInStateByIdKey(posts, state);
-    }
-}
+class GetForCategoryCompleted extends ActionMeta<{category: string, posts: PostData[]}, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<{category: string, posts: PostData[]}>): PostsState {
+        const payload = action.payload;
 
-class GetForCategoryOrAll extends ActionMeta<string, PostsState> {
-    epic = (action$: ActionsObservable<PayloadAction<string>>): Observable<PayloadAction<any>> => {
-        return action$
-            .map((action) => {
-                const categoryPath = action.payload;
-                if (categoryPath == "") {
-                    return instance.getAll.factory(undefined);
-                }
-
-                return instance.getForCategory.factory(categoryPath);
-            });
+        return ReduxStateUtils.updateItemsInStateByIdKey(payload.posts,
+            state,
+            post => post.category !== payload.category);
     }
 }
 

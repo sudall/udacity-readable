@@ -6,19 +6,16 @@ import {ApplicationState, CategoryPathToCategoryDataMap} from "src/components/re
 import ReduxStateUtils from "src/utilities/ReduxStateUtils";
 import ActionMeta, {FilteredEpic} from "src/redux-actions/framework/ActionMeta";
 import ActionSet from "src/redux-actions/framework/ActionSet";
+import EpicUtils from "src/utilities/EpicUtils";
 
 type Dependencies = {categoryConnector: CategoryConnector};
 
 class GetAll extends ActionMeta<void, CategoriesState> {
     epic: FilteredEpic<PayloadAction<void>, ApplicationState, Dependencies> =
         (action$, store, {categoryConnector}, allAction$): Observable<PayloadAction<any>> => {
-        return action$
-            .mergeMap((action) => {
-                return categoryConnector.getAll()
-                    .map((result) => {
-                        return instance.getAllCompleted.factory(result);
-                    });
-            });
+        return EpicUtils.restEpicLatestCallOnly(action$,
+            categoryConnector.getAll,
+            instance.getAllCompleted);
     }
 }
 

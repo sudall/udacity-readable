@@ -92,7 +92,7 @@ class ReadableApplication extends React.Component<IAllProps, State> {
             }
 
             // if there is a state key specified...
-            if (actionMeta.reducerStateKey != undefined) {
+            if (actionMeta.reducerStateKey != null) {
                 // only run the reducer against that part of state
                 return {
                     ...state,
