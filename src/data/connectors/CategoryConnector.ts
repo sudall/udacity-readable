@@ -3,6 +3,8 @@ import {Observable} from "rxjs/Observable";
 import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
 
 class CategoryConnector {
+    static readonly instance = new CategoryConnector();
+
     // GET /categories
     // Get all of the categories available for the app. List is found in categories.js. Feel free to extend this list as you desire.
     getAll(): Observable<CategoryData[]> {
@@ -13,4 +15,4 @@ class CategoryConnector {
     }
 }
 
-export default new CategoryConnector();
+export default CategoryConnector;

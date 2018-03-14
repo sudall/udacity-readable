@@ -5,6 +5,8 @@ import IdUtils from "src/utilities/IdUtils";
 import * as moment from "moment";
 
 class CommentConnector {
+    static readonly instance = new CommentConnector();
+
     // GET /posts/:id/comments
     // Get all the comments for a single post.
     getForPost(postId: string): Observable<CommentData[]> {
@@ -43,7 +45,7 @@ class CommentConnector {
     // POST /comments/:id
     // Used for voting on a comment.
     // option - [String]: Either "upVote" or "downVote".
-    vote(commentId: string, option: "upVote" | "downVote") {
+    vote(commentId: string, option: "upVote" | "downVote"): Observable<CommentData> {
         return ReadableAjaxUtils.post(`/comments/${commentId}`, {
             option
         });
@@ -71,4 +73,4 @@ class CommentConnector {
     }
 }
 
-export default new CommentConnector();
+export default CommentConnector;

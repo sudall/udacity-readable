@@ -5,6 +5,8 @@ import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
 import {Observable} from "rxjs/Observable";
 
 class PostConnector {
+    static readonly instance: PostConnector = new PostConnector();
+
     // GET /:category/posts
     // Get all of the posts for a particular category.
     getForCategory(categoryPath: string): Observable<PostData[]> {
@@ -78,4 +80,4 @@ class PostConnector {
     }
 }
 
-export default new PostConnector();
+export default PostConnector;

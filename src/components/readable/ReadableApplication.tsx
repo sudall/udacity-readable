@@ -11,10 +11,13 @@ import CommentData from "src/data/models/CommentData";
 import PostData from "src/data/models/PostData";
 import CategoryData from "src/data/models/CategoryData";
 import ReadableApplicationRouter from "src/components/readable/ReadableApplicationRouter";
-import PayloadAction from "src/redux-actions/PayloadAction";
+import PayloadAction from "src/redux-actions/framework/PayloadAction";
 import "src/utilities/RxOperators";
-import {ActionMeta} from "src/redux-actions/PostActions2";
 import "core-js";
+import PostConnector from "src/data/connectors/PostConnector";
+import CommentConnector from "src/data/connectors/CommentConnector";
+import CategoryConnector from "src/data/connectors/CategoryConnector";
+import ActionMeta from "src/redux-actions/framework/ActionMeta";
 
 export type PostIdToPostDataMap = {[postId: number]: PostData};
 export type CommentIdToCommentDataMap = {[commentId: number]: CommentData};
@@ -67,7 +70,13 @@ class ReadableApplication extends React.Component<IAllProps, State> {
 
         const rootEpic = combineEpics.apply(null, allEpics);
 
-        const middleware: Middleware = createEpicMiddleware(rootEpic);
+        const middleware: Middleware = createEpicMiddleware(rootEpic, {
+            dependencies: {
+                postConnector: PostConnector.instance,
+                commentConnector: CommentConnector.instance,
+                categoryConnector: CategoryConnector.instance
+            }
+        });
 
         const enhancer = composeEnhancers(
             applyMiddleware(middleware),
