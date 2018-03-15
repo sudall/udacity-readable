@@ -6,6 +6,7 @@ import Add from "material-ui-icons/Add";
 import PostData from "src/data/models/PostData";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
+import PostActions2, {CreateParams} from "src/redux-actions/PostActions2";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -15,6 +16,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
+    createPost: (createPostParams: CreateParams) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -53,7 +55,19 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
     };
 
     private saveNewPost = () => {
-        // TODO dispatch save post action
+        const {title, author, body, category} = this.state.newPost;
+
+        const onCreateCompleted = () => {
+            this.closeDialog();
+        };
+
+        this.props.createPost({
+            title,
+            author,
+            body,
+            category,
+            onCompleted: onCreateCompleted
+        });
     };
 
     render() {
@@ -94,9 +108,12 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const createPost = PostActions2.create.bindToDispatch(dispatch);
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        createPost
     };
 };
 

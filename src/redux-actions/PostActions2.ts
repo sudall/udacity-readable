@@ -101,6 +101,92 @@ class GetForCategoryCompleted extends ActionMeta<{category: string, posts: PostD
     }
 }
 
+export interface CreateParams {
+    title: string;
+    body: string;
+    author: string;
+    category: string;
+    onCompleted: () => void;
+}
+
+class Create extends ActionMeta<CreateParams, PostsState> {
+    epic: FilteredEpic<PayloadAction<CreateParams>, ApplicationState, Dependencies> =
+        (filteredAction$,
+            store,
+            {postConnector},
+            allAction$): Observable<PayloadAction<any>> => {
+            return EpicUtils.restEpicConcurrentCalls(filteredAction$,
+                    (params) => {
+                        return postConnector.create(params.title, params.body, params.author, params.category)
+                            .map((post) => {
+                                const onCompleted = params.onCompleted;
+                                return {
+                                    onCompleted,
+                                    post
+                                }
+                            });
+                    },
+                    instance.createCompleted
+                )
+        };
+}
+
+interface CreateCompletedParams {
+    onCompleted: () => void;
+    post: PostData;
+}
+
+class CreateCompleted extends ActionMeta<CreateCompletedParams, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<CreateCompletedParams>): PostsState {
+        const params = action.payload;
+
+        params.onCompleted();
+
+        return ReduxStateUtils.updateItemInStateByIdKey(params.post, state);
+    }
+}
+
+interface UpdateParams {
+    postId: string;
+    title: string;
+    body: string;
+}
+
+class Update extends ActionMeta<UpdateParams, PostsState> {
+    epic: FilteredEpic<PayloadAction<UpdateParams>, ApplicationState, Dependencies> =
+        (filteredAction$,
+            store,
+            {postConnector},
+            allAction$): Observable<PayloadAction<any>> => {
+            return EpicUtils.restEpicConcurrentCalls(filteredAction$,
+                params => postConnector.update(params.postId, params.title, params.body),
+                instance.updateCompleted);
+        };
+}
+
+class UpdateCompleted extends ActionMeta<PostData, PostsState> {
+    reducer(state: PostsState, action: PayloadAction<PostData>): PostsState {
+        const post = action.payload;
+        return ReduxStateUtils.updateItemInStateByIdKey(post, state);
+    }
+}
+
+class Delete extends ActionMeta<string, PostsState> {
+    epic: FilteredEpic<PayloadAction<string>, ApplicationState, Dependencies> =
+        (filteredAction$,
+            store,
+            {postConnector},
+            allAction$): Observable<PayloadAction<any>> => {
+            return EpicUtils.restEpicConcurrentCalls(filteredAction$,
+                postConnector.delete,
+                instance.deleteCompleted);
+        };
+}
+
+class DeleteCompleted extends ActionMeta<any, PostsState> {
+
+}
+
 type PostsState = PostIdToPostDataMap;
 
 class PostActions2 extends ActionSet<"posts", PostsState> {
@@ -118,6 +204,15 @@ class PostActions2 extends ActionSet<"posts", PostsState> {
 
     downvote = new Downvote(this);
     downvoteCompleted = new DownvoteCompleted(this);
+
+    create = new Create(this);
+    createCompleted = new CreateCompleted(this);
+
+    update = new Update(this);
+    updateCompleted = new UpdateCompleted(this);
+
+    delete = new Delete(this);
+    deleteCompleted = new DeleteCompleted(this);
 }
 
 const instance = new PostActions2("posts");
