@@ -30,6 +30,7 @@ class ${NAME} extends React.Component<IAllProps, State> {
     };
 
     render() {
+        const {} = this;
         const {} = this.props;
         const {} = this.state;
 

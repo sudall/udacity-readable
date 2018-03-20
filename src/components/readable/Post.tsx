@@ -18,7 +18,7 @@ import * as moment from "moment";
 import Comment from "material-ui-icons/Comment";
 import Badge from "material-ui/Badge";
 import ReadableLink from "src/components/readable/ReadableLink";
-import PostActions2 from "src/redux-actions/PostActions2";
+import PostActions2 from "src/redux-actions/PostActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -44,6 +44,7 @@ class Post extends React.Component<IAllProps, State> {
 
     private deletePost = () => {
         // TODO dispatch delete post action
+        // this.props.delete(this.props.post);
     };
 
     private upvote = () => {

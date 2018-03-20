@@ -14,7 +14,7 @@ import PostSortMethod from "src/enums/PostSortMethod";
 import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
 import * as QueryString from "query-string";
-import PostActions2 from "src/redux-actions/PostActions2";
+import PostActions2 from "src/redux-actions/PostActions";
 import CategoryActions from "src/redux-actions/CategoryActions";
 
 interface IQueryStringParameters {
@@ -299,7 +299,7 @@ export class PostListPageUtils {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        posts: Object.values(state.posts),
+        posts: Object.values(state.postState.posts),
         categories: Object.values(state.categories)
     }
 };

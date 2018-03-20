@@ -13,6 +13,7 @@ interface IOwnProps {
     onSave: () => void;
     open: boolean;
     onClose: () => void;
+    disabled: boolean;
 }
 
 // props that are provided via injection
@@ -38,8 +39,17 @@ class EditDialog extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
+    private onClose = () => {
+        if (this.props.disabled) {
+            return;
+        }
+
+        this.props.onClose();
+    };
+
     render() {
-        const {title, open, onClose, onSave, children} = this.props;
+        const {onClose} = this;
+        const {title, open, onSave, children, disabled} = this.props;
         const {} = this.state;
 
         return (
@@ -51,10 +61,15 @@ class EditDialog extends React.Component<IAllProps, State> {
                     {children}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose} color="secondary">
+                    <Button onClick={onClose}
+                            color="secondary"
+                            disabled={disabled}>
                         Cancel
                     </Button>
-                    <Button onClick={onSave} color="primary" variant="raised">
+                    <Button onClick={onSave}
+                            color="primary"
+                            variant="raised"
+                            disabled={disabled}>
                         Save
                     </Button>
                 </DialogActions>

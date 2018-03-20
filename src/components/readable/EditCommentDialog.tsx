@@ -16,6 +16,7 @@ interface IOwnProps {
     onClose: () => void;
     comment: CommentData,
     onChange: (comment: CommentData) => void;
+    disabled: boolean;
 }
 
 // props that are provided via injection
@@ -38,7 +39,7 @@ class EditCommentDialog extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {open, onClose, onSave, onChange, comment, title} = this.props;
+        const {open, onClose, onSave, onChange, comment, title, disabled} = this.props;
         const {} = this.state;
 
         return (
@@ -46,8 +47,11 @@ class EditCommentDialog extends React.Component<IAllProps, State> {
                         onClose={onClose}
                         onSave={onSave}
                         title={title}
+                        disabled={disabled}
             >
-                <EditCommentForm comment={comment} onChange={onChange} />
+                <EditCommentForm comment={comment}
+                                 onChange={onChange}
+                                 disabled={disabled}/>
             </EditDialog>
         );
     }

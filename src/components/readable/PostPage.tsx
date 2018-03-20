@@ -13,7 +13,7 @@ import CardContent from "material-ui/Card/CardContent";
 import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
 import PostUtils from "src/utilities/PostUtils";
 import ReadableLink from "src/components/readable/ReadableLink";
-import PostActions2 from "src/redux-actions/PostActions2";
+import PostActions2 from "src/redux-actions/PostActions";
 import CommentActions from "src/redux-actions/CommentActions";
 import CommentSortMethod from "src/enums/CommentSortMethods";
 
@@ -122,9 +122,9 @@ export class PostPageUtils {
 
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     const postId = PostPage.getPostIdParameter(ownProps);
-    const post = state.posts[postId];
+    const post = state.postState.posts[postId];
 
-    let comments = PostUtils.getPostComments(postId, Object.values(state.comments));
+    let comments = PostUtils.getPostComments(postId, Object.values(state.commentState.comments));
 
     comments = comments
         .slice()

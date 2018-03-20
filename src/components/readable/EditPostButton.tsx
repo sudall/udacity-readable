@@ -64,7 +64,8 @@ class EditPostButton extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {} = this.props;
+        const {onEditPostFormChange, closeEditDialog, onSave} = this;
+        // const {isSavingPost} = this.props;
         const {editedPost, editPostDialogOpen} = this.state;
 
         return (
@@ -76,10 +77,12 @@ class EditPostButton extends React.Component<IAllProps, State> {
                 </IconButton>
                 <EditPostDialog post={editedPost}
                                 open={editPostDialogOpen}
-                                onChange={this.onEditPostFormChange}
-                                onClose={this.closeEditDialog}
-                                onSave={this.onSave}
+                                onChange={onEditPostFormChange}
+                                onClose={closeEditDialog}
+                                onSave={onSave}
                                 title="Edit Post"
+                                disabled={false}
+                                fieldsToEdit={["title", "body"]}
                 />
             </div>
         );

@@ -16,6 +16,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
+    isSavingComment: boolean;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -64,7 +65,8 @@ class EditCommentButton extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {} = this.props;
+        const {closeEditDialog, onSave, onEditCommentFormChange} = this;
+        const {isSavingComment} = this.props;
         const {editCommentDialogOpen, editedComment} = this.state;
 
         return (
@@ -75,11 +77,12 @@ class EditCommentButton extends React.Component<IAllProps, State> {
                     </Tooltip>
                 </IconButton>
                 <EditCommentDialog open={editCommentDialogOpen}
-                                   onClose={this.closeEditDialog}
-                                   onSave={this.onSave}
+                                   onClose={closeEditDialog}
+                                   onSave={onSave}
                                    title="Edit Comment"
                                    comment={editedComment}
-                                   onChange={this.onEditCommentFormChange}/>
+                                   onChange={onEditCommentFormChange}
+                                   disabled={isSavingComment}/>
             </div>
         );
     }
@@ -88,6 +91,7 @@ class EditCommentButton extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
+        isSavingComment: state.commentState.isSaving
     }
 };
 

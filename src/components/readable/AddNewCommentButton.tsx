@@ -15,6 +15,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
+    isSavingComment: boolean;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -28,7 +29,7 @@ class State {
 class AddNewCommentButton extends React.Component<IAllProps, State> {
     readonly state: State = {
         dialogOpen: false,
-        newComment: new CommentData()
+        newComment: new CommentData(),
     };
 
     static propTypes = {
@@ -60,7 +61,7 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {} = this.props;
+        const {isSavingComment} = this.props;
         const {dialogOpen, newComment} = this.state;
 
         return (
@@ -84,6 +85,7 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
                                 onClose={this.closeDialog}
                                 onSave={this.saveNewComment}
                                 title="Add a New Comment"
+                                disabled={isSavingComment}
                 />
             </div>
         );
@@ -93,6 +95,7 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
+        isSavingComment: state.commentState.isSaving
     }
 };
 

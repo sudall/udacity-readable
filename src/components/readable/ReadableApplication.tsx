@@ -19,16 +19,52 @@ import CommentConnector from "src/data/connectors/CommentConnector";
 import CategoryConnector from "src/data/connectors/CategoryConnector";
 import ActionMeta from "src/redux-actions/framework/ActionMeta";
 
+
+
 export type PostIdToPostDataMap = {[postId: number]: PostData};
+export type PostState = {
+    posts: PostIdToPostDataMap;
+    // isSaving: boolean;
+}
+
 export type CommentIdToCommentDataMap = {[commentId: number]: CommentData};
+export type CommentState = {
+    comments: CommentIdToCommentDataMap;
+    isSaving: boolean;
+}
+
 export type CategoryPathToCategoryDataMap = {[categoryPath: string]: CategoryData};
+export type CategoryState = {
+    categories: CategoryPathToCategoryDataMap;
+}
+
+export type OperationIdToOperationStatusMap = {[operationId: string]: OperationStatus};
+export type OperationStatus = {
+    hasStarted: boolean;
+    isPending: boolean;
+    error: Error | null;
+};
+export type OperationState = {
+    operations: OperationIdToOperationStatusMap;
+}
 
 export class ApplicationState {
     categories: CategoryPathToCategoryDataMap = {};
 
-    posts: PostIdToPostDataMap = {};
+    postState: PostState = {
+        posts: {},
+        // isSaving: false,
+        // operations: {}
+    };
 
-    comments: CommentIdToCommentDataMap = {};
+    commentState: CommentState = {
+        comments: {},
+        isSaving: false
+    };
+
+    operationState: OperationState = {
+        operations: {}
+    }
 }
 
 // props that are provided as parameters

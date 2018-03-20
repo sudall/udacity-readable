@@ -1,12 +1,17 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
-import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {
+    ApplicationState, OperationIdToOperationStatusMap, OperationState,
+    OperationStatus
+} from "src/components/readable/ReadableApplication";
 import Button from "material-ui/Button";
 import Add from "material-ui-icons/Add";
 import PostData from "src/data/models/PostData";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
-import PostActions2, {CreateParams} from "src/redux-actions/PostActions2";
+import PostActions2, {CreateParams} from "src/redux-actions/PostActions";
+import IdUtils from "src/utilities/IdUtils";
+import {OperationUtils} from "src/redux-actions/OperationActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -17,21 +22,31 @@ interface IOwnProps {
 interface IInjectedProps {
     // someAction: () => any;
     createPost: (createPostParams: CreateParams) => void;
+    operationState: OperationState;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
 class State {
-    dialogOpen: boolean = false;
-    newPost: PostData = new PostData();
+    dialogOpen: boolean;
+    newPost: PostData;
+    savingOperationId: string;
 }
 
 class AddNewPostButton extends React.Component<IAllProps, State> {
-    readonly state = new State();
+    readonly state: State = this.freshState;
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
+    };
+
+    private get freshState() {
+        return {
+            dialogOpen: false,
+            newPost: new PostData(),
+            savingOperationId: IdUtils.getUniqueId()
+        };
     };
 
     private setDialogOpen(value: boolean) {
@@ -57,22 +72,45 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
     private saveNewPost = () => {
         const {title, author, body, category} = this.state.newPost;
 
-        const onCreateCompleted = () => {
-            this.closeDialog();
-        };
+        // create an operation ID so that we can look up the status in the state
+        const operationId = IdUtils.getUniqueId();
+        this.setState({
+            savingOperationId: operationId
+        });
 
         this.props.createPost({
             title,
             author,
             body,
             category,
-            onCompleted: onCreateCompleted
+            operationId
         });
     };
+
+    private getSavingOperationStatus(): OperationStatus {
+        return OperationUtils.getOperationStatus(this.state.savingOperationId, this.props.operationState);
+    }
+
+    private resetState() {
+        this.setState(this.freshState);
+    }
 
     render() {
         const {} = this.props;
         const {dialogOpen, newPost} = this.state;
+
+        const savingOperationStatus = this.getSavingOperationStatus();
+
+        const isSavingPost = savingOperationStatus.hasStarted
+            && savingOperationStatus.isPending;
+
+        const hasFinishedSavingPost = savingOperationStatus.hasStarted
+            && !savingOperationStatus.isPending
+            && savingOperationStatus.error == null;
+
+        if (hasFinishedSavingPost) {
+            this.resetState();
+        }
 
         return (
             <div>
@@ -94,6 +132,8 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
                                 onChange={this.onEditPostFormChange}
                                 onClose={this.closeDialog}
                                 onSave={this.saveNewPost}
+                                disabled={isSavingPost}
+                                fieldsToEdit={["title", "body", "author", "category"]}
                                 title="Add a New Post"
                 />
             </div>
@@ -104,6 +144,7 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
+        operationState: state.operationState
     }
 };
 

@@ -13,6 +13,8 @@ interface IOwnProps {
     onClose: () => void;
     post: PostData,
     onChange: (post: PostData) => void;
+    disabled: boolean;
+    fieldsToEdit: (keyof PostData)[];
 }
 
 // props that are provided via injection
@@ -35,16 +37,20 @@ class EditPostDialog extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {open, onClose, onSave, onChange, post, title} = this.props;
+        const {open, onClose, onSave, onChange, post, title, disabled, fieldsToEdit} = this.props;
         const {} = this.state;
 
         return (
             <EditDialog open={open}
                         onClose={onClose}
                         onSave={onSave}
+                        disabled={disabled}
                         title={title}
             >
-                <EditPostForm post={post} onChange={onChange} />
+                <EditPostForm post={post}
+                              onChange={onChange}
+                              disabled={disabled}
+                              fieldsToEdit={fieldsToEdit}/>
             </EditDialog>
         );
     }

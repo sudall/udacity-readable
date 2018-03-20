@@ -32,6 +32,9 @@ class EpicUtils {
                     });
             });
     };
+
+    //TODO
+    // static startOperationEpic
 }
 
 export default EpicUtils;

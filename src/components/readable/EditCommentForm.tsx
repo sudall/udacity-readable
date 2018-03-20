@@ -11,6 +11,7 @@ import FormUtils from "src/utilities/FormUtils";
 interface IOwnProps {
     comment: CommentData,
     onChange: (comment: CommentData) => void;
+    disabled: boolean;
 }
 
 // props that are provided via injection
@@ -37,7 +38,7 @@ class EditCommentForm extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {comment} = this.props;
+        const {comment, disabled} = this.props;
         const {} = this.state;
 
         return (
@@ -49,6 +50,7 @@ class EditCommentForm extends React.Component<IAllProps, State> {
                     multiline
                     value={comment.body}
                     onChange={this.getOnTextFieldChangeCallback("body")}
+                    disabled={disabled}
                 />
             </div>
         );

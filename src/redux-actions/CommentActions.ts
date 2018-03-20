@@ -1,5 +1,5 @@
 import CommentData from "src/data/models/CommentData";
-import {ApplicationState, CommentIdToCommentDataMap} from "src/components/readable/ReadableApplication";
+import {ApplicationState, CommentIdToCommentDataMap, CommentState} from "src/components/readable/ReadableApplication";
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
 import {Observable} from "rxjs/Rx";
 import CommentConnector from "src/data/connectors/CommentConnector";
@@ -10,16 +10,23 @@ import EpicUtils from "src/utilities/EpicUtils";
 
 type Dependencies = {commentConnector: CommentConnector};
 
-// class CommentActions extends ActionGenerator {
-//     @actionCreator
-//     upvote(comment: CommentData): PayloadAction<CommentData> {
-//         return this.createAction(this.upvote, comment);
-//     }
-// }
+class CommentStateUtils {
+    static setComments(comments: CommentIdToCommentDataMap, state: CommentState) {
+        return {
+            ...state,
+            comments
+        }
+    }
 
+    static setIsSaving(isSaving: boolean, state: CommentState): CommentState {
+        return {
+            ...state,
+            isSaving
+        }
+    }
+}
 
-
-class Upvote extends ActionMeta<CommentData, CommentsState> {
+class Upvote extends ActionMeta<CommentData, CommentState> {
     epic: FilteredEpic<PayloadAction<CommentData>, ApplicationState, Dependencies> =
         (action$, store, {commentConnector}, allAction$): Observable<PayloadAction<any>> => {
             return EpicUtils.restEpicConcurrentCalls(action$,
@@ -28,14 +35,17 @@ class Upvote extends ActionMeta<CommentData, CommentsState> {
     };
 }
 
-class UpvoteCompleted extends ActionMeta<CommentData, CommentsState> {
-    reducer(state: CommentsState, action: PayloadAction<CommentData>): CommentsState {
+class UpvoteCompleted extends ActionMeta<CommentData, CommentState> {
+    reducer(state: CommentState, action: PayloadAction<CommentData>): CommentState {
         const newCommentData = action.payload;
-        return ReduxStateUtils.updateItemInStateByIdKey(newCommentData, state);
+
+        const comments = ReduxStateUtils.updateItemInStateByIdKey(newCommentData, state.comments);
+
+        return CommentStateUtils.setComments(comments, state);
     }
 }
 
-class GetForPost extends ActionMeta<string, CommentsState> {
+class GetForPost extends ActionMeta<string, CommentState> {
     epic: FilteredEpic<PayloadAction<string>, ApplicationState, Dependencies> =
         (action$, store, {commentConnector}, allAction$): Observable<PayloadAction<any>> => {
         return EpicUtils.restEpicLatestCallOnly(action$,
@@ -52,19 +62,19 @@ class GetForPost extends ActionMeta<string, CommentsState> {
     };
 }
 
-class GetForPostCompleted extends ActionMeta<{postId: string, comments: CommentData[]}, CommentsState> {
-    reducer(state: CommentsState, action: PayloadAction<{postId: string, comments: CommentData[]}>): CommentsState {
+class GetForPostCompleted extends ActionMeta<{postId: string, comments: CommentData[]}, CommentState> {
+    reducer(state: CommentState, action: PayloadAction<{postId: string, comments: CommentData[]}>): CommentState {
         const payload = action.payload;
 
-        return ReduxStateUtils.updateItemsInStateByIdKey(payload.comments,
-            state,
+        const comments = ReduxStateUtils.updateItemsInStateByIdKey(payload.comments,
+            state.comments,
             comment => comment.parentId !== payload.postId);
+
+        return CommentStateUtils.setComments(comments, state);
     }
 }
 
-type CommentsState = CommentIdToCommentDataMap;
-
-class CommentActions extends ActionSet<"comments", CommentsState> {
+class CommentActions extends ActionSet<"commentState", CommentState> {
     upvote = new Upvote(this);
     upvoteCompleted = new UpvoteCompleted(this);
 
@@ -72,6 +82,6 @@ class CommentActions extends ActionSet<"comments", CommentsState> {
     getForPostCompleted = new GetForPostCompleted(this);
 }
 
-const instance = new CommentActions("comments");
+const instance = new CommentActions("commentState");
 
 export default instance;
