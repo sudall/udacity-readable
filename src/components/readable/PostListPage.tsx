@@ -223,7 +223,7 @@ class PostListPage extends React.Component<IAllProps, State> {
             .slice()
             .sort(sortMethod.sortCompareFunction)
             .map((post) => {
-                return <Post post={post}/>;
+                return <Post key={post.id} post={post}/>;
             });
 
         return (
@@ -240,7 +240,7 @@ class PostListPage extends React.Component<IAllProps, State> {
                                 {
                                     this.selectableCategories.map((category) => {
                                         return (
-                                            <MenuItem value={category.name}>
+                                            <MenuItem key={category.path} value={category.name}>
                                                 {category.name}
                                             </MenuItem>
                                         )
@@ -257,7 +257,7 @@ class PostListPage extends React.Component<IAllProps, State> {
                                 {
                                     PostListPage.getAllSortMethods().map((sortMethod) => {
                                         return (
-                                            <MenuItem value={sortMethod.id.toString()}>
+                                            <MenuItem key={sortMethod.id} value={sortMethod.id.toString()}>
                                                 {sortMethod.displayText}
                                             </MenuItem>
                                         )

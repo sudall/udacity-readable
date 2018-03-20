@@ -11,7 +11,7 @@ import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
 import PostActions2, {CreateParams} from "src/redux-actions/PostActions";
 import IdUtils from "src/utilities/IdUtils";
-import {OperationUtils} from "src/redux-actions/OperationActions";
+import OperationUtils from "src/utilities/OperationUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -101,14 +101,10 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
 
         const savingOperationStatus = this.getSavingOperationStatus();
 
-        const isSavingPost = savingOperationStatus.hasStarted
-            && savingOperationStatus.isPending;
+        const isSavingPost = savingOperationStatus.isPending;
 
-        const hasFinishedSavingPost = savingOperationStatus.hasStarted
-            && !savingOperationStatus.isPending
-            && savingOperationStatus.error == null;
-
-        if (hasFinishedSavingPost) {
+        const hasCompletedSavingPost = savingOperationStatus.hasCompleted;
+        if (hasCompletedSavingPost) {
             this.resetState();
         }
 

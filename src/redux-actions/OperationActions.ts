@@ -3,28 +3,12 @@ import {OperationIdToOperationStatusMap, OperationState} from "src/components/re
 import ActionMeta from "src/redux-actions/framework/ActionMeta";
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
 
-export class OperationUtils {
-    static getOperationStatus(operationId: string, operationState: OperationState) {
-        let status = operationState.operations[operationId];
-
-        if (status == null) {
-            status = {
-                hasStarted: false,
-                isPending: false,
-                error: null
-            }
-        }
-
-        return status;
-    }
-}
-
 class OperationStatusUtils {
     static startOperation(operationId: string,
         operationsState: OperationIdToOperationStatusMap): OperationIdToOperationStatusMap {
         return {
             ...operationsState,
-            [operationId]: {hasStarted: true, isPending: true, error: null}
+            [operationId]: {isPending: true, hasCompleted: false, error: null}
         }
     }
 
@@ -32,7 +16,7 @@ class OperationStatusUtils {
         operationsState: OperationIdToOperationStatusMap): OperationIdToOperationStatusMap {
         return {
             ...operationsState,
-            [operationId]: {hasStarted: true, isPending: false, error: null}
+            [operationId]: {isPending: false, hasCompleted: true, error: null}
         }
     }
 
@@ -40,7 +24,7 @@ class OperationStatusUtils {
         operationsState: OperationIdToOperationStatusMap): OperationIdToOperationStatusMap {
         return {
             ...operationsState,
-            [operationId]: {hasStarted: true, isPending: false, error: error}
+            [operationId]: {isPending: false, hasCompleted: false, error: error}
         }
     }
 }

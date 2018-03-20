@@ -40,8 +40,8 @@ export type CategoryState = {
 
 export type OperationIdToOperationStatusMap = {[operationId: string]: OperationStatus};
 export type OperationStatus = {
-    hasStarted: boolean;
     isPending: boolean;
+    hasCompleted: boolean;
     error: Error | null;
 };
 export type OperationState = {

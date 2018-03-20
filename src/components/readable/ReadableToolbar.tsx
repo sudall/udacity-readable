@@ -56,7 +56,10 @@ class ReadableToolbar extends React.Component<IAllProps, State> {
 
     private getDrawerListItem(name: string, urlPath: string) {
         return (
-            <ListItem button onClick={this.toggleDrawer} component={props => <ReadableLink to={urlPath} {...props}/>}>
+            <ListItem key={urlPath}
+                      button
+                      onClick={this.toggleDrawer}
+                      component={props => <ReadableLink to={urlPath} {...props}/>}>
                 <ListItemText primary={name} />
             </ListItem>
         );
