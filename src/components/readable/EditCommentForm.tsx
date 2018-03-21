@@ -48,9 +48,15 @@ class EditCommentForm extends React.Component<IAllProps, State> {
                     label="Body"
                     fullWidth
                     multiline
+                    rowsMax={5}
                     value={comment.body}
                     onChange={this.getOnTextFieldChangeCallback("body")}
                     disabled={disabled}
+                    InputProps={{
+                        inputProps: {
+                            maxLength: 100
+                        }
+                    }}
                 />
             </div>
         );

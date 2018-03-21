@@ -35,13 +35,13 @@ class State {
 }
 
 class AddNewPostButton extends React.Component<IAllProps, State> {
-    readonly state: State = this.freshState;
+    readonly state: State = AddNewPostButton.freshState;
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
-    private get freshState() {
+    private static get freshState() {
         return {
             dialogOpen: false,
             newPost: new PostData(),
@@ -93,7 +93,7 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
     }
 
     private resetState() {
-        this.setState(this.freshState);
+        this.setState(AddNewPostButton.freshState);
     }
 
     componentWillReceiveProps(nextProps: IAllProps) {

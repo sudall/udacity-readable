@@ -58,15 +58,15 @@ class Post extends React.Component<IAllProps, State> {
         const commentCount = post.commentCount;
 
         return (
-            <div>
+            <div style={{"overflow-wrap": "break-word"}}>
                 <Card>
                     <CardContent>
                         <ReadableLink to={PostPageUtils.getLinkPath(post)} style={{display: "inline-block"}}>
-                            <Typography variant="title">
+                            <Typography variant="title" component={"p"}>
                                 {post.title}
                             </Typography>
                         </ReadableLink>
-                        <Typography>
+                        <Typography component={"p"}>
                             {post.body}
                         </Typography>
                     </CardContent>

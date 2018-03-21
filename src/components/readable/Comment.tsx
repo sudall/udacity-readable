@@ -53,10 +53,10 @@ class Comment extends React.Component<IAllProps, State> {
         const {comment, upvote} = this.props;
 
         return (
-            <div>
+            <div style={{"overflow-wrap": "break-word"}}>
                 <Card>
                     <CardContent>
-                        <Typography>
+                        <Typography component={"p"}>
                             {comment.body}
                         </Typography>
                     </CardContent>
@@ -64,7 +64,7 @@ class Comment extends React.Component<IAllProps, State> {
                     <CardActions>
                         <IconButton onClick={upvote}>
                             <Tooltip title="Upvote">
-                                    <ArrowUpward/>
+                                <ArrowUpward/>
                             </Tooltip>
                         </IconButton>
                         <Tooltip title="Vote Score">
@@ -74,7 +74,7 @@ class Comment extends React.Component<IAllProps, State> {
                         </Tooltip>
                         <IconButton>
                             <Tooltip title="Downvote">
-                                    <ArrowDownward/>
+                                <ArrowDownward/>
                             </Tooltip>
                         </IconButton>
                         <EditCommentButton comment={comment} onSave={this.saveEditedComment}/>

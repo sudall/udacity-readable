@@ -57,6 +57,11 @@ class EditPostForm extends React.Component<IAllProps, State> {
             value={this.props.post.title}
             onChange={this.getOnTextFieldChangeCallback("title")}
             disabled={this.props.disabled}
+            InputProps={{
+                inputProps: {
+                    maxLength: 50
+                }
+            }}
         />);
     }
 
@@ -70,9 +75,15 @@ class EditPostForm extends React.Component<IAllProps, State> {
                 label="Body"
                 fullWidth
                 multiline
+                rowsMax={5}
                 value={this.props.post.body}
                 onChange={this.getOnTextFieldChangeCallback("body")}
                 disabled={this.props.disabled}
+                InputProps={{
+                    inputProps: {
+                        maxLength: 100
+                    }
+                }}
             />
         );
     }
@@ -89,6 +100,11 @@ class EditPostForm extends React.Component<IAllProps, State> {
                 value={this.props.post.author}
                 onChange={this.getOnTextFieldChangeCallback("author")}
                 disabled={this.props.disabled}
+                InputProps={{
+                    inputProps: {
+                        maxLength: 15
+                    }
+                }}
             />
         );
     }
