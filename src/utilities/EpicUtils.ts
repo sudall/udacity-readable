@@ -13,7 +13,7 @@ class EpicUtils {
                 const payload = action.payload;
                 return call(payload)
                     .map((result) => {
-                        return completedAction.factory(result);
+                        return completedAction.factory(result, action.operationId);
                     });
             });
     };
@@ -28,13 +28,10 @@ class EpicUtils {
                 const payload = action.payload;
                 return call(payload)
                     .map((result) => {
-                        return completedAction.factory(result);
+                        return completedAction.factory(result, action.operationId);
                     });
             });
     };
-
-    //TODO
-    // static startOperationEpic
 }
 
 export default EpicUtils;

@@ -110,7 +110,7 @@ class EditPostForm extends React.Component<IAllProps, State> {
                 {
                     this.props.categories.map((category) => {
                         return (
-                            <MenuItem value={category.name}>
+                            <MenuItem key={category.path} value={category.name}>
                                 {category.name}
                             </MenuItem>
                         )

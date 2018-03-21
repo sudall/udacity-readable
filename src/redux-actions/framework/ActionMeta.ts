@@ -60,18 +60,19 @@ abstract class ActionMeta<TActionPayload, TReducerState = ApplicationState> {
             return Observable.empty<PayloadAction<any>>();
         };
 
-    factory = (payload: TActionPayload) => {
+    factory = (payload: TActionPayload, operationId?: string) => {
         const type = this.type;
 
         const action = <PayloadAction<TActionPayload>>{
             type,
-            payload
+            payload,
+            operationId
         };
 
         return action;
     };
 
-    bindToDispatch(dispatch: Dispatch<ApplicationState>): (payload: TActionPayload) => void {
+    bindToDispatch(dispatch: Dispatch<ApplicationState>): (payload: TActionPayload, operationId?: string) => void {
         return bindActionCreators(this.factory, dispatch);
     }
 }

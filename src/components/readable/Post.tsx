@@ -38,10 +38,6 @@ class State {
 }
 
 class Post extends React.Component<IAllProps, State> {
-    private saveEditedPost = (editedPost: PostData) => {
-        // TODO dispatch save post action
-    };
-
     private deletePost = () => {
         // TODO dispatch delete post action
         // this.props.delete(this.props.post);
@@ -98,7 +94,7 @@ class Post extends React.Component<IAllProps, State> {
                                 </Badge>
                             </Tooltip>
                         </IconButton>
-                        <EditPostButton post={post} onSave={this.saveEditedPost} />
+                        <EditPostButton post={post} />
                         <DeleteButton onDelete={this.deletePost}/>
                         <Tooltip title="Category">
                             <Typography>

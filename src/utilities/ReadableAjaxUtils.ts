@@ -55,7 +55,7 @@ class ReadableAjaxUtils {
 
         const fullApiUrl = this.getFullApiUrl(path);
 
-        return Observable.ajax.post(fullApiUrl, body, headers)
+        return Observable.ajax.put(fullApiUrl, body, headers)
             .map((ajaxResponse) => {
                 return ajaxResponse.response;
             });

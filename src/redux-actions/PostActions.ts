@@ -1,6 +1,6 @@
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
 import {
-    ApplicationState, OperationIdToOperationStatusMap, PostIdToPostDataMap,
+    ApplicationState, PostIdToPostDataMap,
     PostState
 } from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
@@ -10,8 +10,7 @@ import ReduxStateUtils from "src/utilities/ReduxStateUtils";
 import ActionMeta, {FilteredEpic} from "src/redux-actions/framework/ActionMeta";
 import ActionSet from "src/redux-actions/framework/ActionSet";
 import EpicUtils from "src/utilities/EpicUtils";
-import OperationActions from "src/redux-actions/OperationActions";
-import {merge} from "rxjs/observable/merge";
+import {Operation} from "src/redux-actions/OperationActions";
 
 type Dependencies = {postConnector: PostConnector};
 
@@ -134,7 +133,6 @@ export interface CreateParams {
     body: string;
     author: string;
     category: string;
-    operationId: string;
 }
 
 class Create extends ActionMeta<CreateParams, PostState> {
@@ -144,58 +142,28 @@ class Create extends ActionMeta<CreateParams, PostState> {
             {postConnector},
             allAction$): Observable<PayloadAction<any>> => {
 
-            const startOperationEpic = filteredAction$
-                .map((action) => {
-                    const {operationId} = action.payload;
-                    return OperationActions.start.factory(operationId);
-                });
-
             const restEpic = EpicUtils.restEpicConcurrentCalls(filteredAction$,
                     (params) => {
                         return postConnector.create(params.title, params.body, params.author, params.category)
-                            .map((post) => {
-                                const operationId = params.operationId;
-                                return {
-                                    operationId,
-                                    post
-                                }
-                            });
                     },
                     instance.createCompleted
                 );
 
-            return merge(startOperationEpic, restEpic);
+            return restEpic;
         };
 }
 
-interface CreateCompletedParams {
-    operationId: string;
-    post: PostData;
-}
+class CreateCompleted extends ActionMeta<PostData, PostState> {
+    reducer(state: PostState, action: PayloadAction<PostData>): PostState {
+        const post = action.payload;
 
-class CreateCompleted extends ActionMeta<CreateCompletedParams, PostState> {
-    epic: FilteredEpic<PayloadAction<CreateCompletedParams>, ApplicationState> =
-        (filteredAction$,
-            store,
-            dependencies,
-            allAction$): Observable<PayloadAction<any>> => {
-
-            return filteredAction$
-                .map((action) => {
-                    return OperationActions.complete.factory(action.payload.operationId);
-                });
-        };
-
-    reducer(state: PostState, action: PayloadAction<CreateCompletedParams>): PostState {
-        const params = action.payload;
-
-        const posts = ReduxStateUtils.updateItemInStateByIdKey(params.post, state.posts);
+        const posts = ReduxStateUtils.updateItemInStateByIdKey(post, state.posts);
 
         return PostStateUtils.setPosts(posts, state);
     }
 }
 
-interface UpdateParams {
+export interface UpdateParams {
     postId: string;
     title: string;
     body: string;
@@ -263,6 +231,7 @@ class PostActions extends ActionSet<"postState", PostState> {
 
     create = new Create(this);
     createCompleted = new CreateCompleted(this);
+    private createOperation = new Operation(this, this.create, this.createCompleted);
 
     update = new Update(this);
     updateCompleted = new UpdateCompleted(this);

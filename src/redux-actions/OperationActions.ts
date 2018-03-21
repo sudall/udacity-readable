@@ -1,7 +1,12 @@
 import ActionSet from "src/redux-actions/framework/ActionSet";
-import {OperationIdToOperationStatusMap, OperationState} from "src/components/readable/ReadableApplication";
-import ActionMeta from "src/redux-actions/framework/ActionMeta";
+import {
+    ApplicationState, OperationIdToOperationStatusMap,
+    OperationState
+} from "src/components/readable/ReadableApplication";
+import ActionMeta, {FilteredEpic} from "src/redux-actions/framework/ActionMeta";
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
+import {merge} from "rxjs/observable/merge";
+import {Observable} from "rxjs/Rx";
 
 class OperationStatusUtils {
     static startOperation(operationId: string,
@@ -27,6 +32,57 @@ class OperationStatusUtils {
             [operationId]: {isPending: false, hasCompleted: false, error: error}
         }
     }
+}
+
+export class Operation extends ActionMeta<any, any> {
+    constructor(actionSet: ActionSet<any, any>,
+        private startAction: ActionMeta<any, any>,
+        private completedAction: ActionMeta<any, any>,
+        private failedAction?: ActionMeta<{error: Error}, any>) {
+        super(actionSet);
+    }
+
+    epic: FilteredEpic<PayloadAction<any>, ApplicationState> =
+        (filteredAction$, store, {}, allAction$): Observable<PayloadAction<any>> => {
+            // look for actions that we know about
+            const startAction$ = allAction$
+                .ofType(this.startAction.type)
+                .filter((action) => {
+                    return action.operationId != null;
+                })
+                .map((action) => {
+                    const operationId = <string>action.operationId;
+                    return instance.start.factory(operationId);
+                });
+
+            const completedAction$ = allAction$
+                .ofType(this.completedAction.type)
+                .filter((action) => {
+                    return action.operationId != null;
+                })
+                .map((action) => {
+                    const operationId = <string>action.operationId;
+                    return instance.complete.factory(operationId);
+                });
+
+            let failedAction$: Observable<PayloadAction<{error: Error}>> = Observable.empty();
+            if (this.failedAction != null) {
+                failedAction$ = allAction$
+                    .ofType(this.failedAction.type)
+                    .filter((action) => {
+                        return action.operationId != null;
+                    })
+                    .map((action) => {
+                        const operationId = <string>action.operationId;
+                        return instance.fail.factory({
+                            operationId,
+                            error: action.payload.error
+                        });
+                    });
+            }
+
+            return merge(startAction$, completedAction$, failedAction$);
+        };
 }
 
 class Start extends ActionMeta<string, OperationState> {
@@ -70,4 +126,6 @@ class OperationActions extends ActionSet<"operationState", OperationState> {
     fail = new Fail(this);
 }
 
-export default new OperationActions("operationState");
+const instance = new OperationActions("operationState");
+
+export default instance;

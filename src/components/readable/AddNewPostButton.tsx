@@ -1,7 +1,7 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {
-    ApplicationState, OperationIdToOperationStatusMap, OperationState,
+    ApplicationState, OperationState,
     OperationStatus
 } from "src/components/readable/ReadableApplication";
 import Button from "material-ui/Button";
@@ -21,7 +21,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    createPost: (createPostParams: CreateParams) => void;
+    createPost: (createPostParams: CreateParams, operationId: string) => void;
     operationState: OperationState;
 }
 
@@ -78,35 +78,39 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
             savingOperationId: operationId
         });
 
-        this.props.createPost({
-            title,
-            author,
-            body,
-            category,
-            operationId
-        });
+        this.props.createPost(
+            {
+                title,
+                author,
+                body,
+                category
+            },
+            operationId);
     };
 
-    private getSavingOperationStatus(): OperationStatus {
-        return OperationUtils.getOperationStatus(this.state.savingOperationId, this.props.operationState);
+    private getSavingOperationStatus(operationState: OperationState): OperationStatus {
+        return OperationUtils.getOperationStatus(this.state.savingOperationId, operationState);
     }
 
     private resetState() {
         this.setState(this.freshState);
     }
 
-    render() {
-        const {} = this.props;
-        const {dialogOpen, newPost} = this.state;
-
-        const savingOperationStatus = this.getSavingOperationStatus();
-
-        const isSavingPost = savingOperationStatus.isPending;
-
+    componentWillReceiveProps(nextProps: IAllProps) {
+        const savingOperationStatus = this.getSavingOperationStatus(nextProps.operationState);
         const hasCompletedSavingPost = savingOperationStatus.hasCompleted;
         if (hasCompletedSavingPost) {
             this.resetState();
         }
+    }
+
+    render() {
+        const {operationState} = this.props;
+        const {dialogOpen, newPost} = this.state;
+
+        const savingOperationStatus = this.getSavingOperationStatus(operationState);
+
+        const isSavingPost = savingOperationStatus.isPending;
 
         return (
             <div>

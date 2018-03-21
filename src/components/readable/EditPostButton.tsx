@@ -6,16 +6,17 @@ import PostData from "src/data/models/PostData";
 import ModeEdit from "material-ui-icons/ModeEdit";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
+import PostActions, {UpdateParams} from "src/redux-actions/PostActions";
 
 // props that are provided as parameters
 interface IOwnProps {
     post: PostData;
-    onSave: (editedPost: PostData) => void;
 }
 
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
+    updatePost: (params: UpdateParams) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -60,7 +61,13 @@ class EditPostButton extends React.Component<IAllProps, State> {
     };
 
     private onSave = () => {
-        this.props.onSave(this.state.editedPost);
+        const {title, body, id} = this.state.editedPost;
+
+        this.props.updatePost({
+            title,
+            body,
+            postId: id
+        });
     };
 
     render() {
@@ -96,9 +103,12 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const updatePost = PostActions.update.bindToDispatch(dispatch);
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        updatePost
     };
 };
 
