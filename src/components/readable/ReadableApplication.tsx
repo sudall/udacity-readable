@@ -21,13 +21,13 @@ import ActionMeta from "src/redux-actions/framework/ActionMeta";
 
 
 
-export type PostIdToPostDataMap = {[postId: number]: PostData};
+export type PostIdToPostDataMap = {[postId: string]: PostData};
 export type PostState = {
     posts: PostIdToPostDataMap;
     // isSaving: boolean;
 }
 
-export type CommentIdToCommentDataMap = {[commentId: number]: CommentData};
+export type CommentIdToCommentDataMap = {[commentId: string]: CommentData};
 export type CommentState = {
     comments: CommentIdToCommentDataMap;
     isSaving: boolean;

@@ -18,7 +18,7 @@ import * as moment from "moment";
 import Comment from "material-ui-icons/Comment";
 import Badge from "material-ui/Badge";
 import ReadableLink from "src/components/readable/ReadableLink";
-import PostActions2 from "src/redux-actions/PostActions";
+import PostActions from "src/redux-actions/PostActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -29,6 +29,7 @@ interface IOwnProps {
 interface IInjectedProps {
     upvote: (post: PostData) => void;
     downvote: (post: PostData) => void;
+    delete: (post: PostData) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -39,8 +40,7 @@ class State {
 
 class Post extends React.Component<IAllProps, State> {
     private deletePost = () => {
-        // TODO dispatch delete post action
-        // this.props.delete(this.props.post);
+        this.props.delete(this.props.post);
     };
 
     private upvote = () => {
@@ -126,8 +126,9 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
-        upvote: PostActions2.upvote.bindToDispatch(dispatch),
-        downvote: PostActions2.downvote.bindToDispatch(dispatch)
+        upvote: PostActions.upvote.bindToDispatch(dispatch),
+        downvote: PostActions.downvote.bindToDispatch(dispatch),
+        delete: PostActions.delete.bindToDispatch(dispatch)
     };
 };
 

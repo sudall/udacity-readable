@@ -191,26 +191,35 @@ class UpdateCompleted extends ActionMeta<PostData, PostState> {
     }
 }
 
-class Delete extends ActionMeta<string, PostState> {
-    epic: FilteredEpic<PayloadAction<string>, ApplicationState, Dependencies> =
+class Delete extends ActionMeta<PostData, PostState> {
+    epic: FilteredEpic<PayloadAction<PostData>, ApplicationState, Dependencies> =
         (filteredAction$,
             store,
             {postConnector},
             allAction$): Observable<PayloadAction<any>> => {
             return EpicUtils.restEpicConcurrentCalls(filteredAction$,
-                postConnector.delete,
+                (payload) => {
+                    return postConnector.delete(payload.id)
+                        .map((result) => {
+                            return payload;
+                        });
+                },
                 instance.deleteCompleted);
         };
 }
 
-class DeleteCompleted extends ActionMeta<any, PostState> {
-    // reducer(state: PostState, action: PayloadAction<PostData>): PostState {
-    //     const post = action.payload;
-    //
-    //     const posts = ReduxStateUtils.updateItemInStateByIdKey(post, state.posts);
-    //
-    //     return PostStateUtils.setPosts(posts, state);
-    // }
+class DeleteCompleted extends ActionMeta<PostData, PostState> {
+    reducer(state: PostState, action: PayloadAction<PostData>): PostState {
+        const post = action.payload;
+
+        const newPosts = {
+            ...state.posts
+        };
+
+        delete newPosts[post.id];
+
+        return PostStateUtils.setPosts(newPosts, state);
+    }
 }
 
 class PostActions extends ActionSet<"postState", PostState> {
