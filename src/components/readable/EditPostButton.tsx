@@ -1,12 +1,14 @@
 import * as React from "react";
 import IconButton from "material-ui/IconButton";
 import {connect, Dispatch} from "react-redux";
-import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {ApplicationState, OperationStatus} from "src/components/readable/ReadableApplication";
 import PostData from "src/data/models/PostData";
 import ModeEdit from "material-ui-icons/ModeEdit";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
 import PostActions, {UpdateParams} from "src/redux-actions/PostActions";
+import IdUtils from "src/utilities/IdUtils";
+import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -16,7 +18,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    updatePost: (params: UpdateParams) => void;
+    updatePost: (params: UpdateParams, operationId: string) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -25,17 +27,28 @@ type IAllProps = IOwnProps & IInjectedProps;
 class State {
     editPostDialogOpen: boolean;
     editedPost: PostData;
+    updateOperationId: string;
+    updateOperationStatus?: OperationStatus;
 }
 
 class EditPostButton extends React.Component<IAllProps, State> {
-    readonly state: State = {
-        editedPost: this.props.post,
-        editPostDialogOpen: false
-    };
+    readonly state: State = this.freshState;
+
+    private get freshState(): State {
+        return {
+            editedPost: this.props.post,
+            editPostDialogOpen: false,
+            updateOperationId: ""
+        }
+    }
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
+
+    private resetState() {
+        this.setState(this.freshState);
+    }
 
     private openEditDialog = () => {
         this.setEditDialogOpen(true);
@@ -63,20 +76,42 @@ class EditPostButton extends React.Component<IAllProps, State> {
     private onSave = () => {
         const {title, body, id} = this.state.editedPost;
 
+        // create an operation ID so that we can look up the status in the state
+        const operationId = IdUtils.getUniqueId();
+        this.setState({
+            updateOperationId: operationId
+        });
+
         this.props.updatePost({
             title,
             body,
             postId: id
-        });
+        },
+        operationId);
+    };
+
+    private onUpdateOperationStatusChange = (operationStatus: OperationStatus) => {
+        const hasCompletedOperation = operationStatus.hasCompleted;
+        if (hasCompletedOperation) {
+            this.resetState();
+        } else {
+            this.setState({
+                updateOperationStatus: operationStatus
+            });
+        }
     };
 
     render() {
         const {onEditPostFormChange, closeEditDialog, onSave} = this;
         // const {isSavingPost} = this.props;
-        const {editedPost, editPostDialogOpen} = this.state;
+        const {editedPost, editPostDialogOpen, updateOperationId, updateOperationStatus} = this.state;
+
+        const isSaving = updateOperationStatus != null && updateOperationStatus.isPending;
 
         return (
             <div>
+                <OperationStatusProvider operationId={updateOperationId}
+                                         onOperationStatusChange={this.onUpdateOperationStatusChange}/>
                 <IconButton onClick={this.openEditDialog}>
                     <Tooltip title="Edit">
                         <ModeEdit />
@@ -88,7 +123,7 @@ class EditPostButton extends React.Component<IAllProps, State> {
                                 onClose={closeEditDialog}
                                 onSave={onSave}
                                 title="Edit Post"
-                                disabled={false}
+                                disabled={isSaving}
                                 fieldsToEdit={["title", "body"]}
                 />
             </div>

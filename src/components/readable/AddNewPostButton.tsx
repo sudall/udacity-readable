@@ -1,8 +1,7 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {
-    ApplicationState, OperationState,
-    OperationStatus
+    ApplicationState, OperationStatus
 } from "src/components/readable/ReadableApplication";
 import Button from "material-ui/Button";
 import Add from "material-ui-icons/Add";
@@ -11,7 +10,7 @@ import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
 import PostActions2, {CreateParams} from "src/redux-actions/PostActions";
 import IdUtils from "src/utilities/IdUtils";
-import OperationUtils from "src/utilities/OperationUtils";
+import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -22,7 +21,6 @@ interface IOwnProps {
 interface IInjectedProps {
     // someAction: () => any;
     createPost: (createPostParams: CreateParams, operationId: string) => void;
-    operationState: OperationState;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -32,6 +30,7 @@ class State {
     dialogOpen: boolean;
     newPost: PostData;
     savingOperationId: string;
+    savingOperationStatus?: OperationStatus;
 }
 
 class AddNewPostButton extends React.Component<IAllProps, State> {
@@ -45,7 +44,7 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
         return {
             dialogOpen: false,
             newPost: new PostData(),
-            savingOperationId: IdUtils.getUniqueId()
+            savingOperationId: ""
         };
     };
 
@@ -88,32 +87,31 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
             operationId);
     };
 
-    private getSavingOperationStatus(operationState: OperationState): OperationStatus {
-        return OperationUtils.getOperationStatus(this.state.savingOperationId, operationState);
-    }
-
     private resetState() {
         this.setState(AddNewPostButton.freshState);
     }
 
-    componentWillReceiveProps(nextProps: IAllProps) {
-        const savingOperationStatus = this.getSavingOperationStatus(nextProps.operationState);
-        const hasCompletedSavingPost = savingOperationStatus.hasCompleted;
+    private onSavingOperationStatusChange = (operationStatus: OperationStatus) => {
+        const hasCompletedSavingPost = operationStatus.hasCompleted;
         if (hasCompletedSavingPost) {
             this.resetState();
+        } else {
+            this.setState({
+                savingOperationStatus: operationStatus
+            });
         }
-    }
+    };
 
     render() {
-        const {operationState} = this.props;
-        const {dialogOpen, newPost} = this.state;
+        const {} = this.props;
+        const {dialogOpen, newPost, savingOperationId, savingOperationStatus} = this.state;
 
-        const savingOperationStatus = this.getSavingOperationStatus(operationState);
-
-        const isSavingPost = savingOperationStatus.isPending;
+        const isSavingPost = savingOperationStatus != null && savingOperationStatus.isPending;
 
         return (
             <div>
+                <OperationStatusProvider operationId={savingOperationId}
+                                         onOperationStatusChange={this.onSavingOperationStatusChange}/>
                 <Tooltip title="Add a New Post">
                     <Button variant="fab"
                             color="primary"
@@ -144,7 +142,6 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        operationState: state.operationState
     }
 };
 

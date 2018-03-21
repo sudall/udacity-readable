@@ -222,6 +222,12 @@ class DeleteCompleted extends ActionMeta<PostData, PostState> {
     }
 }
 
+class CreateOperation extends Operation {
+}
+
+class UpdateOperation extends Operation {
+}
+
 class PostActions extends ActionSet<"postState", PostState> {
     getAll = new GetAll(this);
     getAllCompleted = new GetAllCompleted(this);
@@ -240,10 +246,11 @@ class PostActions extends ActionSet<"postState", PostState> {
 
     create = new Create(this);
     createCompleted = new CreateCompleted(this);
-    private createOperation = new Operation(this, this.create, this.createCompleted);
+    private createOperation = new CreateOperation(this, this.create, this.createCompleted);
 
     update = new Update(this);
     updateCompleted = new UpdateCompleted(this);
+    private updateOperation = new UpdateOperation(this, this.update, this.updateCompleted);
 
     delete = new Delete(this);
     deleteCompleted = new DeleteCompleted(this);

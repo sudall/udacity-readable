@@ -34,7 +34,7 @@ class OperationStatusUtils {
     }
 }
 
-export class Operation extends ActionMeta<any, any> {
+export abstract class Operation extends ActionMeta<any, any> {
     constructor(actionSet: ActionSet<any, any>,
         private startAction: ActionMeta<any, any>,
         private completedAction: ActionMeta<any, any>,
