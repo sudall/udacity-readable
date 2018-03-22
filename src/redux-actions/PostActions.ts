@@ -28,7 +28,7 @@ class GetAll extends ActionMeta<void, PostState> {
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
             return EpicUtils.restEpicLatestCallOnly(action$,
                 postConnector.getAll,
-                instance.getAllCompleted);
+                PostActions.instance.getAllCompleted);
         };
 }
 
@@ -47,7 +47,7 @@ class Upvote extends ActionMeta<PostData, PostState> {
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
         return EpicUtils.restEpicConcurrentCalls(action$,
             (payload) => postConnector.vote(payload.id, "upVote"),
-            instance.upvoteCompleted);
+            PostActions.instance.upvoteCompleted);
     }
 }
 
@@ -66,7 +66,7 @@ class Downvote extends ActionMeta<PostData, PostState> {
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
         return EpicUtils.restEpicConcurrentCalls(action$,
             (payload) => postConnector.vote(payload.id, "downVote"),
-            instance.downvoteCompleted);
+            PostActions.instance.downvoteCompleted);
     }
 }
 
@@ -85,7 +85,7 @@ class Get extends ActionMeta<string, PostState> {
         (action$, state, {postConnector}): Observable<PayloadAction<any>> => {
         return EpicUtils.restEpicConcurrentCalls(action$,
             postConnector.get,
-            instance.getCompleted);
+            PostActions.instance.getCompleted);
     }
 }
 
@@ -112,7 +112,7 @@ class GetForCategory extends ActionMeta<string, PostState> {
                         };
                     });
             },
-            instance.getForCategoryCompleted);
+            PostActions.instance.getForCategoryCompleted);
     }
 }
 
@@ -128,15 +128,17 @@ class GetForCategoryCompleted extends ActionMeta<{category: string, posts: PostD
     }
 }
 
-export interface CreateParams {
-    title: string;
-    body: string;
-    author: string;
-    category: string;
+module PostActions {
+    export interface CreateParams {
+        title: string;
+        body: string;
+        author: string;
+        category: string;
+    }
 }
 
-class Create extends ActionMeta<CreateParams, PostState> {
-    epic: FilteredEpic<PayloadAction<CreateParams>, ApplicationState, Dependencies> =
+class Create extends ActionMeta<PostActions.CreateParams, PostState> {
+    epic: FilteredEpic<PayloadAction<PostActions.CreateParams>, ApplicationState, Dependencies> =
         (filteredAction$,
             store,
             {postConnector},
@@ -146,7 +148,7 @@ class Create extends ActionMeta<CreateParams, PostState> {
                     (params) => {
                         return postConnector.create(params.title, params.body, params.author, params.category)
                     },
-                    instance.createCompleted
+                    PostActions.instance.createCompleted
                 );
 
             return restEpic;
@@ -163,21 +165,23 @@ class CreateCompleted extends ActionMeta<PostData, PostState> {
     }
 }
 
-export interface UpdateParams {
-    postId: string;
-    title: string;
-    body: string;
+module PostActions {
+    export interface UpdateParams {
+        postId: string;
+        title: string;
+        body: string;
+    }
 }
 
-class Update extends ActionMeta<UpdateParams, PostState> {
-    epic: FilteredEpic<PayloadAction<UpdateParams>, ApplicationState, Dependencies> =
+class Update extends ActionMeta<PostActions.UpdateParams, PostState> {
+    epic: FilteredEpic<PayloadAction<PostActions.UpdateParams>, ApplicationState, Dependencies> =
         (filteredAction$,
             store,
             {postConnector},
             allAction$): Observable<PayloadAction<any>> => {
             return EpicUtils.restEpicConcurrentCalls(filteredAction$,
                 params => postConnector.update(params.postId, params.title, params.body),
-                instance.updateCompleted);
+                PostActions.instance.updateCompleted);
         };
 }
 
@@ -204,7 +208,7 @@ class Delete extends ActionMeta<PostData, PostState> {
                             return payload;
                         });
                 },
-                instance.deleteCompleted);
+                PostActions.instance.deleteCompleted);
         };
 }
 
@@ -229,6 +233,8 @@ class UpdateOperation extends Operation {
 }
 
 class PostActions extends ActionSet<"postState", PostState> {
+    public static readonly instance = new PostActions("postState");
+
     getAll = new GetAll(this);
     getAllCompleted = new GetAllCompleted(this);
 
@@ -256,6 +262,4 @@ class PostActions extends ActionSet<"postState", PostState> {
     deleteCompleted = new DeleteCompleted(this);
 }
 
-const instance = new PostActions("postState");
-
-export default instance;
+export default PostActions;

@@ -14,7 +14,7 @@ import PostSortMethod from "src/enums/PostSortMethod";
 import TextField from "material-ui/TextField";
 import MenuItem from "material-ui/Menu/MenuItem";
 import * as QueryString from "query-string";
-import PostActions2 from "src/redux-actions/PostActions";
+import PostActions from "src/redux-actions/PostActions";
 import CategoryActions from "src/redux-actions/CategoryActions";
 
 interface IQueryStringParameters {
@@ -308,9 +308,9 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
-        getPostsForCategory: PostActions2.getForCategory.bindToDispatch(dispatch),
-        getAllPosts: PostActions2.getAll.bindToDispatch(dispatch),
-        getAllCategories: CategoryActions.getAll.bindToDispatch(dispatch)
+        getPostsForCategory: PostActions.instance.getForCategory.bindToDispatch(dispatch),
+        getAllPosts: PostActions.instance.getAll.bindToDispatch(dispatch),
+        getAllCategories: CategoryActions.instance.getAll.bindToDispatch(dispatch)
     };
 };
 

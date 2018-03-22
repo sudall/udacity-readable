@@ -106,7 +106,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
-        upvote: CommentActions.upvote.bindToDispatch(dispatch)
+        upvote: CommentActions.instance.upvote.bindToDispatch(dispatch)
     };
 };
 

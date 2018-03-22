@@ -13,7 +13,7 @@ import CardContent from "material-ui/Card/CardContent";
 import AddNewCommentButton from "src/components/readable/AddNewCommentButton";
 import PostUtils from "src/utilities/PostUtils";
 import ReadableLink from "src/components/readable/ReadableLink";
-import PostActions2 from "src/redux-actions/PostActions";
+import PostActions from "src/redux-actions/PostActions";
 import CommentActions from "src/redux-actions/CommentActions";
 import CommentSortMethod from "src/enums/CommentSortMethods";
 
@@ -140,12 +140,12 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     const postId = PostPage.getPostIdParameter(ownProps);
 
-    const getPostById = PostActions2.get.bindToDispatch(dispatch);
+    const getPostById = PostActions.instance.get.bindToDispatch(dispatch);
     const getPost = () => {
         return getPostById(postId);
     };
 
-    const getCommentsForPost = CommentActions.getForPost.bindToDispatch(dispatch);
+    const getCommentsForPost = CommentActions.instance.getForPost.bindToDispatch(dispatch);
     const getComments = () => {
         return getCommentsForPost(postId);
     };

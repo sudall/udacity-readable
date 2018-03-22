@@ -6,6 +6,7 @@ import Add from "material-ui-icons/Add";
 import Tooltip from "material-ui/Tooltip";
 import CommentData from "src/data/models/CommentData";
 import EditCommentDialog from "src/components/readable/EditCommentDialog";
+import CommentActions from "src/redux-actions/CommentActions";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -16,6 +17,7 @@ interface IOwnProps {
 interface IInjectedProps {
     // someAction: () => any;
     isSavingComment: boolean;
+    createComment: (comment: CommentActions.CreateParams) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -57,7 +59,12 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
     };
 
     private saveNewComment = () => {
-        // TODO dispatch save comment action
+        const {parentId, body, author} = this.state.newComment;
+        this.props.createComment({
+            body,
+            author,
+            parentPostId: parentId
+        });
     };
 
     render() {
@@ -100,9 +107,12 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const createComment = CommentActions.instance.create.bindToDispatch(dispatch);
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        createComment
     };
 };
 

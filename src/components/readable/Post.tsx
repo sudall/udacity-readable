@@ -126,9 +126,9 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
-        upvote: PostActions.upvote.bindToDispatch(dispatch),
-        downvote: PostActions.downvote.bindToDispatch(dispatch),
-        delete: PostActions.delete.bindToDispatch(dispatch)
+        upvote: PostActions.instance.upvote.bindToDispatch(dispatch),
+        downvote: PostActions.instance.downvote.bindToDispatch(dispatch),
+        delete: PostActions.instance.delete.bindToDispatch(dispatch)
     };
 };
 

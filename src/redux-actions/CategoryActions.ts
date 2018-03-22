@@ -15,7 +15,7 @@ class GetAll extends ActionMeta<void, CategoriesState> {
         (action$, store, {categoryConnector}, allAction$): Observable<PayloadAction<any>> => {
         return EpicUtils.restEpicLatestCallOnly(action$,
             categoryConnector.getAll,
-            instance.getAllCompleted);
+            CategoryActions.instance.getAllCompleted);
     }
 }
 
@@ -29,10 +29,10 @@ class GetAllCompleted extends ActionMeta<CategoryData[], CategoriesState> {
 type CategoriesState = CategoryPathToCategoryDataMap;
 
 class CategoryActions extends ActionSet<"categories", CategoriesState> {
+    public static readonly instance = new CategoryActions("categories");
+
     getAll = new GetAll(this);
     getAllCompleted = new GetAllCompleted(this);
 }
 
-const instance = new CategoryActions("categories");
-
-export default instance;
+export default CategoryActions;

@@ -8,7 +8,7 @@ import Add from "material-ui-icons/Add";
 import PostData from "src/data/models/PostData";
 import EditPostDialog from "src/components/readable/EditPostDialog";
 import Tooltip from "material-ui/Tooltip";
-import PostActions2, {CreateParams} from "src/redux-actions/PostActions";
+import PostActions from "src/redux-actions/PostActions";
 import IdUtils from "src/utilities/IdUtils";
 import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
 
@@ -20,7 +20,7 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    createPost: (createPostParams: CreateParams, operationId: string) => void;
+    createPost: (createPostParams: PostActions.CreateParams, operationId: string) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -146,7 +146,7 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
-    const createPost = PostActions2.create.bindToDispatch(dispatch);
+    const createPost = PostActions.instance.create.bindToDispatch(dispatch);
 
     return {
         // Add mapped properties here

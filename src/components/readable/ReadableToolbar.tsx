@@ -113,7 +113,7 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
-    const getAllCategories = CategoryActions.getAll.bindToDispatch(dispatch);
+    const getAllCategories = CategoryActions.instance.getAll.bindToDispatch(dispatch);
 
     return {
         // Add mapped properties here
