@@ -11,6 +11,7 @@ import Tooltip from "material-ui/Tooltip";
 import PostActions from "src/redux-actions/PostActions";
 import IdUtils from "src/utilities/IdUtils";
 import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
+import PostUtils from "src/utilities/PostUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -69,6 +70,10 @@ class AddNewPostButton extends React.Component<IAllProps, State> {
     };
 
     private saveNewPost = () => {
+        if (!PostUtils.isValidPostData(this.state.newPost)) {
+            return;
+        }
+
         const {title, author, body, category} = this.state.newPost;
 
         // create an operation ID so that we can look up the status in the state

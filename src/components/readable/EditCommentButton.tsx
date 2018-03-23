@@ -9,6 +9,7 @@ import EditCommentDialog from "src/components/readable/EditCommentDialog";
 import CommentActions from "src/redux-actions/CommentActions";
 import IdUtils from "src/utilities/IdUtils";
 import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
+import CommentUtils from "src/utilities/CommentUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -70,6 +71,10 @@ class EditCommentButton extends React.Component<IAllProps, State> {
     };
 
     private onSave = () => {
+        if (!CommentUtils.isValidCommentData(this.state.editedComment)) {
+            return;
+        }
+
         // create an operation ID so that we can look up the status in the state
         const operationId = IdUtils.getUniqueId();
         this.setState({

@@ -6,6 +6,7 @@ import CategoryData from "src/data/models/CategoryData";
 import MenuItem from "material-ui/Menu/MenuItem"
 import CommentData from "src/data/models/CommentData";
 import FormUtils from "src/utilities/FormUtils";
+import CommentUtils from "src/utilities/CommentUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -49,6 +50,7 @@ class EditCommentForm extends React.Component<IAllProps, State> {
                     fullWidth
                     multiline
                     rowsMax={5}
+                    required={CommentUtils.requiredCommentFieldsContains("body")}
                     value={comment.body}
                     onChange={this.getOnTextFieldChangeCallback("body")}
                     disabled={disabled}

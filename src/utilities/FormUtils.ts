@@ -15,6 +15,22 @@ class FormUtils {
             onFormDataChange(newObject);
         };
     };
+
+    static isAnyRequiredFormFieldMissing<TFormData>(formData: TFormData, requiredFormFields: (keyof TFormData)[]) {
+        const isAnyRequiredFieldMissing = requiredFormFields.some((requiredField) => {
+            const fieldValue = formData[requiredField];
+
+            let isMissing = fieldValue == null;
+
+            if (typeof fieldValue === "string") {
+                isMissing = isMissing || fieldValue === "";
+            }
+
+            return isMissing;
+        });
+
+        return isAnyRequiredFieldMissing;
+    }
 }
 
 export default FormUtils;

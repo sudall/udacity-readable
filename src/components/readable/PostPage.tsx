@@ -19,6 +19,7 @@ import CommentSortMethod from "src/enums/CommentSortMethods";
 
 interface IRoutePathParameters {
     id: string;
+    category: string;
 }
 
 // props that are provided as parameters
@@ -104,11 +105,11 @@ class PostPage extends React.Component<IAllProps, State> {
 
 export class PostPageUtils {
     static getLinkPath(post: PostData) {
-        return `/post/${post.id}`;
+        return `/${post.category}/${post.id}`;
     }
 
     static getRoutePath() {
-        return "/post/:id";
+        return "/:category/:id";
     }
 
     static getPostPageLinkComponentFactory(post: PostData) {

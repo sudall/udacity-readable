@@ -6,6 +6,7 @@ import PostData from "src/data/models/PostData";
 import FormUtils from "src/utilities/FormUtils";
 import CategoryData from "src/data/models/CategoryData";
 import MenuItem from "material-ui/Menu/MenuItem"
+import PostUtils from "src/utilities/PostUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -54,6 +55,7 @@ class EditPostForm extends React.Component<IAllProps, State> {
             autoFocus
             label="Title"
             fullWidth
+            required={PostUtils.requiredPostFieldsContains("title")}
             value={this.props.post.title}
             onChange={this.getOnTextFieldChangeCallback("title")}
             disabled={this.props.disabled}
@@ -76,6 +78,7 @@ class EditPostForm extends React.Component<IAllProps, State> {
                 fullWidth
                 multiline
                 rowsMax={5}
+                required={PostUtils.requiredPostFieldsContains("body")}
                 value={this.props.post.body}
                 onChange={this.getOnTextFieldChangeCallback("body")}
                 disabled={this.props.disabled}
@@ -97,6 +100,7 @@ class EditPostForm extends React.Component<IAllProps, State> {
             <TextField
                 label="Author"
                 fullWidth
+                required={PostUtils.requiredPostFieldsContains("author")}
                 value={this.props.post.author}
                 onChange={this.getOnTextFieldChangeCallback("author")}
                 disabled={this.props.disabled}
@@ -119,6 +123,7 @@ class EditPostForm extends React.Component<IAllProps, State> {
                 label="Category"
                 fullWidth
                 select
+                required={PostUtils.requiredPostFieldsContains("category")}
                 value={this.props.post.category}
                 onChange={this.getOnTextFieldChangeCallback("category")}
                 disabled={this.props.disabled}

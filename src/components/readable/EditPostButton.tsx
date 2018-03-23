@@ -9,6 +9,7 @@ import Tooltip from "material-ui/Tooltip";
 import PostActions from "src/redux-actions/PostActions";
 import IdUtils from "src/utilities/IdUtils";
 import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
+import PostUtils from "src/utilities/PostUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -74,6 +75,10 @@ class EditPostButton extends React.Component<IAllProps, State> {
     };
 
     private onSave = () => {
+        if (!PostUtils.isValidPostData(this.state.editedPost)) {
+            return;
+        }
+
         const {title, body, id} = this.state.editedPost;
 
         // create an operation ID so that we can look up the status in the state

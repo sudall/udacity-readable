@@ -10,6 +10,7 @@ import CommentActions from "src/redux-actions/CommentActions";
 import IdUtils from "src/utilities/IdUtils";
 import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
 import PostData from "src/data/models/PostData";
+import CommentUtils from "src/utilities/CommentUtils";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -70,6 +71,10 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
     };
 
     private saveNewComment = () => {
+        if (!CommentUtils.isValidCommentData(this.state.newComment)) {
+            return;
+        }
+
         const operationId = IdUtils.getUniqueId();
 
         this.setState({
