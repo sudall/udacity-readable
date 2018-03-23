@@ -133,6 +133,7 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
                                 onSave={this.saveNewComment}
                                 title="Add a New Comment"
                                 disabled={isSavingComment}
+                                fieldsToEdit={["body", "author"]}
                 />
             </div>
         );

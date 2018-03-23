@@ -1,12 +1,9 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import {bindActionCreators} from "redux";
 import EditDialog from "src/components/readable/EditDialog";
 import EditCommentForm from "src/components/readable/EditCommentForm";
-import PostData from "src/data/models/PostData";
 import CommentData from "src/data/models/CommentData";
-import EditPostForm from "src/components/readable/EditPostForm";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -17,6 +14,7 @@ interface IOwnProps {
     comment: CommentData,
     onChange: (comment: CommentData) => void;
     disabled: boolean;
+    fieldsToEdit: (keyof CommentData)[];
 }
 
 // props that are provided via injection
@@ -39,7 +37,7 @@ class EditCommentDialog extends React.Component<IAllProps, State> {
     };
 
     render() {
-        const {open, onClose, onSave, onChange, comment, title, disabled} = this.props;
+        const {open, onClose, onSave, onChange, comment, title, disabled, fieldsToEdit} = this.props;
         const {} = this.state;
 
         return (
@@ -51,7 +49,8 @@ class EditCommentDialog extends React.Component<IAllProps, State> {
             >
                 <EditCommentForm comment={comment}
                                  onChange={onChange}
-                                 disabled={disabled}/>
+                                 disabled={disabled}
+                                 fieldsToEdit={fieldsToEdit} />
             </EditDialog>
         );
     }

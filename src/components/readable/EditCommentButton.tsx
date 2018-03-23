@@ -124,7 +124,8 @@ class EditCommentButton extends React.Component<IAllProps, State> {
                                    title="Edit Comment"
                                    comment={editedComment}
                                    onChange={onEditCommentFormChange}
-                                   disabled={isSavingComment}/>
+                                   disabled={isSavingComment}
+                                   fieldsToEdit={["body"]}/>
             </div>
         );
     }

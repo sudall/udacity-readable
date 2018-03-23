@@ -7,12 +7,14 @@ import MenuItem from "material-ui/Menu/MenuItem"
 import CommentData from "src/data/models/CommentData";
 import FormUtils from "src/utilities/FormUtils";
 import CommentUtils from "src/utilities/CommentUtils";
+import PostData from "src/data/models/PostData";
 
 // props that are provided as parameters
 interface IOwnProps {
     comment: CommentData,
     onChange: (comment: CommentData) => void;
     disabled: boolean;
+    fieldsToEdit: (keyof CommentData)[];
 }
 
 // props that are provided via injection
@@ -38,28 +40,67 @@ class EditCommentForm extends React.Component<IAllProps, State> {
         return FormUtils.getOnTextFieldChangeCallback(this.props.comment, dataPropertyName, this.props.onChange);
     };
 
+    private fieldsToShowContains(field: keyof CommentData) {
+        return this.props.fieldsToEdit.some((fieldToEdit) => {
+            return fieldToEdit === field;
+        });
+    }
+
+    private getBodyField() {
+        const fieldName = "body";
+
+        if (!this.fieldsToShowContains(fieldName)) {
+            return null;
+        }
+
+        return (<TextField
+            autoFocus
+            label="Body"
+            fullWidth
+            multiline
+            rowsMax={5}
+            required={CommentUtils.requiredCommentFieldsContains(fieldName)}
+            value={this.props.comment[fieldName]}
+            onChange={this.getOnTextFieldChangeCallback(fieldName)}
+            disabled={this.props.disabled}
+            InputProps={{
+                inputProps: {
+                    maxLength: 100
+                }
+            }}
+        />);
+    }
+
+    private getAuthorField() {
+        const fieldName = "author";
+
+        if (!this.fieldsToShowContains(fieldName)) {
+            return null;
+        }
+
+        return (<TextField
+            label="Author"
+            fullWidth
+            required={CommentUtils.requiredCommentFieldsContains(fieldName)}
+            value={this.props.comment[fieldName]}
+            onChange={this.getOnTextFieldChangeCallback(fieldName)}
+            disabled={this.props.disabled}
+            InputProps={{
+                inputProps: {
+                    maxLength: 15
+                }
+            }}
+        />);
+    }
+
     render() {
-        const {comment, disabled} = this.props;
+        const {} = this.props;
         const {} = this.state;
 
         return (
             <div>
-                <TextField
-                    autoFocus
-                    label="Body"
-                    fullWidth
-                    multiline
-                    rowsMax={5}
-                    required={CommentUtils.requiredCommentFieldsContains("body")}
-                    value={comment.body}
-                    onChange={this.getOnTextFieldChangeCallback("body")}
-                    disabled={disabled}
-                    InputProps={{
-                        inputProps: {
-                            maxLength: 100
-                        }
-                    }}
-                />
+                {this.getBodyField()}
+                {this.getAuthorField()}
             </div>
         );
     }
