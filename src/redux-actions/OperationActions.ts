@@ -32,6 +32,15 @@ class OperationStatusUtils {
             [operationId]: {isPending: false, hasCompleted: false, error: error}
         }
     }
+
+    static validateOperationId(operationId: string) {
+        if (operationId == null || operationId === "") {
+            console.warn("Operation ID must not be empty or null/undefined!");
+            return false;
+        }
+
+        return true;
+    }
 }
 
 export abstract class Operation extends ActionMeta<any, any> {
@@ -88,6 +97,9 @@ export abstract class Operation extends ActionMeta<any, any> {
 class Start extends ActionMeta<string, OperationState> {
     reducer(state: OperationState, action: PayloadAction<string>): OperationState {
         const operationId = action.payload;
+
+        OperationStatusUtils.validateOperationId(operationId);
+
         return {
             ...state,
             operations: OperationStatusUtils.startOperation(operationId, state.operations)
@@ -98,6 +110,9 @@ class Start extends ActionMeta<string, OperationState> {
 class Complete extends ActionMeta<string, OperationState> {
     reducer(state: OperationState, action: PayloadAction<string>): OperationState {
         const operationId = action.payload;
+
+        OperationStatusUtils.validateOperationId(operationId);
+
         return {
             ...state,
             operations: OperationStatusUtils.completeOperation(operationId, state.operations)
@@ -113,6 +128,9 @@ export interface FailParams {
 class Fail extends ActionMeta<FailParams, OperationState> {
     reducer(state: OperationState, action: PayloadAction<FailParams>): OperationState {
         const {operationId, error} = action.payload;
+
+        OperationStatusUtils.validateOperationId(operationId);
+
         return {
             ...state,
             operations: OperationStatusUtils.failOperation(operationId, error, state.operations)

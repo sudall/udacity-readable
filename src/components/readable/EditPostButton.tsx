@@ -83,11 +83,11 @@ class EditPostButton extends React.Component<IAllProps, State> {
         });
 
         this.props.updatePost({
-            title,
-            body,
-            postId: id
-        },
-        operationId);
+                title,
+                body,
+                postId: id
+            },
+            operationId);
     };
 
     private onUpdateOperationStatusChange = (operationStatus: OperationStatus) => {

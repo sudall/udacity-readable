@@ -216,11 +216,7 @@ class DeleteCompleted extends ActionMeta<PostData, PostState> {
     reducer(state: PostState, action: PayloadAction<PostData>): PostState {
         const post = action.payload;
 
-        const newPosts = {
-            ...state.posts
-        };
-
-        delete newPosts[post.id];
+        const newPosts = ReduxStateUtils.deleteItemInStateByIdKey(post, state.posts);
 
         return PostStateUtils.setPosts(newPosts, state);
     }

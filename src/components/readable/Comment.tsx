@@ -24,7 +24,9 @@ interface IOwnProps {
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    upvote: () => void;
+    upvote: (comment: CommentData) => void;
+    downvote: (comment: CommentData) => void;
+    delete: (comment: CommentData) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -41,19 +43,24 @@ class Comment extends React.Component<IAllProps, State> {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
-    private saveEditedComment = (editedComment: CommentData) => {
-        // TODO dispatch save comment action
+    private deleteComment = () => {
+        this.props.delete(this.props.comment);
     };
 
-    private deleteComment() {
+    private upvote = () => {
+        this.props.upvote(this.props.comment);
+    };
 
-    }
+    private downvote = () => {
+        this.props.downvote(this.props.comment);
+    };
 
     render() {
-        const {comment, upvote} = this.props;
+        const {upvote, downvote} = this;
+        const {comment} = this.props;
 
         return (
-            <div style={{"overflow-wrap": "break-word"}}>
+            <div style={{overflowWrap: "break-word"}}>
                 <Card>
                     <CardContent>
                         <Typography component={"p"}>
@@ -72,12 +79,12 @@ class Comment extends React.Component<IAllProps, State> {
                                 {comment.voteScore}
                             </Typography>
                         </Tooltip>
-                        <IconButton>
+                        <IconButton onClick={downvote}>
                             <Tooltip title="Downvote">
                                 <ArrowDownward/>
                             </Tooltip>
                         </IconButton>
-                        <EditCommentButton comment={comment} onSave={this.saveEditedComment}/>
+                        <EditCommentButton comment={comment}/>
                         <DeleteButton onDelete={this.deleteComment}/>
                         <Tooltip title="Author">
                             <Typography>
@@ -106,7 +113,9 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
-        upvote: CommentActions.instance.upvote.bindToDispatch(dispatch)
+        upvote: CommentActions.instance.upvote.bindToDispatch(dispatch),
+        downvote: CommentActions.instance.downvote.bindToDispatch(dispatch),
+        delete: CommentActions.instance.delete.bindToDispatch(dispatch)
     };
 };
 

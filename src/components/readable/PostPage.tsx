@@ -71,7 +71,7 @@ class PostPage extends React.Component<IAllProps, State> {
         }
 
         return comments.map((comment) => (
-            <div style={{marginLeft: 16}}>
+            <div key={comment.id} style={{marginLeft: 16}}>
                 <Comment comment={comment}/>
             </div>
         ));
@@ -96,7 +96,7 @@ class PostPage extends React.Component<IAllProps, State> {
                     <Post post={post}/>
                     {PostPage.getCommentElements(comments)}
                 </PostAndCommentList>
-                <AddNewCommentButton/>
+                <AddNewCommentButton parentPost={post}/>
             </div>
         );
     }

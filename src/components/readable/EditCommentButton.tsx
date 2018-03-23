@@ -1,22 +1,24 @@
 import * as React from "react";
 import IconButton from "material-ui/IconButton";
 import {connect, Dispatch} from "react-redux";
-import {ApplicationState} from "src/components/readable/ReadableApplication";
+import {ApplicationState, OperationStatus} from "src/components/readable/ReadableApplication";
 import CommentData from "src/data/models/CommentData";
 import Tooltip from "material-ui/Tooltip";
 import ModeEdit from "material-ui-icons/ModeEdit";
 import EditCommentDialog from "src/components/readable/EditCommentDialog";
+import CommentActions from "src/redux-actions/CommentActions";
+import IdUtils from "src/utilities/IdUtils";
+import OperationStatusProvider from "src/components/readable/OperationStatusProvider";
 
 // props that are provided as parameters
 interface IOwnProps {
     comment: CommentData;
-    onSave: (editedComment: CommentData) => void;
 }
 
 // props that are provided via injection
 interface IInjectedProps {
     // someAction: () => any;
-    isSavingComment: boolean;
+    updateComment: (params: CommentActions.UpdateParams, operationId: string) => void;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -25,13 +27,20 @@ type IAllProps = IOwnProps & IInjectedProps;
 class State {
     editCommentDialogOpen: boolean;
     editedComment: CommentData;
+    updateOperationId: string;
+    updateOperationStatus?: OperationStatus;
 }
 
 class EditCommentButton extends React.Component<IAllProps, State> {
-    readonly state: State = {
-        editCommentDialogOpen: false,
-        editedComment: this.props.comment
-    };
+    private get freshState() {
+        return {
+            editCommentDialogOpen: false,
+            editedComment: this.props.comment,
+            updateOperationId: ""
+        };
+    }
+
+    readonly state: State = this.freshState;
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
@@ -61,16 +70,44 @@ class EditCommentButton extends React.Component<IAllProps, State> {
     };
 
     private onSave = () => {
-        this.props.onSave(this.state.editedComment);
+        // create an operation ID so that we can look up the status in the state
+        const operationId = IdUtils.getUniqueId();
+        this.setState({
+            updateOperationId: operationId
+        });
+
+        const {body, id} = this.state.editedComment;
+        this.props.updateComment({
+                body,
+                commentId: id
+            },
+            operationId);
+    };
+
+    private resetState() {
+        this.setState(this.freshState);
+    }
+
+    private onUpdateOperationStatusChange = (operationStatus: OperationStatus) => {
+        if (operationStatus.hasCompleted) {
+            this.resetState();
+        } else {
+            this.setState({
+                updateOperationStatus: operationStatus
+            });
+        }
     };
 
     render() {
         const {closeEditDialog, onSave, onEditCommentFormChange} = this;
-        const {isSavingComment} = this.props;
-        const {editCommentDialogOpen, editedComment} = this.state;
+        const {} = this.props;
+        const {editCommentDialogOpen, editedComment, updateOperationId, updateOperationStatus} = this.state;
+
+        const isSavingComment = updateOperationStatus != null && updateOperationStatus.isPending;
 
         return (
             <div>
+                <OperationStatusProvider operationId={updateOperationId} onOperationStatusChange={this.onUpdateOperationStatusChange}/>
                 <IconButton onClick={this.openEditDialog}>
                     <Tooltip title="Edit">
                         <ModeEdit />
@@ -91,14 +128,16 @@ class EditCommentButton extends React.Component<IAllProps, State> {
 const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        isSavingComment: state.commentState.isSaving
     }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
+    const updateComment = CommentActions.instance.update.bindToDispatch(dispatch);
+
     return {
         // Add mapped properties here
         // someAction: bindActionCreators(actionCreator, dispatch)
+        updateComment
     };
 };
 

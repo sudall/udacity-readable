@@ -1,5 +1,4 @@
 import {OperationState} from "src/components/readable/ReadableApplication";
-import ActionMeta from "src/redux-actions/framework/ActionMeta";
 
 class OperationUtils {
     static getOperationStatus(operationId: string, operationState: OperationState) {

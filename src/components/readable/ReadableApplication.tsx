@@ -24,13 +24,11 @@ import ActionMeta from "src/redux-actions/framework/ActionMeta";
 export type PostIdToPostDataMap = {[postId: string]: PostData};
 export type PostState = {
     posts: PostIdToPostDataMap;
-    // isSaving: boolean;
 }
 
 export type CommentIdToCommentDataMap = {[commentId: string]: CommentData};
 export type CommentState = {
     comments: CommentIdToCommentDataMap;
-    isSaving: boolean;
 }
 
 export type CategoryPathToCategoryDataMap = {[categoryPath: string]: CategoryData};
@@ -53,13 +51,10 @@ export class ApplicationState {
 
     postState: PostState = {
         posts: {},
-        // isSaving: false,
-        // operations: {}
     };
 
     commentState: CommentState = {
-        comments: {},
-        isSaving: false
+        comments: {}
     };
 
     operationState: OperationState = {

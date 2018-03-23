@@ -1,4 +1,18 @@
 class ReduxStateUtils {
+    static deleteItemInStateByIdKey<TDataItem extends {id: string}>(itemToDelete: TDataItem,
+        oldState: {[id: string]: TDataItem}): {[id: string]: TDataItem} {
+
+        // copy the old state
+        const newState = {
+            ...oldState
+        };
+
+        // delete the item
+        delete newState[itemToDelete.id];
+
+        return newState;
+    }
+
     static updateItemInStateByIdKey<TDataItem extends {id: string}>(newDataItem: TDataItem,
         oldState: {[id: string]: TDataItem},
         keepCondition?: (oldStateItem: TDataItem) => boolean) {
