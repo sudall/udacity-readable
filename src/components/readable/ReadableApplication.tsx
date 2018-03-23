@@ -19,8 +19,6 @@ import CommentConnector from "src/data/connectors/CommentConnector";
 import CategoryConnector from "src/data/connectors/CategoryConnector";
 import ActionMeta from "src/redux-actions/framework/ActionMeta";
 
-
-
 export type PostIdToPostDataMap = {[postId: string]: PostData};
 export type PostState = {
     posts: PostIdToPostDataMap;
