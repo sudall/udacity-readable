@@ -1,8 +1,8 @@
 import PostData from "src/data/models/PostData";
 import IdUtils from "src/utilities/IdUtils";
-import * as moment from "moment";
 import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
 import {Observable} from "rxjs/Observable";
+import DateTimeUtils from "src/utilities/DateTimeUtils";
 
 class PostConnector {
     static readonly instance: PostConnector = new PostConnector();
@@ -32,7 +32,7 @@ class PostConnector {
         category: string) {
 
         const id = IdUtils.getUniqueId();
-        const timestamp = moment().unix();
+        const timestamp = DateTimeUtils.getNowTimestamp();
 
         return ReadableAjaxUtils.post("/posts", {
             id,

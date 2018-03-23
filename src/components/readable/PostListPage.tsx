@@ -279,7 +279,7 @@ class PostListPage extends React.Component<IAllProps, State> {
 
 export class PostListPageUtils {
     static getRoutePath() {
-        return "/category/:categoryUrlPath";
+        return "/:categoryUrlPath";
     }
 
     public static readonly AllCategory: CategoryData = {
@@ -292,7 +292,7 @@ export class PostListPageUtils {
             return "/";
         }
 
-        return `/category/${category.path}`;
+        return `/${category.path}`;
     }
 }
 

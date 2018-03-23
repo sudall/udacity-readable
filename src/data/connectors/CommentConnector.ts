@@ -2,7 +2,7 @@ import {Observable} from "rxjs/Observable";
 import CommentData from "src/data/models/CommentData";
 import ReadableAjaxUtils from "src/utilities/ReadableAjaxUtils";
 import IdUtils from "src/utilities/IdUtils";
-import * as moment from "moment";
+import DateTimeUtils from "src/utilities/DateTimeUtils";
 
 class CommentConnector {
     static readonly instance = new CommentConnector();
@@ -25,7 +25,7 @@ class CommentConnector {
         parentId: string) {
 
         const id = IdUtils.getUniqueId();
-        const timestamp = moment().unix();
+        const timestamp = DateTimeUtils.getNowTimestamp();
 
         return ReadableAjaxUtils.post(`/comments`, {
             id,
@@ -58,7 +58,7 @@ class CommentConnector {
     update(commentId: string,
         body: string) {
 
-        const timestamp = moment().unix();
+        const timestamp = DateTimeUtils.getNowTimestamp();
 
         return ReadableAjaxUtils.put(`/comments/${commentId}`, {
             timestamp,
