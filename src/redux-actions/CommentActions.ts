@@ -9,6 +9,7 @@ import ActionMeta, {FilteredEpic} from "src/redux-actions/framework/ActionMeta";
 import ActionSet from "src/redux-actions/framework/ActionSet";
 import EpicUtils from "src/utilities/EpicUtils";
 import {Operation} from "src/redux-actions/OperationActions";
+import PostActions from "src/redux-actions/PostActions";
 
 type Dependencies = {commentConnector: CommentConnector};
 
@@ -77,6 +78,16 @@ class Delete extends ActionMeta<CommentData, CommentState> {
 }
 
 class DeleteCompleted extends ActionMeta<CommentData, CommentState> {
+    epic: FilteredEpic<PayloadAction<CommentData>, ApplicationState, Dependencies> =
+        (action$, store, {commentConnector}, allAction$): Observable<PayloadAction<any>> => {
+            return action$
+                .map((action) => {
+                    // the deletion of a comment affects the parent post's comment count, so go get the parent post info
+                    const deletedComment = action.payload;
+                    return PostActions.instance.get.factory(deletedComment.parentId);
+                });
+        };
+
     reducer(state: CommentState, action: PayloadAction<CommentData>): CommentState {
         const comment = action.payload;
 
@@ -136,6 +147,16 @@ class Create extends ActionMeta<CommentActions.CreateParams, CommentState> {
 }
 
 class CreateCompleted extends ActionMeta<CommentData, CommentState> {
+    epic: FilteredEpic<PayloadAction<CommentData>, ApplicationState, Dependencies> =
+        (action$, store, {commentConnector}, allAction$): Observable<PayloadAction<any>> => {
+            return action$
+                .map((action) => {
+                    // the creation of a comment affects the parent post's comment count, so go get the parent post info
+                    const newComment = action.payload;
+                    return PostActions.instance.get.factory(newComment.parentId);
+                });
+        };
+
     reducer(state: CommentState, action: PayloadAction<CommentData>): CommentState {
         const commentData = action.payload;
 
