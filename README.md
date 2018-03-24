@@ -2,10 +2,6 @@
 
 1. Clone repository via git
 2. Run these commands in a terminal with current working directory at
-   ```/src/api-server``` where ```/``` is the root of the project.
-    - yarn install
-    - node server
-3. Run these commands in a terminal with current working directory at
 the root of the project:
     - yarn install
     - yarn start
