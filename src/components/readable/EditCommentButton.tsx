@@ -18,7 +18,6 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
     updateComment: (params: CommentActions.UpdateParams, operationId: string) => void;
 }
 
@@ -142,7 +141,6 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
         updateComment
     };
 };

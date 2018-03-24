@@ -23,7 +23,6 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
     upvote: (comment: CommentData) => void;
     downvote: (comment: CommentData) => void;
     delete: (comment: CommentData) => void;
@@ -112,7 +111,6 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
         upvote: CommentActions.instance.upvote.bindToDispatch(dispatch),
         downvote: CommentActions.instance.downvote.bindToDispatch(dispatch),
         delete: CommentActions.instance.delete.bindToDispatch(dispatch)

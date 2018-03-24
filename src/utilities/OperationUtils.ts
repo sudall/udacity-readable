@@ -14,11 +14,6 @@ class OperationUtils {
 
         return status;
     }
-
-    //TODO
-    // static getNextOperationId(action: ActionMeta<any, any>) {
-    //     return action.getNextOperationId();
-    // }
 }
 
 export default OperationUtils;

@@ -32,7 +32,6 @@ interface IOwnProps extends RouteComponentProps<IRoutePathParameters> {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
     posts: PostData[];
     categories: CategoryData[];
     getPostsForCategory: (categoryName: string) => void;
@@ -307,7 +306,6 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
         getPostsForCategory: PostActions.instance.getForCategory.bindToDispatch(dispatch),
         getAllPosts: PostActions.instance.getAll.bindToDispatch(dispatch),
         getAllCategories: CategoryActions.instance.getAll.bindToDispatch(dispatch)

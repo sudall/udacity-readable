@@ -10,7 +10,6 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -47,7 +46,6 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
     };
 };
 

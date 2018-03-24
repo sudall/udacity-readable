@@ -29,7 +29,6 @@ interface IOwnProps extends RouteComponentProps<IRoutePathParameters> {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
     getPost: () => void;
     post: PostData;
 
@@ -153,7 +152,6 @@ const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwn
 
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
         getPost,
         getComments
     };

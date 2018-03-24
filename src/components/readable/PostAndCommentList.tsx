@@ -1,10 +1,7 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
-import Post from "src/components/readable/Post";
 import Grid from "material-ui/Grid";
-import CustomComponentValidators from "src/CustomComponentValidators";
-import Comment from "src/components/readable/Comment";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -13,7 +10,6 @@ interface IOwnProps {
 
 // props that are provided via injection
 interface IInjectedProps {
-    // someAction: () => any;
 }
 
 type IAllProps = IOwnProps & IInjectedProps;
@@ -65,7 +61,6 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<ApplicationState>, ownProps: IOwnProps) => {
     return {
         // Add mapped properties here
-        // someAction: bindActionCreators(actionCreator, dispatch)
     };
 };
 
