@@ -6,7 +6,7 @@ import {Observable} from "rxjs/Rx";
 class EpicUtils {
     static restEpicConcurrentCalls<TActionPayload, TCompletedActionPayload>(action$: ActionsObservable<PayloadAction<TActionPayload>>,
         call: (payload: TActionPayload) => Observable<TCompletedActionPayload>,
-        completedAction: ActionMeta<TCompletedActionPayload, any>) {
+        completedAction: ActionMeta<TCompletedActionPayload, any>): Observable<PayloadAction<any>> {
 
         return action$
             .mergeMap((action: PayloadAction<TActionPayload>) => {
@@ -14,13 +14,18 @@ class EpicUtils {
                 return call(payload)
                     .map((result) => {
                         return completedAction.factory(result, action.operationId);
+                    })
+                    .catch((error) => {
+                        // Normally this would return the failed action, but for the sake of time, I'm just doing this
+                        console.warn(`Rest call error: ${error}`);
+                        return Observable.empty<PayloadAction<any>>();
                     });
             });
     };
 
     static restEpicLatestCallOnly<TActionPayload, TCompletedActionPayload>(action$: ActionsObservable<PayloadAction<TActionPayload>>,
         call: (payload: TActionPayload) => Observable<TCompletedActionPayload>,
-        completedAction: ActionMeta<TCompletedActionPayload, any>) {
+        completedAction: ActionMeta<TCompletedActionPayload, any>): Observable<PayloadAction<any>> {
 
         return action$
             .debounceTime(100)
@@ -29,6 +34,11 @@ class EpicUtils {
                 return call(payload)
                     .map((result) => {
                         return completedAction.factory(result, action.operationId);
+                    })
+                    .catch((error) => {
+                        // Normally this would return the failed action, but for the sake of time, I'm just doing this
+                        console.warn(`Rest call error: ${error}`);
+                        return Observable.empty<PayloadAction<any>>();
                     });
             });
     };
