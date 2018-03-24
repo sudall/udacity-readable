@@ -3,7 +3,7 @@ import PostData from "src/data/models/PostData";
 import FormUtils from "src/utilities/FormUtils";
 
 class PostUtils {
-    static readonly requiredPostFields: (keyof PostData)[] = ["title", "category"];
+    static readonly requiredPostFields: (keyof PostData)[] = ["title", "category", "author"];
     static requiredPostFieldsContains(field: keyof PostData): boolean {
         return this.requiredPostFields.some((requiredField) => {
             return field === requiredField;
