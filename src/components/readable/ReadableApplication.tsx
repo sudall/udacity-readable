@@ -1,5 +1,5 @@
 import * as React from "react";
-import Reboot from "material-ui/Reboot";
+import CssBaseline from "material-ui/CssBaseline";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import deepPurple from "material-ui/colors/deepPurple";
@@ -142,7 +142,7 @@ class ReadableApplication extends React.Component<IAllProps, State> {
         return (
             <Provider store={ReadableApplication.createReduxStore()}>
                 <MuiThemeProvider theme={this.theme}>
-                    <Reboot/>
+                    <CssBaseline/>
                     <ReadableApplicationRouter/>
                 </MuiThemeProvider>
             </Provider>
