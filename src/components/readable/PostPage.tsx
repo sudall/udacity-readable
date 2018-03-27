@@ -128,7 +128,7 @@ const mapStateToProps = (state: ApplicationState, ownProps: IOwnProps) => {
 
     comments = comments
         .slice()
-        .sort(CommentSortMethod.VoteScoreHighestToLowest.sortCompareFunction);
+        .sort(CommentSortMethod.VoteScoreHighestFirst.sortCompareFunction);
 
     return {
         // Add mapped properties here

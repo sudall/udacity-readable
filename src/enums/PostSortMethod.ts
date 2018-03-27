@@ -8,13 +8,13 @@ class PostSortMethod extends Enum<PostSortMethod> {
         super();
     }
 
-    static readonly VoteScoreLowestToHighest = new PostSortMethod("Vote Score - Lowest To Highest",
+    static readonly VoteScoreLowestFirst = new PostSortMethod("Vote Score - Lowest First",
         (a: PostData, b: PostData) => {
             return SortMethod.NumberLowestToHighest.sortCompareFunction(a.voteScore, b.voteScore);
         }
     );
 
-    static readonly VoteScoreHighestToLowest = new PostSortMethod("Vote Score - Highest To Lowest",
+    static readonly VoteScoreHighestFirst = new PostSortMethod("Vote Score - Highest First",
         (a: PostData, b: PostData) => {
             return SortMethod.NumberHighestToLowest.sortCompareFunction(a.voteScore, b.voteScore);
         }

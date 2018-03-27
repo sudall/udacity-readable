@@ -7,7 +7,7 @@ class CommentSortMethod extends Enum<CommentSortMethod> {
         super();
     }
 
-    static readonly VoteScoreHighestToLowest = new CommentSortMethod((a, b) => {
+    static readonly VoteScoreHighestFirst = new CommentSortMethod((a, b) => {
         return SortMethod.NumberHighestToLowest.sortCompareFunction(a.voteScore, b.voteScore);
     });
 }
