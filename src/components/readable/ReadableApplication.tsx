@@ -12,8 +12,6 @@ import PostData from "src/data/models/PostData";
 import CategoryData from "src/data/models/CategoryData";
 import ReadableApplicationRouter from "src/components/readable/ReadableApplicationRouter";
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
-import "src/utilities/RxOperators";
-import "core-js";
 import PostConnector from "src/data/connectors/PostConnector";
 import CommentConnector from "src/data/connectors/CommentConnector";
 import CategoryConnector from "src/data/connectors/CategoryConnector";
