@@ -16,12 +16,12 @@ interface IInjectedProps {
 type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
-class State {
+interface IState {
 
 }
 
-class ${NAME} extends React.Component<IAllProps, State> {
-    readonly state: State = {
+class ${NAME} extends React.Component<IAllProps, IState> {
+    readonly state: IState = {
 
     };
 

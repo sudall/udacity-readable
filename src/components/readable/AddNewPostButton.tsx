@@ -26,15 +26,15 @@ interface IInjectedProps {
 type IAllProps = IOwnProps & IInjectedProps;
 
 // internal state of the component
-class State {
+interface IState {
     dialogOpen: boolean;
     newPost: PostData;
     savingOperationId: string;
     savingOperationStatus?: OperationStatus;
 }
 
-class AddNewPostButton extends React.Component<IAllProps, State> {
-    readonly state: State = AddNewPostButton.freshState;
+class AddNewPostButton extends React.Component<IAllProps, IState> {
+    readonly state: IState = AddNewPostButton.freshState;
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
