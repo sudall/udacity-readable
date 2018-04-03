@@ -120,13 +120,15 @@ class Complete extends ActionMeta<string, OperationState> {
     }
 }
 
-export interface FailParams {
-    operationId: string,
-    error: Error
+module OperationActions {
+    export interface FailParams {
+        operationId: string,
+        error: Error
+    }
 }
 
-class Fail extends ActionMeta<FailParams, OperationState> {
-    reducer(state: OperationState, action: PayloadAction<FailParams>): OperationState {
+class Fail extends ActionMeta<OperationActions.FailParams, OperationState> {
+    reducer(state: OperationState, action: PayloadAction<OperationActions.FailParams>): OperationState {
         const {operationId, error} = action.payload;
 
         OperationStatusUtils.validateOperationId(operationId);
