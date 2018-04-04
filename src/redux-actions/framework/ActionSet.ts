@@ -1,5 +1,8 @@
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 
+// TODO Idea: ActionSets could register the location and shape of the state that they modify so that they don't need to
+// TODO rely on ApplicationState having the right shape. Example: PostActions can register "postState" with shape PostState
+// TODO perhaps namespaced under "actionSets" (or something more clear). "actionSets.postState.posts"
 class ActionSet<TReducerStateKey extends keyof ApplicationState, TReducerState extends ApplicationState[TReducerStateKey]> {
     private static readonly TakenNamespaces = new Set<string>();
 
