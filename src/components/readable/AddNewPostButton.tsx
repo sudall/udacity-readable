@@ -30,7 +30,6 @@ interface IState {
     dialogOpen: boolean;
     newPost: PostData;
     savingOperationId: string;
-    savingOperationStatus?: OperationStatus;
 }
 
 class AddNewPostButton extends React.Component<IAllProps, IState> {
@@ -99,23 +98,15 @@ class AddNewPostButton extends React.Component<IAllProps, IState> {
         const hasCompletedSavingPost = operationStatus.hasCompleted;
         if (hasCompletedSavingPost) {
             this.resetState();
-        } else {
-            this.setState({
-                savingOperationStatus: operationStatus
-            });
         }
     };
 
-    render() {
-        const {} = this.props;
-        const {dialogOpen, newPost, savingOperationId, savingOperationStatus} = this.state;
-
-        const isSavingPost = savingOperationStatus != null && savingOperationStatus.isPending;
+    private renderWithSavingOperationStatus(operationStatus: OperationStatus) {
+        const isSavingPost = operationStatus.isPending;
+        const {dialogOpen, newPost} = this.state;
 
         return (
             <div>
-                <OperationStatusProvider operationId={savingOperationId}
-                                         onOperationStatusChange={this.onSavingOperationStatusChange}/>
                 <Tooltip title="Add a New Post">
                     <Button variant="fab"
                             color="primary"
@@ -126,7 +117,7 @@ class AddNewPostButton extends React.Component<IAllProps, IState> {
                             }}
                             onClick={this.openDialog}
                     >
-                        <Add />
+                        <Add/>
                     </Button>
                 </Tooltip>
                 <EditPostDialog post={newPost}
@@ -139,6 +130,20 @@ class AddNewPostButton extends React.Component<IAllProps, IState> {
                                 title="Add a New Post"
                 />
             </div>
+        );
+    }
+
+    render() {
+        const {} = this.props;
+        const {savingOperationId} = this.state;
+
+        return (
+            <OperationStatusProvider operationId={savingOperationId}
+                                     onOperationStatusChange={this.onSavingOperationStatusChange}
+                                     render={(operationStatus) => {
+                                         return this.renderWithSavingOperationStatus(operationStatus);
+                                     }}
+            />
         );
     }
 }

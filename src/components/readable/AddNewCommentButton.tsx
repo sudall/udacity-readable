@@ -29,7 +29,6 @@ class State {
     newComment: CommentData;
     dialogOpen: boolean;
     createOperationId: string;
-    createOperationStatus?: OperationStatus;
 }
 
 class AddNewCommentButton extends React.Component<IAllProps, State> {
@@ -96,22 +95,18 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
     private onCreateOperationStatusChange = (operationStatus: OperationStatus) => {
         if (operationStatus.hasCompleted) {
             this.resetState();
-        } else {
-            this.setState({
-                createOperationStatus: operationStatus
-            });
         }
     };
 
-    render() {
+    renderWithCreateOperationStatus(operationStatus: OperationStatus) {
+        const {} = this;
         const {} = this.props;
-        const {dialogOpen, newComment, createOperationId, createOperationStatus} = this.state;
+        const {dialogOpen, newComment} = this.state;
 
-        const isSavingComment = createOperationStatus != null && createOperationStatus.isPending;
+        const isSavingComment = operationStatus.isPending;
 
         return (
             <div>
-                <OperationStatusProvider operationId={createOperationId} onOperationStatusChange={this.onCreateOperationStatusChange}/>
                 <Tooltip title="Add a New Comment">
                     <Button variant="fab"
                             color="secondary"
@@ -135,6 +130,20 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
                                 fieldsToEdit={["body", "author"]}
                 />
             </div>
+        );
+    }
+
+    render() {
+        const {} = this.props;
+        const {createOperationId} = this.state;
+
+        return (
+            <OperationStatusProvider operationId={createOperationId}
+                                     onOperationStatusChange={this.onCreateOperationStatusChange}
+                                     render={(operationStatus) => {
+                                         return this.renderWithCreateOperationStatus(operationStatus);
+                                     }}
+            />
         );
     }
 }
