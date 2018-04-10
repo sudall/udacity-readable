@@ -13,11 +13,20 @@ export interface FilteredEpic<TAction extends PayloadAction<any>, TStore, TDepen
         allAction$: ActionsObservable<PayloadAction<any>>): Observable<TOutputAction>;
 }
 
+class ReducerRegistration<TActionSetReducerStateKey extends keyof ApplicationState,
+    TActionSetReducerState extends ApplicationState[TActionSetReducerStateKey],
+    TActionPayload> {
+    reducerStateKey: TActionSetReducerStateKey;
+    reducer: (state: TActionSetReducerState, action: PayloadAction<TActionPayload>) => TActionSetReducerState
+}
+
 abstract class ActionMeta<TActionPayload, TReducerState = ApplicationState> {
     private static TypeToActionMetaMap = new Map<string, ActionMeta<any, any>>();
 
     readonly type: string;
     readonly reducerStateKey: keyof ApplicationState;
+
+    public readonly registeredReducers: ReducerRegistration<keyof ApplicationState, any, TActionPayload>[] = [];
 
     constructor(readonly actionSet: ActionSet<any, TReducerState>) {
         const type = this.type = `${this.actionSet.namespace}.${this.constructor.name}`;
@@ -43,6 +52,16 @@ abstract class ActionMeta<TActionPayload, TReducerState = ApplicationState> {
 
     reducer(state: TReducerState, action: PayloadAction<TActionPayload>): TReducerState {
         return state;
+    }
+
+    registerReducer<TActionSetReducerStateKey extends keyof ApplicationState,
+        TActionSetReducerState extends ApplicationState[TActionSetReducerStateKey]>
+        (reducerStateKey: TActionSetReducerStateKey, reducer: (state: TActionSetReducerState, action: PayloadAction<TActionPayload>) => TActionSetReducerState) {
+
+        this.registeredReducers.push({
+            reducerStateKey,
+            reducer
+        });
     }
 
     private rootEpic: Epic<PayloadAction<any>, ApplicationState> = (action$: ActionsObservable<PayloadAction<any>>, store, dependencies): Observable<PayloadAction<any>> => {

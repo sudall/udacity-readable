@@ -201,6 +201,27 @@ class CreateOperation extends Operation {
 class UpdateOperation extends Operation {
 }
 
+// TODO these are examples of how to register additional reducers for an action. Especially reducers that modify state outside of the one the action is registered
+// PostActions.instance.updateCompleted.registerReducer("commentState",(state, action) => {
+//     return {
+//         ...state,
+//         comments: {
+//             ...state.comments,
+//             [`post ${action.payload.id} updated`]: new CommentData()
+//         }
+//     };
+// });
+//
+// PostActions.instance.updateCompleted.registerReducer("commentState",(state, action) => {
+//     return {
+//         ...state,
+//         comments: {
+//             ...state.comments,
+//             [`post ${action.payload.id} updated 2`]: new CommentData()
+//         }
+//     };
+// });
+
 class CommentActions extends ActionSet<"commentState", CommentState> {
     public static readonly instance = new CommentActions("commentState");
 

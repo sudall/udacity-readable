@@ -121,10 +121,20 @@ class ReadableApplication extends React.Component<IAllProps, State> {
             // if there is a state key specified...
             if (actionMeta.reducerStateKey != null) {
                 // only run the reducer against that part of state
-                return {
+                let newState = {
                     ...state,
                     [actionMeta.reducerStateKey]: actionMeta.reducer(state[actionMeta.reducerStateKey], action)
-                }
+                };
+
+                actionMeta.registeredReducers.forEach((reducerInfo) => {
+                    let modifiedState = {
+                        ...newState,
+                        [reducerInfo.reducerStateKey]: reducerInfo.reducer(newState[reducerInfo.reducerStateKey], action)
+                    };
+                    Object.assign(newState, modifiedState);
+                });
+
+                return newState;
             }
 
             // otherwise, run the reducer on the entire state
