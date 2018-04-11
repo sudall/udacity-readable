@@ -50,11 +50,20 @@ class OperationStatusProvider extends React.Component<IAllProps, IState> {
     componentWillReceiveProps(nextProps: IAllProps) {
         const newOperationStatus = nextProps.getOperationStatus();
 
-        OperationStatusProvider.onOperationStatusChange(nextProps, newOperationStatus);
+        // if the status has changed...
+        if (!OperationStatusProvider.operationStatusEquals(this.state.operationStatus, newOperationStatus)) {
+            OperationStatusProvider.onOperationStatusChange(nextProps, newOperationStatus);
 
-        this.setState({
-            operationStatus: newOperationStatus
-        });
+            this.setState({
+                operationStatus: newOperationStatus
+            });
+        }
+    }
+
+    private static operationStatusEquals(operationStatusA: OperationStatus, operationStatusB: OperationStatus) {
+        return operationStatusA.isPending === operationStatusB.isPending
+            && operationStatusA.hasCompleted === operationStatusB.hasCompleted
+            && operationStatusA.error === operationStatusB.error
     }
 
     private static onOperationStatusChange(props: IOwnProps, newOperationStatus: OperationStatus) {
