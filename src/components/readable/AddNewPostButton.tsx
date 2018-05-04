@@ -139,11 +139,11 @@ class AddNewPostButton extends React.Component<IAllProps, IState> {
 
         return (
             <OperationStatusProvider operationId={savingOperationId}
-                                     onOperationStatusChange={this.onSavingOperationStatusChange}
-                                     render={(operationStatus) => {
-                                         return this.renderWithSavingOperationStatus(operationStatus);
-                                     }}
-            />
+                                     onOperationStatusChange={this.onSavingOperationStatusChange}>
+            {(operationStatus) => {
+                    return this.renderWithSavingOperationStatus(operationStatus);
+            }}
+            </OperationStatusProvider>
         );
     }
 }

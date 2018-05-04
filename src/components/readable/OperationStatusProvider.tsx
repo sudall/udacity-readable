@@ -7,7 +7,7 @@ import {ReactNode} from "react";
 // props that are provided as parameters
 interface IOwnProps {
     operationId: string;
-    render?: (operationStatus: OperationStatus) => ReactNode;
+    children?: (operationStatus: OperationStatus) => ReactNode;
     onOperationStatusChange?: (operationStatus: OperationStatus) => void;
 }
 
@@ -76,14 +76,15 @@ class OperationStatusProvider extends React.Component<IAllProps, IState> {
 
     render() {
         const {} = this;
-        const {render} = this.props;
+        const {children} = this.props;
         const {operationStatus} = this.state;
 
-        if (render != null) {
-            return render(operationStatus);
+        if (children != null && typeof children === "function") {
+            return children(operationStatus);
         } else {
             return null;
         }
+
     }
 }
 
