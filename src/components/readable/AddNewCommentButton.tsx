@@ -140,10 +140,11 @@ class AddNewCommentButton extends React.Component<IAllProps, State> {
         return (
             <OperationStatusProvider operationId={createOperationId}
                                      onOperationStatusChange={this.onCreateOperationStatusChange}
-                                     render={(operationStatus) => {
-                                         return this.renderWithCreateOperationStatus(operationStatus);
-                                     }}
-            />
+            >
+            {(operationStatus) => {
+                return this.renderWithCreateOperationStatus(operationStatus);
+            }}
+            </OperationStatusProvider>
         );
     }
 }
