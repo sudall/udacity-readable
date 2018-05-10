@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ApplicationState} from "src/components/readable/ReadableApplication";
 import {bindActionCreators} from "redux";
-import {Column, InfiniteLoader, Table} from "react-virtualized";
+import {AutoSizer, Column, InfiniteLoader, Table, WindowScroller} from "react-virtualized";
 import {Observable} from "rxjs/Observable";
 import {InfiniteLoaderChildProps} from "react-virtualized/dist/es/InfiniteLoader";
 
@@ -63,7 +63,12 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
 
         return (
             <>
-                <InfiniteLoader isRowLoaded={({index}) => {
+                <div>
+                    Stuff above
+                </div>
+                <InfiniteLoader minimumBatchSize={50}
+                                rowCount={1000}
+                                isRowLoaded={({index}) => {
                                     return this.loadedTableData[index] != null;
                                 }}
                                 loadMoreRows={({startIndex, stopIndex}) => {
@@ -95,31 +100,41 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                                                 this.loadedTableData[i] = rowData;
                                             }
                                         });
-                                }}
-                                minimumBatchSize={50}
-                                rowCount={1000}>
+                                }}>
                     {({onRowsRendered, registerChild}: InfiniteLoaderChildProps) =>
-                        <Table height={700}
-                               rowHeight={75}
-                               rowCount={1000}
-                               width={1000}
-                               headerHeight={75}
-                               rowGetter={({index}) => {
-                                   return this.loadedTableData[index] || {name: "Loading"};
-                               }}
-                               onRowsRendered={onRowsRendered}
-                               ref={registerChild}
-                               onHeaderClick={() => alert("you clicked a header")}
-                               rowStyle={({index}) => {
-                                   return {
-                                       display: "flex",
-                                       backgroundColor: index % 2 === 0 ? "lightgrey" : "grey"
-                                   }
-                               }}>
-                            <Column label={"Name"} dataKey={"name"} width={100}/>
-                            <Column label={"Age"} dataKey={"age"} width={100}/>
-                            <Column label={"Phone"} dataKey={"phone"} width={100}/>
-                        </Table>
+                        <WindowScroller>
+                            {({height, width, isScrolling, scrollTop, onChildScroll}) =>
+                                <AutoSizer disableHeight>
+                                    {({width}) =>
+                                        <Table height={height}
+                                               autoHeight
+                                               rowHeight={75}
+                                               rowCount={1000}
+                                               width={width}
+                                               scrollTop={scrollTop}
+                                               onScroll={onChildScroll}
+                                               isScrolling={isScrolling}
+                                               headerHeight={75}
+                                               rowGetter={({index}) => {
+                                                   return this.loadedTableData[index] || {name: "Loading"};
+                                               }}
+                                               onRowsRendered={onRowsRendered}
+                                               ref={registerChild}
+                                               onHeaderClick={() => alert("you clicked a header")}
+                                               rowStyle={({index}) => {
+                                                   return {
+                                                       display: "flex",
+                                                       backgroundColor: index % 2 === 0 ? "lightgrey" : "grey"
+                                                   }
+                                               }}>
+                                            <Column label={"Name"} dataKey={"name"} width={100}/>
+                                            <Column label={"Age"} dataKey={"age"} width={100}/>
+                                            <Column label={"Phone"} dataKey={"phone"} width={100}/>
+                                        </Table>
+                                    }
+                                </AutoSizer>
+                            }
+                        </WindowScroller>
                     }
                 </InfiniteLoader>
             </>
