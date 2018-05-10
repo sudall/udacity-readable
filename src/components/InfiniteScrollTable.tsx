@@ -99,7 +99,7 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                                 minimumBatchSize={50}
                                 rowCount={1000}>
                     {({onRowsRendered, registerChild}: InfiniteLoaderChildProps) =>
-                        <Table height={750}
+                        <Table height={700}
                                rowHeight={75}
                                rowCount={1000}
                                width={1000}
@@ -110,7 +110,12 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                                onRowsRendered={onRowsRendered}
                                ref={registerChild}
                                onHeaderClick={() => alert("you clicked a header")}
-                               rowStyle={{display: "flex"}}>
+                               rowStyle={({index}) => {
+                                   return {
+                                       display: "flex",
+                                       backgroundColor: index % 2 === 0 ? "lightgrey" : "grey"
+                                   }
+                               }}>
                             <Column label={"Name"} dataKey={"name"} width={100}/>
                             <Column label={"Age"} dataKey={"age"} width={100}/>
                             <Column label={"Phone"} dataKey={"phone"} width={100}/>
