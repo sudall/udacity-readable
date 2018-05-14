@@ -5,6 +5,7 @@ import {bindActionCreators} from "redux";
 import {AutoSizer, Column, InfiniteLoader, Table, WindowScroller} from "react-virtualized";
 import {Observable} from "rxjs/Observable";
 import {InfiniteLoaderChildProps} from "react-virtualized/dist/es/InfiniteLoader";
+import "react-virtualized/styles.css";
 
 // props that are provided as parameters
 interface IOwnProps {
@@ -23,41 +24,35 @@ interface IState {
 
 }
 
-class UserData {
+class FakeTableData {
     name: string;
     phone: string;
-    age: number;
+    id: number;
 }
 
 class InfiniteScrollTable extends React.Component<IAllProps, IState> {
     readonly state: IState = {};
 
-    private static fakeTableData: UserData[] = [
+    private static fakeTableData: FakeTableData[] = [
         {
-            name: "Bob",
-            age: 12,
+            name: "Client",
+            id: 12,
             phone: "40322131233"
-        },
-        {
-            name: "Bob",
-            age: 12,
-            phone: "40322131233"
-        },
-        {
-            name: "Bob",
-            age: 12,
-            phone: "40322131233"
-        },
+        }
     ];
 
-    private loadedTableData: {[index: number]: UserData} = {};
+    private loadedTableData: {[index: number]: FakeTableData} = {};
 
     static propTypes = {
         // children: CustomComponentValidators.createChildrenTypesValidator([])
     };
 
+    private isRowLoaded = ({index}: {index: number}) => {
+        return this.loadedTableData[index] != null;
+    };
+
     render() {
-        const {} = this;
+        const {isRowLoaded} = this;
         const {} = this.props;
         const {} = this.state;
 
@@ -67,15 +62,14 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                     Stuff above
                 </div>
                 <InfiniteLoader minimumBatchSize={50}
+                                threshold={50}
                                 rowCount={1000}
-                                isRowLoaded={({index}) => {
-                                    return this.loadedTableData[index] != null;
-                                }}
+                                isRowLoaded={isRowLoaded}
                                 loadMoreRows={({startIndex, stopIndex}) => {
                                     return Observable.timer(1500)
                                         .toPromise()
                                         .then(() => {
-                                            const newLoadedTableData: UserData[] = [];
+                                            const newLoadedTableData: FakeTableData[] = [];
 
                                             Object.keys(this.loadedTableData)
                                                 .forEach((key) => {
@@ -94,8 +88,8 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                                                     ...InfiniteScrollTable.fakeTableData[0]
                                                 };
 
-                                                rowData.age = i + 1;
-                                                rowData.name = rowData.name + rowData.age;
+                                                rowData.id = i + 1;
+                                                rowData.name = rowData.name + rowData.id;
 
                                                 this.loadedTableData[i] = rowData;
                                             }
@@ -116,19 +110,19 @@ class InfiniteScrollTable extends React.Component<IAllProps, IState> {
                                                isScrolling={isScrolling}
                                                headerHeight={75}
                                                rowGetter={({index}) => {
-                                                   return this.loadedTableData[index] || {name: "Loading"};
+                                                   return this.loadedTableData[index] || {};
                                                }}
                                                onRowsRendered={onRowsRendered}
                                                ref={registerChild}
                                                onHeaderClick={() => alert("you clicked a header")}
                                                rowStyle={({index}) => {
                                                    return {
-                                                       display: "flex",
                                                        backgroundColor: index % 2 === 0 ? "lightgrey" : "grey"
                                                    }
-                                               }}>
+                                               }}
+                                                rowClassName={"ReactVirtualized__Table__row"}>
+                                            <Column label={"ID"} dataKey={"id"} width={50}/>
                                             <Column label={"Name"} dataKey={"name"} width={100}/>
-                                            <Column label={"Age"} dataKey={"age"} width={100}/>
                                             <Column label={"Phone"} dataKey={"phone"} width={100}/>
                                         </Table>
                                     }
