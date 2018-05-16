@@ -10,7 +10,6 @@ import {combineEpics, createEpicMiddleware} from "redux-observable";
 import CommentData from "src/data/models/CommentData";
 import PostData from "src/data/models/PostData";
 import CategoryData from "src/data/models/CategoryData";
-import ReadableApplicationRouter from "src/components/readable/ReadableApplicationRouter";
 import PayloadAction from "src/redux-actions/framework/PayloadAction";
 import PostConnector from "src/data/connectors/PostConnector";
 import CommentConnector from "src/data/connectors/CommentConnector";
@@ -149,10 +148,16 @@ class ReadableApplication extends React.Component<IAllProps, State> {
 
         return (
             <Provider store={ReadableApplication.createReduxStore()}>
+                <>
                 <MuiThemeProvider theme={this.theme}>
                     <CssBaseline/>
-                    <ReadableApplicationRouter/>
+                    {/*<DropDownSelectMultipleMaterial/>*/}
+                    <DropDownSelectMultiple/>
+                    <div style={{height: 100}}/>
+                    {/*<ReadableApplicationRouter/>*/}
+                    <InfiniteScrollTable/>
                 </MuiThemeProvider>
+                </>
             </Provider>
         );
     }
