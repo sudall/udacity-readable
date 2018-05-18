@@ -50,8 +50,10 @@ ReactSelectClass.prototype["addValue"] = function addValue(value: any) {
 };
 
 class DropDownSelectMultiple extends React.Component<IAllProps, IState> {
+    private static readonly AllOption: IOption = { value: 'all', label: 'All' };
+
     private options: IOption[] = [
-        { value: 'all', label: 'All' },
+        DropDownSelectMultiple.AllOption,
         { value: 'one', label: 'One' },
         { value: 'two', label: 'Two' },
         { value: 'three', label: 'Three' },
@@ -104,7 +106,8 @@ class DropDownSelectMultiple extends React.Component<IAllProps, IState> {
             selectedOptions.splice(selectedOptions.indexOf(newSelectedOption), 1);
         }
 
-        if (newSelectedOption.value === "all") {
+        // if the "all" option was selected...
+        if (newSelectedOption.value === DropDownSelectMultiple.AllOption.value) {
             if (optionAdded) {
                 selectedOptions = this.options;
             } else {
@@ -113,11 +116,29 @@ class DropDownSelectMultiple extends React.Component<IAllProps, IState> {
         } else {
             if (!optionAdded) {
                 // remove the "all" option
-                const indexOfAllOption = selectedOptions.findIndex(selectedOption => selectedOption.value === "all");
+                const indexOfAllOption = selectedOptions.findIndex(selectedOption => selectedOption.value === DropDownSelectMultiple.AllOption.value);
                 if (indexOfAllOption !== -1) {
                     selectedOptions.splice(indexOfAllOption, 1);
                 }
             }
+        }
+
+        // if all of the options except the "all" option are selected...
+        const selectedOptionsContainsAllOptions =
+            // find the first item in the options list that is not in the selected options list
+            !this.options.some(option => {
+                // check that selectedOptions contains this option
+                return !selectedOptions.some(selectedOption => {
+                    return selectedOption.value === option.value
+                        || option.value === DropDownSelectMultiple.AllOption.value
+                        || selectedOption.value === DropDownSelectMultiple.AllOption.value;
+                });
+            });
+
+        const selectedOptionsContainsAllOption = selectedOptions.some(option => option.value === DropDownSelectMultiple.AllOption.value);
+
+        if (selectedOptionsContainsAllOptions && !selectedOptionsContainsAllOption) {
+            selectedOptions.push(DropDownSelectMultiple.AllOption);
         }
 
         return selectedOptions;
@@ -139,12 +160,12 @@ class DropDownSelectMultiple extends React.Component<IAllProps, IState> {
                     multi
                     tabSelectsValue={false}
                     valueRenderer={(option) => {
-                        if (option.value === "all") {
+                        if (option.value === DropDownSelectMultiple.AllOption.value) {
                             return null;
                         }
 
                         let separator = ", ";
-                        const selectedOptions = this.state.selectedOptions.filter(option => option.value !== "all");
+                        const selectedOptions = this.state.selectedOptions.filter(option => option.value !== DropDownSelectMultiple.AllOption.value);
                         if (selectedOptions.indexOf(option as IOption) === selectedOptions.length - 1) {
                             separator = "";
                         }
