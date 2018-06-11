@@ -1,0 +1,36 @@
+import * as React from "react";
+
+// props that are provided as parameters
+interface IOwnProps {
+
+}
+
+// props that are provided via injection
+interface IInjectedProps {
+    // someAction: () => void;
+}
+
+type IAllProps = IOwnProps & IInjectedProps;
+
+// internal state of the component
+interface IState {
+
+}
+
+class ${NAME} extends React.Component<IAllProps, IState> {
+    readonly state: IState = {
+
+    };
+
+    render() {
+        const {} = this;
+        const {} = this.props;
+        const {} = this.state;
+
+        return <>
+
+        </>;
+    }
+}
+
+export default ${NAME};
