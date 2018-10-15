@@ -1,23 +1,25 @@
 import * as React from "react";
 
-// props that are provided as parameters
-interface IOwnProps {
+namespace ${NAME} {
+    // props that are provided as parameters
+    export interface IOwnProps {
 
+    }
+
+    // props that are provided via injection
+    export interface IInjectedProps {
+        // someAction: () => void;
+    }
+
+    export type IAllProps = IOwnProps & IInjectedProps;
+
+    // internal state of the component
+    export interface IState {
+
+    }
 }
 
-// props that are provided via injection
-interface IInjectedProps {
-    // someAction: () => void;
-}
-
-type IAllProps = IOwnProps & IInjectedProps;
-
-// internal state of the component
-interface IState {
-
-}
-
-class ${NAME} extends React.Component<IAllProps, IState> {
+class ${NAME} extends React.Component<${NAME}.IAllProps, ${NAME}.IState> {
     readonly state: IState = {
 
     };
