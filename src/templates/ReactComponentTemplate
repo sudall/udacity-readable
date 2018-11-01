@@ -1,17 +1,10 @@
 import * as React from "react";
 
 namespace ${NAME} {
-    // props that are provided as parameters
-    export interface IOwnProps {
+    // parameters to the component
+    export interface IProps {
 
     }
-
-    // props that are provided via injection
-    export interface IInjectedProps {
-        // someAction: () => void;
-    }
-
-    export type IAllProps = IOwnProps & IInjectedProps;
 
     // internal state of the component
     export interface IState {
@@ -19,7 +12,10 @@ namespace ${NAME} {
     }
 }
 
-class ${NAME} extends React.Component<${NAME}.IAllProps, ${NAME}.IState> {
+type IProps = ${NAME}.IProps;
+type IState = ${NAME}.IState;
+
+class ${NAME} extends React.Component<IProps, IState> {
     readonly state: IState = {
 
     };
