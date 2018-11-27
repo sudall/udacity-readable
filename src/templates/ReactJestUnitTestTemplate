@@ -2,7 +2,7 @@ import { shallow } from 'enzyme';
 import * as React from 'react';
 
 type IProps = ${NAME}.IProps;
-type IState = ${NAME}.IProps;
+type IState = ${NAME}.IState;
 
 const createDefaultProps = (): IProps => {
     return {
